@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/database/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum VideoProviderKind {
+  UPLOAD
+  VIMEO
+  YOUTUBE
+  OTHER
+}
+
+enum LiveSessionPlatformKind {
+  ZOOM
+  GOOGLE_MEET
+  OTHER
+}
+
+enum LiveSessionStatusKind {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum UserRoleKind {
+  MEMBER
+  ADMIN
+}
+
+enum MembershipStatusKind {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
+model User {
+  id               String               @id @default(cuid()) @db.VarChar(30)
+  email            String               @unique @db.VarChar(255)
+  name             String               @db.VarChar(100)
+  password         String               @db.VarChar(255)
+  role             UserRoleKind         @default(MEMBER)
+  membershipStatus MembershipStatusKind @default(ACTIVE)
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+  deletedAt        DateTime?            @map("deleted_at")
+
+  @@index([membershipStatus])
+  @@index([email, membershipStatus])
+  @@map("t_user")
+}
+
+model Category {
+  id        String  @id @default(cuid()) @db.VarChar(30)
+  name      String  @unique @db.VarChar(100)
+  slug      String  @unique @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  video Video[]
+  news  News[]
+
+  @@map("t_category")
+}
+
+model Video {
+  id              String            @id @default(cuid()) @db.VarChar(30)
+  title           String            @db.VarChar(200)
+  description     String            @db.Text
+  videoUrl        String            @db.Text
+  provider        VideoProviderKind @default(YOUTUBE)
+  thumbnailUrl    String            @db.Text
+  durationSeconds Int
+  categoryId      String            @map("category_id") @db.VarChar(30)
+  category        Category          @relation(fields: [categoryId], references: [id])
+  isFeatured      Boolean           @default(false) @map("is_featured")
+  publishedAt     DateTime          @map("published_at")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  deletedAt       DateTime?         @map("deleted_at")
+
+  @@index([categoryId])
+  @@index([publishedAt])
+  @@map("t_video")
+}
+
+model News {
+  id          String   @id @default(cuid()) @db.VarChar(30)
+  title       String   @db.VarChar(200)
+  summary     String   @db.VarChar(500)
+  content     String   @db.Text
+  imageUrl    String?  @map("image_url") @db.Text
+  categoryId  String   @map("category_id") @db.VarChar(30)
+  category    Category @relation(fields: [categoryId], references: [id])
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  publishedAt DateTime @map("published_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@index([categoryId])
+  @@index([publishedAt])
+  @@map("t_news")
+}
+
+model Announcement {
+  id          String    @id @default(cuid()) @db.VarChar(30)
+  title       String    @db.VarChar(200)
+  content     String    @db.Text
+  ctaLabel    String?   @map("cta_label") @db.VarChar(100)
+  ctaUrl      String?   @map("cta_url") @db.Text
+  isFeatured  Boolean   @default(false) @map("is_featured")
+  publishedAt DateTime  @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@index([publishedAt])
+  @@map("t_announcement")
+}
+
+model LiveSession {
+  id          String                  @id @default(cuid()) @db.VarChar(30)
+  title       String                  @db.VarChar(200)
+  description String?                 @db.Text
+  scheduledAt DateTime                @map("scheduled_at")
+  platform    LiveSessionPlatformKind
+  joinUrl     String                  @map("join_url") @db.Text
+  status      LiveSessionStatusKind   @default(SCHEDULED)
+  createdAt   DateTime                @default(now()) @map("created_at")
+  updatedAt   DateTime                @updatedAt @map("updated_at")
+  deletedAt   DateTime?               @map("deleted_at")
+
+  @@index([scheduledAt])
+  @@map("t_live_session")
+}

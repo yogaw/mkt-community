@@ -1,26 +1,27 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Dark dashboard theme (single deliberate look; see the reference dashboard style). */
+@theme {
+  --color-canvas: #0b0d0e; /* page background */
+  --color-panel: #15181a; /* cards, sidebar */
+  --color-panel-raised: #1d2124; /* inputs, badges, hover surfaces */
+  --color-edge: #272c30; /* borders */
+  --color-ink: #f4f6f7; /* primary text */
+  --color-ink-muted: #a3adb2; /* secondary text */
+  --color-ink-faint: #6e777c; /* tertiary text */
+  --color-accent: #52d789; /* mint green */
+  --color-accent-strong: #3fc97a;
+  --color-accent-ink: #072b1b; /* text on accent */
+  --color-down: #ef6f6f; /* negative red */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }

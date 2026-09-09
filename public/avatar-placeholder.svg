@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Account avatar placeholder">
+  <rect width="64" height="64" fill="#1d2124"/>
+  <path d="M8 64c2-12 11-18 24-18s22 6 24 18z" fill="#14532d"/>
+  <rect x="26" y="38" width="12" height="12" rx="5" fill="#c98e57"/>
+  <ellipse cx="32" cy="28" rx="13" ry="14" fill="#d9a066"/>
+  <ellipse cx="32" cy="18" rx="14" ry="10" fill="#101010"/>
+  <circle cx="25.5" cy="30" r="5.5" fill="none" stroke="#0b0d0e" stroke-width="2.2"/>
+  <circle cx="38.5" cy="30" r="5.5" fill="none" stroke="#0b0d0e" stroke-width="2.2"/>
+  <path d="M31 30h2" stroke="#0b0d0e" stroke-width="2.2"/>
+  <path d="M20 30h-1M44 30h1" stroke="#0b0d0e" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M28.5 38.5c1.5 1.5 5.5 1.5 7 0" stroke="#8a5a2e" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+</svg>

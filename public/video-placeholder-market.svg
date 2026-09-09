@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Market chart illustration">
+  <rect width="640" height="360" fill="#15181a"/>
+  <g stroke="#272c30" stroke-width="1" opacity="0.6">
+    <line x1="0" y1="72" x2="640" y2="72"/>
+    <line x1="0" y1="144" x2="640" y2="144"/>
+    <line x1="0" y1="216" x2="640" y2="216"/>
+    <line x1="0" y1="288" x2="640" y2="288"/>
+    <line x1="128" y1="0" x2="128" y2="360"/>
+    <line x1="256" y1="0" x2="256" y2="360"/>
+    <line x1="384" y1="0" x2="384" y2="360"/>
+    <line x1="512" y1="0" x2="512" y2="360"/>
+  </g>
+  <line x1="70" y1="252" x2="572" y2="76" stroke="#52d789" stroke-width="2" stroke-dasharray="8 8" opacity="0.35"/>
+  <g stroke-linecap="round">
+    <line x1="90" y1="185" x2="90" y2="265" stroke="#52d789" stroke-width="3"/>
+    <rect x="72" y="200" width="36" height="50" rx="3" fill="#52d789"/>
+    <line x1="180" y1="165" x2="180" y2="250" stroke="#ef6f6f" stroke-width="3"/>
+    <rect x="162" y="175" width="36" height="60" rx="3" fill="#ef6f6f"/>
+    <line x1="270" y1="140" x2="270" y2="220" stroke="#52d789" stroke-width="3"/>
+    <rect x="252" y="150" width="36" height="55" rx="3" fill="#52d789"/>
+    <line x1="360" y1="120" x2="360" y2="200" stroke="#ef6f6f" stroke-width="3"/>
+    <rect x="342" y="130" width="36" height="55" rx="3" fill="#ef6f6f"/>
+    <line x1="450" y1="85" x2="450" y2="165" stroke="#52d789" stroke-width="3"/>
+    <rect x="432" y="95" width="36" height="55" rx="3" fill="#52d789"/>
+    <line x1="540" y1="50" x2="540" y2="135" stroke="#52d789" stroke-width="3"/>
+    <rect x="522" y="60" width="36" height="60" rx="3" fill="#52d789"/>
+  </g>
+</svg>
