@@ -12,7 +12,9 @@ export async function GET(
     const claims = await requireAuth(request);
 
     const { id } = await params;
-    const thread = await discussionService.getThread(id, claims.sub);
+    // Opening a thread is what a view is. It counts opens rather than unique
+    // readers, which the schema says out loud so nothing comes to depend on it.
+    const thread = await discussionService.getThread(id, claims.sub, true);
 
     return NextResponse.json({ data: thread }, { status: 200 });
   } catch (error) {

@@ -9,9 +9,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const claims = await requireAuth(request);
 
     const query = threadsQuerySchema.parse(Object.fromEntries(request.nextUrl.searchParams));
-    const result = await discussionService.listThreads(query, claims.sub);
+    // The overview travels with the list: the board renders both together, and
+    // two round trips would let the counts disagree with the rows beneath them.
+    const [result, overview] = await Promise.all([
+      discussionService.listThreads(query, claims.sub),
+      discussionService.getOverview(),
+    ]);
 
-    return NextResponse.json({ data: result.items, pagination: result.pagination }, { status: 200 });
+    return NextResponse.json(
+      { data: result.items, pagination: result.pagination, overview },
+      { status: 200 },
+    );
   } catch (error) {
     return toErrorResponse(error);
   }

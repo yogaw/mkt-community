@@ -2,15 +2,17 @@ import { AppError } from "@/lib/errors/app-error";
 import { ErrorCode } from "@/lib/errors/error-code";
 import { truncate } from "@/lib/text/truncate";
 import type { PaginatedResult } from "@/lib/api/pagination";
-import type {
-  CreateReplyInput,
-  CreateThreadInput,
-  DiscussionAuthorDto,
-  ModerateThreadInput,
-  ReplyDto,
-  ThreadDetailDto,
-  ThreadSummaryDto,
-  ThreadsQuery,
+import {
+  DISCUSSION_CATEGORIES,
+  type CreateReplyInput,
+  type CreateThreadInput,
+  type DiscussionAuthorDto,
+  type DiscussionOverviewDto,
+  type ModerateThreadInput,
+  type ReplyDto,
+  type ThreadDetailDto,
+  type ThreadSummaryDto,
+  type ThreadsQuery,
 } from "@/features/discussion/discussion-types";
 import type {
   DiscussionRepository,
@@ -20,10 +22,12 @@ import type {
 import { discussionRepository } from "@/features/discussion/repository/discussion-repository";
 
 const SNIPPET_MAX_LENGTH = 180;
+const TOP_CONTRIBUTORS = 5;
 
 export interface DiscussionService {
   listThreads(query: ThreadsQuery, userId: string): Promise<PaginatedResult<ThreadSummaryDto>>;
-  getThread(id: string, userId: string): Promise<ThreadDetailDto>;
+  getOverview(): Promise<DiscussionOverviewDto>;
+  getThread(id: string, userId: string, countAsView?: boolean): Promise<ThreadDetailDto>;
   createThread(authorId: string, input: CreateThreadInput): Promise<ThreadDetailDto>;
   reply(threadId: string, authorId: string, input: CreateReplyInput): Promise<ThreadDetailDto>;
   moderate(id: string, input: ModerateThreadInput): Promise<ThreadDetailDto>;
@@ -44,11 +48,42 @@ export class DiscussionServiceImpl implements DiscussionService {
     };
   }
 
-  async getThread(id: string, userId: string): Promise<ThreadDetailDto> {
+  async getOverview(): Promise<DiscussionOverviewDto> {
+    const [counts, contributors] = await Promise.all([
+      this.repository.countByCategory(),
+      this.repository.findTopContributors(TOP_CONTRIBUTORS),
+    ]);
+
+    const byCategory = new Map(counts.map((row) => [row.category, row.threadCount]));
+
+    return {
+      // Driven by the enum, not by what happens to be in the table, so the row
+      // of cards is stable and an empty room still shows as a room.
+      categories: DISCUSSION_CATEGORIES.map((category) => ({
+        category,
+        threadCount: byCategory.get(category) ?? 0,
+      })),
+      contributors: contributors.map((row) => ({
+        id: row.id,
+        name: row.name,
+        isAdmin: row.role === "ADMIN",
+        replyCount: row.replyCount,
+      })),
+    };
+  }
+
+  async getThread(id: string, userId: string, countAsView = false): Promise<ThreadDetailDto> {
     const thread = await this.repository.findThreadById(id);
     if (!thread) {
       throw new AppError(404, ErrorCode.notFound);
     }
+
+    if (countAsView) {
+      // The counter is a nice-to-have; a failure here must not cost the reader
+      // the thread they asked for. The returned figure is the pre-read one.
+      void this.repository.incrementViewCount(id).catch(() => undefined);
+    }
+
     return toThreadDetail(thread, userId);
   }
 
@@ -108,7 +143,9 @@ function toThreadSummary(row: ThreadListRow, userId: string): ThreadSummaryDto {
     id: row.id,
     title: row.title,
     snippet: truncate(row.body, SNIPPET_MAX_LENGTH),
+    category: row.category,
     ticker: row.ticker,
+    viewCount: row.viewCount,
     author: toAuthor(row.author),
     replyCount: row._count.reply,
     isPinned: row.isPinned,
@@ -138,7 +175,9 @@ function toThreadDetail(thread: ThreadDetailRow, userId: string): ThreadDetailDt
     id: thread.id,
     title: thread.title,
     body: thread.body,
+    category: thread.category,
     ticker: thread.ticker,
+    viewCount: thread.viewCount,
     author: toAuthor(thread.author),
     isPinned: thread.isPinned,
     isLocked: thread.isLocked,

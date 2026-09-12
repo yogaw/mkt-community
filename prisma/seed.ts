@@ -38,6 +38,36 @@ const seedUsers = [
     role: UserRoleKind.MEMBER,
     membershipStatus: MembershipStatusKind.INACTIVE,
   },
+  // Enough voices for the board to look like a board. Without them every
+  // thread is a conversation between the same two accounts.
+  {
+    email: "rika@email.com",
+    name: "Rika Anindita",
+    password: "member123",
+    role: UserRoleKind.MEMBER,
+    membershipStatus: MembershipStatusKind.ACTIVE,
+  },
+  {
+    email: "david@email.com",
+    name: "David Kurniawan",
+    password: "member123",
+    role: UserRoleKind.MEMBER,
+    membershipStatus: MembershipStatusKind.ACTIVE,
+  },
+  {
+    email: "michael@email.com",
+    name: "Michael Tanuwijaya",
+    password: "member123",
+    role: UserRoleKind.MEMBER,
+    membershipStatus: MembershipStatusKind.ACTIVE,
+  },
+  {
+    email: "jessica@email.com",
+    name: "Jessica Halim",
+    password: "member123",
+    role: UserRoleKind.MEMBER,
+    membershipStatus: MembershipStatusKind.ACTIVE,
+  },
 ];
 
 const seedCategories = [

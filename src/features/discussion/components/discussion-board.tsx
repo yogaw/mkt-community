@@ -12,18 +12,52 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { authedFetch } from "@/lib/api/authed-fetch";
 import { clearSession, getToken, isStoredUserAdmin } from "@/lib/auth/token-storage";
 import { cn } from "@/lib/cn";
-import { formatRelativeTime } from "@/lib/datetime/format";
+import { formatDate, formatRelativeTime } from "@/lib/datetime/format";
 import { humanizeErrorCode } from "@/lib/errors/error-messages";
 import type { PaginationMeta } from "@/lib/api/pagination";
-import type { ThreadDetailDto, ThreadSummaryDto } from "@/features/discussion/discussion-types";
+import {
+  CATEGORY_STYLE,
+  formatViews,
+  pluralize,
+} from "@/features/discussion/discussion-display";
+import {
+  CATEGORY_LABEL,
+  DISCUSSION_CATEGORIES,
+  type DiscussionCategory,
+  type DiscussionOverviewDto,
+  type ThreadDetailDto,
+  type ThreadSummaryDto,
+} from "@/features/discussion/discussion-types";
+import { CategoryCards } from "./category-cards";
+import { CategoryIcon } from "./category-icon";
+import { CommunityRules } from "./community-rules";
+import { TopContributors } from "./top-contributors";
 
 const SEARCH_DEBOUNCE_MS = 300;
 
 type Status = "loading" | "ready" | "error";
-type Sort = "newest" | "active";
+type Sort = "active" | "newest" | "discussed" | "viewed";
+
+const SORT_OPTIONS: Array<{ value: Sort; label: string }> = [
+  { value: "active", label: "Recently active" },
+  { value: "newest", label: "Latest" },
+  { value: "discussed", label: "Most discussed" },
+  { value: "viewed", label: "Most viewed" },
+];
 
 const controlClass =
   "w-full rounded-lg border border-edge bg-panel-raised px-3 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-accent focus:outline-none";
+
+const EMPTY_OVERVIEW: DiscussionOverviewDto = {
+  categories: DISCUSSION_CATEGORIES.map((category) => ({ category, threadCount: 0 })),
+  contributors: [],
+};
+
+interface ListBody {
+  data: ThreadSummaryDto[];
+  pagination: PaginationMeta;
+  overview: DiscussionOverviewDto;
+}
 
 /** The session cannot change role without a fresh sign-in. */
 function subscribeToSession(): () => void {
@@ -33,12 +67,10 @@ function subscribeToSession(): () => void {
 export function DiscussionBoard() {
   const router = useRouter();
 
-  const [threads, setThreads] = useState<ThreadSummaryDto[]>([]);
-  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
-  const [status, setStatus] = useState<Status>("loading");
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [sort, setSort] = useState<Sort>("active");
+  const [category, setCategory] = useState<DiscussionCategory | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
   const [openThread, setOpenThread] = useState<ThreadDetailDto | null>(null);
@@ -46,6 +78,24 @@ export function DiscussionBoard() {
   const debouncedRef = useRef("");
 
   const isAdmin = useSyncExternalStore(subscribeToSession, isStoredUserAdmin, () => false);
+
+  /*
+   * The request is identified by what it asks for, and the answer carries that
+   * identity back. Loading is then something we read off the pair rather than
+   * a flag an effect has to set going in and clear on every way out.
+   */
+  const request = `${sort}|${category ?? ""}|${debouncedSearch}|${reloadKey}`;
+  const [loaded, setLoaded] = useState<{ request: string; body: ListBody } | null>(null);
+  const [failedRequest, setFailedRequest] = useState<string | null>(null);
+
+  const body = loaded?.request === request ? loaded.body : null;
+  const status: Status =
+    body !== null ? "ready" : failedRequest === request ? "error" : "loading";
+
+  // The counts keep showing while a filtered request is in flight, so the row
+  // of cards does not blink empty every time somebody types in the search box.
+  const overview = loaded?.body.overview ?? EMPTY_OVERVIEW;
+  const threads = body?.data ?? [];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -62,12 +112,14 @@ export function DiscussionBoard() {
 
     void (async () => {
       const query = new URLSearchParams({ sort });
+      if (category) {
+        query.set("category", category);
+      }
       if (debouncedSearch) {
         query.set("search", debouncedSearch);
       }
-      const result = await authedFetch<{ data: ThreadSummaryDto[]; pagination: PaginationMeta }>(
-        `/api/v1/discussions?${query.toString()}`,
-      );
+
+      const result = await authedFetch<ListBody>(`/api/v1/discussions?${query.toString()}`);
       if (cancelled) {
         return;
       }
@@ -77,18 +129,20 @@ export function DiscussionBoard() {
         return;
       }
       if (result.outcome !== "loaded") {
-        setStatus("error");
+        setFailedRequest(request);
         return;
       }
-      setThreads(result.body.data);
-      setPagination(result.body.pagination);
-      setStatus("ready");
+      setLoaded({ request, body: result.body });
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [debouncedSearch, sort, reloadKey, router]);
+  }, [sort, category, debouncedSearch, request, router]);
+
+  // A find over at most a page of threads; memoising it would cost more than
+  // it saves and would need `threads` to be stable to be correct at all.
+  const pinnedThreadId = threads.find((thread) => thread.isPinned)?.id ?? null;
 
   async function openThreadById(id: string) {
     const result = await authedFetch<{ data: ThreadDetailDto }>(`/api/v1/discussions/${id}`);
@@ -106,129 +160,203 @@ export function DiscussionBoard() {
     setReloadKey((key) => key + 1);
   }
 
+  const activeLabel = category === null ? "Latest Discussions" : CATEGORY_LABEL[category];
+
   return (
-    <main className="mx-auto w-full max-w-[1000px] px-4 py-8 sm:px-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <main className="mx-auto w-full max-w-[1200px] px-4 py-8 sm:px-6">
+      <header className="flex flex-wrap items-start justify-between gap-4">
         <p className="max-w-xl text-sm text-ink-muted">
-          Where members work through ideas together. Share the reasoning, not just the ticker.
+          Curated conversations to help you become a better investor. Share the reasoning, not
+          just the ticker.
         </p>
-        <div className="shrink-0">
-          <Button onClick={() => setIsComposeOpen(true)} className="px-4">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-            New Thread
-          </Button>
-        </div>
-      </div>
-
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="sm:max-w-sm sm:flex-1">
-          <SearchInput
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search discussions..."
-            aria-label="Search discussions"
-          />
-        </div>
-        <div className="flex gap-2 sm:ml-auto">
-          {(["active", "newest"] as const).map((value) => (
-            <button
-              key={value}
-              type="button"
-              aria-pressed={sort === value}
-              onClick={() => setSort(value)}
-              className={cn(
-                "rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
-                sort === value
-                  ? "border-accent bg-accent text-accent-ink"
-                  : "border-edge bg-panel text-ink-muted hover:text-ink",
-              )}
-            >
-              {value === "active" ? "Recently active" : "Newest"}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-6">
-        {status === "loading" ? (
-          <div className="space-y-3">
-            {Array.from({ length: 4 }, (_, index) => (
-              <Skeleton key={index} className="h-28 rounded-xl" />
-            ))}
+        <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
+          <div className="min-w-0 flex-1 sm:w-64 sm:flex-none">
+            <SearchInput
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search discussions..."
+              aria-label="Search discussions"
+              className="py-2 text-sm"
+            />
           </div>
-        ) : null}
-
-        {status === "error" ? (
-          <div className="rounded-xl border border-edge bg-panel p-10 text-center">
-            <p className="text-sm text-ink-muted">We could not load the discussions.</p>
-            <Button onClick={refresh} className="mx-auto mt-4 w-auto px-6">
-              Try Again
+          <div className="shrink-0">
+            <Button onClick={() => setIsComposeOpen(true)} className="px-4">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              New Thread
             </Button>
           </div>
-        ) : null}
+        </div>
+      </header>
 
-        {status === "ready" && threads.length === 0 ? (
-          <EmptyState
-            title="No threads yet"
-            description="Start the first one and get the conversation going."
-            action={
-              <Button onClick={() => setIsComposeOpen(true)} className="w-auto px-6">
-                New Thread
+      <div className="mt-6">
+        <CategoryCards categories={overview.categories} selected={category} onSelect={setCategory} />
+      </div>
+
+      <div className="mt-6 grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)]">
+        <section className="min-w-0 rounded-xl border border-edge bg-panel">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-edge px-5 py-4">
+            <h2 className="text-base font-semibold text-ink">{activeLabel}</h2>
+            <label className="flex shrink-0 items-center gap-2 text-sm text-ink-faint">
+              Sort by
+              <select
+                value={sort}
+                onChange={(event) => setSort(event.target.value as Sort)}
+                className="rounded-lg border border-edge bg-panel-raised px-2.5 py-1.5 text-sm font-medium text-ink focus:border-accent focus:outline-none"
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {status === "loading" ? (
+            <div className="space-y-3 p-5">
+              {Array.from({ length: 5 }, (_, index) => (
+                <Skeleton key={index} className="h-24 rounded-xl" />
+              ))}
+            </div>
+          ) : null}
+
+          {status === "error" ? (
+            <div className="p-10 text-center">
+              <p className="text-sm text-ink-muted">We could not load the discussions.</p>
+              <Button onClick={refresh} className="mx-auto mt-4 w-auto px-6">
+                Try Again
               </Button>
-            }
+            </div>
+          ) : null}
+
+          {status === "ready" && threads.length === 0 ? (
+            <div className="p-5">
+              <EmptyState
+                title={category === null ? "No threads yet" : `Nothing in ${CATEGORY_LABEL[category]} yet`}
+                description="Start the first one and get the conversation going."
+                action={
+                  <Button onClick={() => setIsComposeOpen(true)} className="w-auto px-6">
+                    New Thread
+                  </Button>
+                }
+              />
+            </div>
+          ) : null}
+
+          {status === "ready" && threads.length > 0 ? (
+            <ul className="divide-y divide-edge">
+              {threads.map((thread) => {
+                const style = CATEGORY_STYLE[thread.category];
+                return (
+                  <li key={thread.id}>
+                    <button
+                      type="button"
+                      onClick={() => void openThreadById(thread.id)}
+                      className="flex w-full gap-4 px-5 py-4 text-left transition-colors hover:bg-panel-raised/50"
+                    >
+                      <span
+                        className={cn(
+                          "hidden h-16 w-16 shrink-0 items-center justify-center rounded-lg sm:flex",
+                          style.tint,
+                        )}
+                      >
+                        <CategoryIcon category={thread.category} className="h-7 w-7" />
+                      </span>
+
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-start justify-between gap-3">
+                          <span className="min-w-0">
+                            <span className="block font-semibold text-ink">{thread.title}</span>
+                            <span className="mt-0.5 block truncate text-sm text-ink-muted">
+                              {thread.snippet}
+                            </span>
+                          </span>
+                          <span className="flex shrink-0 items-center gap-2">
+                            {thread.isPinned ? (
+                              <span
+                                title="Pinned"
+                                className="flex h-6 w-6 items-center justify-center rounded-full bg-down/10 text-down"
+                              >
+                                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                  <path d="M9.8 1.4a1 1 0 011.4 0l3.4 3.4a1 1 0 010 1.4l-.7.7a1 1 0 01-1.2.2l-1.3 1.9.6.6a1 1 0 010 1.4l-.7.7a1 1 0 01-1.4 0L7.1 9.4l-4.4 4.4a.7.7 0 01-1-1l4.4-4.4-2.3-2.3a1 1 0 010-1.4l.7-.7a1 1 0 011.4 0l.6.6 1.9-1.3a1 1 0 01.2-1.2l.7-.7z" />
+                                </svg>
+                                <span className="sr-only">Pinned</span>
+                              </span>
+                            ) : null}
+                            {thread.isLocked ? (
+                              <span className="rounded-full bg-panel-raised px-2 py-0.5 text-[11px] font-semibold text-ink-faint">
+                                Locked
+                              </span>
+                            ) : null}
+                          </span>
+                        </span>
+
+                        <span className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                          <span
+                            className={cn(
+                              "rounded-full px-2.5 py-1 text-xs font-semibold",
+                              style.chip,
+                            )}
+                          >
+                            {style.label}
+                          </span>
+                          {thread.ticker ? (
+                            <span className="rounded-full bg-panel-raised px-2.5 py-1 text-xs font-semibold text-ink-muted">
+                              {thread.ticker}
+                            </span>
+                          ) : null}
+
+                          <span className="flex items-center gap-1 text-xs text-ink-faint" title={pluralize(thread.replyCount, "reply", "replies")}>
+                            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
+                              <path d="M2.5 4.2a1.2 1.2 0 011.2-1.2h8.6a1.2 1.2 0 011.2 1.2v5.4a1.2 1.2 0 01-1.2 1.2H6.4L3.4 13.3a.4.4 0 01-.64-.32V4.2z" strokeLinejoin="round" />
+                            </svg>
+                            {thread.replyCount}
+                          </span>
+
+                          <span className="flex items-center gap-1 text-xs text-ink-faint" title={`${thread.viewCount.toLocaleString("en-US")} views`}>
+                            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
+                              <path d="M1.4 8s2.5-4.3 6.6-4.3S14.6 8 14.6 8s-2.5 4.3-6.6 4.3S1.4 8 1.4 8z" />
+                              <circle cx="8" cy="8" r="1.9" />
+                            </svg>
+                            {formatViews(thread.viewCount)}
+                          </span>
+
+                          <span className="ml-auto text-xs text-ink-faint">
+                            {formatDate(thread.createdAt)}
+                          </span>
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
+
+          {body && body.pagination.totalItems > threads.length ? (
+            <p className="border-t border-edge px-5 py-3 text-xs text-ink-faint">
+              Showing {threads.length} of {body.pagination.totalItems} threads.
+            </p>
+          ) : null}
+        </section>
+
+        <aside className="space-y-4">
+          <CommunityRules
+            onOpenGuidelines={() => {
+              if (pinnedThreadId) {
+                void openThreadById(pinnedThreadId);
+              }
+            }}
           />
-        ) : null}
-
-        {status === "ready" && threads.length > 0 ? (
-          <ul className="space-y-3">
-            {threads.map((thread) => (
-              <li key={thread.id}>
-                <button
-                  type="button"
-                  onClick={() => void openThreadById(thread.id)}
-                  className="block w-full rounded-xl border border-edge bg-panel p-5 text-left transition-colors hover:border-ink-faint"
-                >
-                  <div className="flex flex-wrap items-center gap-2">
-                    {thread.isPinned ? (
-                      <span className="rounded-full bg-warn/10 px-2.5 py-1 text-xs font-semibold text-warn">
-                        Pinned
-                      </span>
-                    ) : null}
-                    {thread.isLocked ? (
-                      <span className="rounded-full bg-panel-raised px-2.5 py-1 text-xs font-semibold text-ink-faint">
-                        Locked
-                      </span>
-                    ) : null}
-                    {thread.ticker ? (
-                      <span className="rounded-full bg-accent/10 px-2.5 py-1 text-xs font-semibold text-accent">
-                        {thread.ticker}
-                      </span>
-                    ) : null}
-                  </div>
-                  <h2 className="mt-2 font-semibold text-ink">{thread.title}</h2>
-                  <p className="mt-1 text-sm leading-relaxed text-ink-muted">{thread.snippet}</p>
-                  <p className="mt-3 text-xs text-ink-faint">
-                    {thread.author.name}
-                    {thread.author.isAdmin ? " · Admin" : ""} · {formatRelativeTime(thread.createdAt)}{" "}
-                    · {thread.replyCount} {thread.replyCount === 1 ? "reply" : "replies"}
-                  </p>
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-
-        {pagination && pagination.totalItems > threads.length ? (
-          <p className="mt-3 text-xs text-ink-faint">
-            Showing {threads.length} of {pagination.totalItems} threads.
-          </p>
-        ) : null}
+          <TopContributors contributors={overview.contributors} />
+        </aside>
       </div>
 
       <ComposeThreadModal
         open={isComposeOpen}
+        defaultCategory={category}
         onClose={() => setIsComposeOpen(false)}
         onCreated={(thread) => {
           setIsComposeOpen(false);
@@ -256,16 +384,22 @@ export function DiscussionBoard() {
 
 function ComposeThreadModal({
   open,
+  defaultCategory,
   onClose,
   onCreated,
 }: {
   open: boolean;
+  /** Whatever room the board is filtered to, so posting lands where you are. */
+  defaultCategory: DiscussionCategory | null;
   onClose: () => void;
   onCreated: (thread: ThreadDetailDto) => void;
 }) {
   const [title, setTitle] = useState("");
   const [ticker, setTicker] = useState("");
   const [body, setBody] = useState("");
+  const [category, setCategory] = useState<DiscussionCategory>(
+    defaultCategory ?? "MARKET_OUTLOOK",
+  );
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -273,6 +407,7 @@ function ComposeThreadModal({
     setTitle("");
     setTicker("");
     setBody("");
+    setCategory(defaultCategory ?? "MARKET_OUTLOOK");
     setError(null);
   }
 
@@ -301,7 +436,12 @@ function ComposeThreadModal({
       const response = await fetch("/api/v1/discussions", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ title, body, ticker: ticker.trim() === "" ? null : ticker.trim() }),
+        body: JSON.stringify({
+          title,
+          body,
+          category,
+          ticker: ticker.trim() === "" ? null : ticker.trim(),
+        }),
       });
       if (!response.ok) {
         setError(humanizeErrorCode("general.error.validation"));
@@ -339,6 +479,24 @@ function ComposeThreadModal({
           onChange={(event) => setTitle(event.target.value)}
           maxLength={200}
         />
+        <div className="space-y-1.5">
+          <label htmlFor="thread-category" className="block text-sm font-medium text-ink-muted">
+            Category
+          </label>
+          <select
+            id="thread-category"
+            value={category}
+            onChange={(event) => setCategory(event.target.value as DiscussionCategory)}
+            className={controlClass}
+          >
+            {DISCUSSION_CATEGORIES.map((value) => (
+              <option key={value} value={value}>
+                {CATEGORY_LABEL[value]}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <Input
           label="Ticker (optional)"
           placeholder="CUAN"
@@ -445,8 +603,16 @@ function ThreadModal({
         {error ? <Alert>{error}</Alert> : null}
 
         <div className="flex flex-wrap items-center gap-2">
+          <span
+            className={cn(
+              "rounded-full px-2.5 py-1 text-xs font-semibold",
+              CATEGORY_STYLE[thread.category].chip,
+            )}
+          >
+            {CATEGORY_STYLE[thread.category].label}
+          </span>
           {thread.ticker ? (
-            <span className="rounded-full bg-accent/10 px-2.5 py-1 text-xs font-semibold text-accent">
+            <span className="rounded-full bg-panel-raised px-2.5 py-1 text-xs font-semibold text-ink-muted">
               {thread.ticker}
             </span>
           ) : null}
@@ -461,6 +627,10 @@ function ThreadModal({
         </div>
 
         <p className="whitespace-pre-line text-sm leading-relaxed text-ink">{thread.body}</p>
+
+        <p className="text-xs text-ink-faint">
+          {formatViews(thread.viewCount)} {thread.viewCount === 1 ? "view" : "views"}
+        </p>
 
         <div className="border-t border-edge pt-4">
           <h3 className="text-sm font-semibold text-ink">
