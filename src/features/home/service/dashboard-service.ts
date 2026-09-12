@@ -14,6 +14,8 @@ import type {
 import { dashboardRepository } from "@/features/home/repository/dashboard-repository";
 import type { LiveSessionService } from "@/features/live-sessions/service/live-session-service";
 import { liveSessionService } from "@/features/live-sessions/service/live-session-service";
+import type { MarketIndexService } from "@/features/market-index/service/market-index-service";
+import { marketIndexService } from "@/features/market-index/service/market-index-service";
 import { toVideoCardDto } from "@/features/videos/video-mappers";
 import { truncate } from "@/lib/text/truncate";
 
@@ -29,17 +31,21 @@ export class DashboardServiceImpl implements DashboardService {
   constructor(
     private readonly repository: DashboardRepository,
     private readonly liveSessions: LiveSessionService,
+    private readonly marketIndex: MarketIndexService,
   ) {}
 
   async getHomeFeed(): Promise<HomeFeed> {
-    const [featuredContent, upcomingSession, latestVideoRows, latestUpdateRows] = await Promise.all([
-      this.repository.findFeaturedContent(),
-      this.liveSessions.getNextUpcomingSession(),
-      this.repository.findLatestVideos(LATEST_VIDEOS_LIMIT),
-      this.repository.findLatestUpdates(LATEST_UPDATES_LIMIT),
-    ]);
+    const [marketIndex, featuredContent, upcomingSession, latestVideoRows, latestUpdateRows] =
+      await Promise.all([
+        this.marketIndex.getLatest(),
+        this.repository.findFeaturedContent(),
+        this.liveSessions.getNextUpcomingSession(),
+        this.repository.findLatestVideos(LATEST_VIDEOS_LIMIT),
+        this.repository.findLatestUpdates(LATEST_UPDATES_LIMIT),
+      ]);
 
     return {
+      marketIndex,
       featuredContent: featuredContent ? toFeaturedContent(featuredContent) : null,
       upcomingSession,
       latestVideos: latestVideoRows.map(toVideoCardDto),
@@ -95,4 +101,8 @@ function toSnippet(content: string): string {
   return truncate(content, SNIPPET_MAX_LENGTH);
 }
 
-export const dashboardService: DashboardService = new DashboardServiceImpl(dashboardRepository, liveSessionService);
+export const dashboardService: DashboardService = new DashboardServiceImpl(
+  dashboardRepository,
+  liveSessionService,
+  marketIndexService,
+);

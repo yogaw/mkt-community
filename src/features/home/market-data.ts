@@ -1,16 +1,6 @@
-// Placeholder market data for the reworked dashboard.
-// These views need a real IDX market-data source before production;
-// all values below are illustrative only.
-
-export interface MarketSnapshotData {
-  indexName: string;
-  value: number;
-  changePercent: number;
-  turnover: string;
-  foreignFlow: string;
-  advancers: number;
-  decliners: number;
-}
+// Placeholder market data for the dashboard sections that are not yet backed
+// by real data. The index snapshot has moved to the database — see
+// features/market-index. Everything below is still illustrative only.
 
 export interface MarketInsight {
   id: string;
@@ -37,16 +27,6 @@ export interface SectorReading {
   changePercent: number;
   view: SectorView;
 }
-
-export const indonesiaMarketSnapshot: MarketSnapshotData = {
-  indexName: "IHSG",
-  value: 7845.21,
-  changePercent: 0.72,
-  turnover: "Rp 8.4T",
-  foreignFlow: "+Rp 640B",
-  advancers: 312,
-  decliners: 221,
-};
 
 export const briefingTickers = ["BBCA", "BMRI", "BBRI", "ANTM"];
 

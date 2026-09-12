@@ -343,3 +343,130 @@ model DiscussionReply {
   @@index([threadId, createdAt])
   @@map("t_discussion_reply")
 }
+
+/// Daily broker-level trade totals from IDX, one row per broker / ticker / day
+/// / action / txn_type. Mirrored verbatim from the upstream market-data project,
+/// so the table and column names stay unprefixed rather than following the `t_`
+/// convention used by this app's own tables.
+///
+/// Partitioned by RANGE (date) into monthly partitions — see the migration.
+/// Because the partition key must be part of every unique constraint, the
+/// primary key is (id, date) rather than id alone.
+///
+/// VOLUME IS IN LOTS (1 lot = 100 shares), unlike StockSummary which is in shares.
+model BrokerSummary {
+  id        BigInt   @default(autoincrement())
+  date      DateTime @db.Date
+  ticker    String   @db.VarChar(12)
+  /// Exchange member code, e.g. "YP", "CC".
+  broker    String   @db.VarChar(4)
+  isForeign Boolean  @map("is_foreign")
+  /// BUY or SELL.
+  action    String   @db.VarChar(4)
+  avgPx     Decimal? @map("avg_px") @db.Decimal(15, 2)
+  /// LOTS, not shares.
+  volume    BigInt?
+  /// IDR. Already signed when isNet, so do not negate it again.
+  value     BigInt?
+  isNet     Boolean  @map("is_net")
+  /// Board code, e.g. "RG" (regular), "TN" (negotiated), "TS" (cash).
+  txnType   String   @map("txn_type") @db.VarChar(2)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  frequency Int?     @default(0)
+
+  @@id([id, date])
+  @@unique([date, ticker, broker, isForeign, action, isNet, txnType], map: "broker_summaries_uniq")
+  @@index([broker], map: "idx_broker_summaries_broker")
+  @@index([date(sort: Desc)], map: "idx_broker_summaries_date")
+  @@index([date(sort: Desc), broker], map: "idx_broker_summaries_date_broker")
+  @@index([date(sort: Desc), ticker], map: "idx_broker_summaries_date_ticker")
+  @@index([isNet], map: "idx_broker_summaries_is_net")
+  @@index([ticker], map: "idx_broker_summaries_ticker")
+  @@index([txnType], map: "idx_broker_summaries_txn_type")
+  @@map("broker_summaries")
+}
+
+/// Daily OHLCV per ticker from IDX TradingSummary/GetStockSummary. One row per
+/// ticker per day. Not partitioned: a single row per listing per day stays small
+/// next to BrokerSummary.
+///
+/// VOLUME IS IN SHARES, unlike BrokerSummary which is in lots.
+model StockSummary {
+  id              BigInt    @id @default(autoincrement())
+  date            DateTime  @db.Date
+  ticker          String    @db.VarChar(10)
+  previousClose   Decimal?  @map("previous_close") @db.Decimal(15, 2)
+  openPrice       Decimal?  @map("open_price") @db.Decimal(15, 2)
+  high            Decimal?  @db.Decimal(15, 2)
+  low             Decimal?  @db.Decimal(15, 2)
+  close           Decimal   @db.Decimal(15, 2)
+  change          Decimal?  @db.Decimal(15, 2)
+  /// SHARES, not lots.
+  volume          BigInt?   @default(0)
+  /// IDR.
+  value           BigInt?   @default(0)
+  frequency       Int?      @default(0)
+  foreignSell     BigInt?   @default(0) @map("foreign_sell")
+  foreignBuy      BigInt?   @default(0) @map("foreign_buy")
+  listedShares    BigInt?   @map("listed_shares")
+  tradeableShares BigInt?   @map("tradeable_shares")
+  bid             Decimal?  @db.Decimal(15, 2)
+  bidVolume       BigInt?   @map("bid_volume")
+  offer           Decimal?  @db.Decimal(15, 2)
+  offerVolume     BigInt?   @map("offer_volume")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  /// Nullable and without a time zone, matching the upstream table.
+  updatedAt       DateTime? @map("updated_at") @db.Timestamp(6)
+
+  @@unique([date, ticker], map: "uq_stock_summary_date_ticker")
+  @@index([date], map: "idx_stock_summary_date")
+  @@index([ticker], map: "idx_stock_summary_ticker")
+  @@index([ticker, date], map: "idx_stock_summary_ticker_date")
+  @@map("stock_summaries")
+}
+
+/// Daily COMPOSITE (IHSG) figures from IDX TradingSummary/GetIndexSummary.
+/// One row per trading day.
+///
+/// Only the handful of fields we use are stored; the endpoint also returns
+/// Previous/Highest/Lowest/Change/Frequency/NumberOfStock, and 44 other indices
+/// besides COMPOSITE. Adding those later means an `index_code` column and a
+/// widened unique key.
+model IndexSummary {
+  id            BigInt    @id @default(autoincrement())
+  date          DateTime  @unique(map: "uq_index_summary_date") @db.Date
+  close         Decimal   @db.Decimal(15, 3)
+  /// Shares.
+  volume        BigInt?
+  /// IDR.
+  value         BigInt?
+  /// IDR. Decimal rather than BigInt — see the migration.
+  marketCapital Decimal?  @map("market_capital") @db.Decimal(30, 2)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime? @map("updated_at") @db.Timestamp(6)
+
+  @@map("index_summaries")
+}
+
+/// A dated snapshot of the exchange's headline numbers, posted by an admin.
+/// The home page reads the most recent row; older rows are kept as history.
+model MarketIndexSnapshot {
+  id            String   @id @default(cuid()) @db.VarChar(30)
+  indexName     String   @default("IHSG") @map("index_name") @db.VarChar(20)
+  /// Index level, e.g. 7845.21.
+  value         Decimal  @db.Decimal(12, 2)
+  changePercent Decimal  @map("change_percent") @db.Decimal(6, 2)
+  /// Stored as whole rupiah, not a pre-formatted string, so the UI decides how
+  /// to abbreviate it. Foreign flow is negative on a net outflow.
+  turnoverIdr   Decimal  @map("turnover_idr") @db.Decimal(24, 0)
+  foreignFlowIdr Decimal @map("foreign_flow_idr") @db.Decimal(24, 0)
+  advancers     Int
+  decliners     Int
+  /// When the numbers were taken, which is what the page shows as "as of".
+  capturedAt    DateTime @map("captured_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([capturedAt])
+  @@map("t_market_index_snapshot")
+}

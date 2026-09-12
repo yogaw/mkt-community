@@ -43,3 +43,11 @@ next-env.d.ts
 
 # uploaded chart images (served from /api/v1/uploads)
 /uploads
+
+# bulk market-data exports (hundreds of MB) - keep the folder, never the payloads
+/data/*
+!/data/.gitkeep
+!/data/README.md
+
+# python venv for the IDX transport (see scripts/requirements.txt)
+/scripts/.venv

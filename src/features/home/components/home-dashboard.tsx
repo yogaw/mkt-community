@@ -113,7 +113,12 @@ export function HomeDashboard() {
         <div className="space-y-10">
           <WelcomeHeader greeting={profile.greeting} name={profile.name} />
 
-          <MarketSnapshot />
+          <MarketSnapshot
+            snapshot={feed.marketIndex}
+            onUpdated={(snapshot) =>
+              setFeed((current) => (current ? { ...current, marketIndex: snapshot } : current))
+            }
+          />
 
           {feed.featuredContent ? <BriefingHero featured={feed.featuredContent} /> : null}
 

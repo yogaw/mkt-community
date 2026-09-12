@@ -1,0 +1,3 @@
+# Browser-TLS HTTP client. Required because IDX's Cloudflare rule filters on the
+# TLS fingerprint, which Node cannot forge. See scripts/idx_fetch.py.
+curl_cffi>=0.16,<1.0

@@ -64,7 +64,11 @@ export const ModelName = {
   IdxDisclosure: 'IdxDisclosure',
   CalendarEvent: 'CalendarEvent',
   DiscussionThread: 'DiscussionThread',
-  DiscussionReply: 'DiscussionReply'
+  DiscussionReply: 'DiscussionReply',
+  BrokerSummary: 'BrokerSummary',
+  StockSummary: 'StockSummary',
+  IndexSummary: 'IndexSummary',
+  MarketIndexSnapshot: 'MarketIndexSnapshot'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -301,6 +305,84 @@ export const DiscussionReplyScalarFieldEnum = {
 } as const
 
 export type DiscussionReplyScalarFieldEnum = (typeof DiscussionReplyScalarFieldEnum)[keyof typeof DiscussionReplyScalarFieldEnum]
+
+
+export const BrokerSummaryScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  ticker: 'ticker',
+  broker: 'broker',
+  isForeign: 'isForeign',
+  action: 'action',
+  avgPx: 'avgPx',
+  volume: 'volume',
+  value: 'value',
+  isNet: 'isNet',
+  txnType: 'txnType',
+  createdAt: 'createdAt',
+  frequency: 'frequency'
+} as const
+
+export type BrokerSummaryScalarFieldEnum = (typeof BrokerSummaryScalarFieldEnum)[keyof typeof BrokerSummaryScalarFieldEnum]
+
+
+export const StockSummaryScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  ticker: 'ticker',
+  previousClose: 'previousClose',
+  openPrice: 'openPrice',
+  high: 'high',
+  low: 'low',
+  close: 'close',
+  change: 'change',
+  volume: 'volume',
+  value: 'value',
+  frequency: 'frequency',
+  foreignSell: 'foreignSell',
+  foreignBuy: 'foreignBuy',
+  listedShares: 'listedShares',
+  tradeableShares: 'tradeableShares',
+  bid: 'bid',
+  bidVolume: 'bidVolume',
+  offer: 'offer',
+  offerVolume: 'offerVolume',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StockSummaryScalarFieldEnum = (typeof StockSummaryScalarFieldEnum)[keyof typeof StockSummaryScalarFieldEnum]
+
+
+export const IndexSummaryScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  close: 'close',
+  volume: 'volume',
+  value: 'value',
+  marketCapital: 'marketCapital',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type IndexSummaryScalarFieldEnum = (typeof IndexSummaryScalarFieldEnum)[keyof typeof IndexSummaryScalarFieldEnum]
+
+
+export const MarketIndexSnapshotScalarFieldEnum = {
+  id: 'id',
+  indexName: 'indexName',
+  value: 'value',
+  changePercent: 'changePercent',
+  turnoverIdr: 'turnoverIdr',
+  foreignFlowIdr: 'foreignFlowIdr',
+  advancers: 'advancers',
+  decliners: 'decliners',
+  capturedAt: 'capturedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MarketIndexSnapshotScalarFieldEnum = (typeof MarketIndexSnapshotScalarFieldEnum)[keyof typeof MarketIndexSnapshotScalarFieldEnum]
 
 
 export const SortOrder = {

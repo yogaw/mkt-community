@@ -1,3 +1,4 @@
+import type { MarketIndexSnapshotDto } from "@/features/market-index/market-index-types";
 import type { UpcomingSessionDto } from "@/features/live-sessions/live-session-types";
 import type { VideoCardDto } from "@/features/videos/video-types";
 
@@ -42,6 +43,8 @@ export interface HomeFeedUpdate {
 }
 
 export interface HomeFeed {
+  /** Null until an admin posts the first one. */
+  marketIndex: MarketIndexSnapshotDto | null;
   featuredContent: FeaturedContent | null;
   upcomingSession: UpcomingSession | null;
   latestVideos: HomeFeedVideo[];

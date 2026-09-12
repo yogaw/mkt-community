@@ -10,6 +10,7 @@ import {
 import { hashPassword } from "../src/lib/auth/password";
 import { seedStocks } from "./seed-stocks";
 import { seedSignals, seedSignalWatchlist } from "./seed-signals";
+import { seedMarketIndex } from "./seed-market-index";
 import { seedNewsSections } from "./seed-news-sections";
 import { seedDiscussion } from "./seed-discussion";
 
@@ -303,6 +304,7 @@ async function main(): Promise<void> {
   await seedStocks();
   await seedSignals();
   await seedSignalWatchlist();
+  await seedMarketIndex();
   await seedNewsSections();
   await seedDiscussion();
 
