@@ -1,4 +1,5 @@
 import type { MarketIndexSnapshotDto } from "@/features/market-index/market-index-types";
+import type { SignalRowDto } from "@/features/signals/signal-types";
 import type { UpcomingSessionDto } from "@/features/live-sessions/live-session-types";
 import type { VideoCardDto } from "@/features/videos/video-types";
 
@@ -45,6 +46,8 @@ export interface HomeFeedUpdate {
 export interface HomeFeed {
   /** Null until an admin posts the first one. */
   marketIndex: MarketIndexSnapshotDto | null;
+  /** The newest open signals, which is what Stocks in Focus shows. */
+  focusSignals: SignalRowDto[];
   featuredContent: FeaturedContent | null;
   upcomingSession: UpcomingSession | null;
   latestVideos: HomeFeedVideo[];

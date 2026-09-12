@@ -1,5 +1,5 @@
 // Placeholder market data for the dashboard sections that are not yet backed
-// by real data. The index snapshot has moved to the database — see
+// by real data. Stocks in Focus has moved to the signals themselves. The index snapshot has moved to the database — see
 // features/market-index. Everything below is still illustrative only.
 
 export interface MarketInsight {
@@ -7,16 +7,6 @@ export interface MarketInsight {
   topic: string;
   statement: string;
   tickers: string[];
-  href: string;
-}
-
-export interface FocusStock {
-  ticker: string;
-  company: string;
-  price: number;
-  changePercent: number;
-  thesis: string;
-  keyLevel: number | null;
   href: string;
 }
 
@@ -51,45 +41,6 @@ export const todaysInsights: MarketInsight[] = [
     statement: "Nickel prices remain an important catalyst for metal stocks.",
     tickers: ["ANTM", "INCO", "MDKA"],
     href: "/updates",
-  },
-];
-
-export const stocksInFocus: FocusStock[] = [
-  {
-    ticker: "BBCA",
-    company: "Bank Central Asia",
-    price: 9850,
-    changePercent: 1.24,
-    thesis: "Accumulation remains visible around large-cap banking stocks.",
-    keyLevel: 9700,
-    href: "/discussion",
-  },
-  {
-    ticker: "ANTM",
-    company: "Aneka Tambang",
-    price: 2140,
-    changePercent: 3.12,
-    thesis: "Momentum remains supported by commodity sentiment.",
-    keyLevel: 2050,
-    href: "/discussion",
-  },
-  {
-    ticker: "BMRI",
-    company: "Bank Mandiri",
-    price: 5425,
-    changePercent: 0.93,
-    thesis: "Valuation still trails peers while loan growth stays solid.",
-    keyLevel: 5300,
-    href: "/discussion",
-  },
-  {
-    ticker: "TLKM",
-    company: "Telkom Indonesia",
-    price: 2980,
-    changePercent: -0.67,
-    thesis: "Defensive positioning continues ahead of policy decisions.",
-    keyLevel: 2900,
-    href: "/discussion",
   },
 ];
 

@@ -119,7 +119,7 @@ export function HomeDashboard() {
 
           <WhatMattersToday />
 
-          <StocksInFocus />
+          <StocksInFocus signals={feed.focusSignals} />
 
           <SectorPulse />
 
