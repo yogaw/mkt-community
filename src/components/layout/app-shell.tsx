@@ -11,10 +11,11 @@ import { cn } from "@/lib/cn";
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/signals", label: "Signals" },
+  { href: "/stock-analysis", label: "Stock Analysis" },
+  { href: "/market-data", label: "Market Data" },
   { href: "/discussion", label: "Discussion" },
   { href: "/videos", label: "Videos" },
   { href: "/news", label: "News" },
-  { href: "/market-data", label: "Market Data" },
   { href: "/profile", label: "Profile" },
 ];
 
@@ -22,6 +23,7 @@ const pageTitleRules: Array<{ prefix: string; title: string }> = [
   { prefix: "/videos", title: "Videos" },
   { prefix: "/updates", title: "Updates" },
   { prefix: "/signals", title: "Signals" },
+  { prefix: "/stock-analysis", title: "Stock Analysis" },
   { prefix: "/discussion", title: "Discussion" },
   { prefix: "/news", title: "News" },
   { prefix: "/market-data", title: "Market Data" },
