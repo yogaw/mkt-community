@@ -1,69 +1,100 @@
 # Discussion board
 
-`/discussion`. One page: a row of category cards, the thread list, and a rail
-carrying the house rules and the top contributors.
+A curated research board, not an open forum. **Only admins open a discussion**;
+members comment, reply, like and follow.
 
-## Categories
+## Routes
 
-Five, fixed, from the `DiscussionCategoryKind` enum: Market Outlook, Stock
-Discussion, Macro Economy, Sector Analysis, Strategy & Psychology.
+| Route | What it is |
+| --- | --- |
+| `/discussion` | The board. Search, category and sort live in the query string. |
+| `/discussion/[id]` | One thread, its comments and its related threads. |
+| `/discussion/new` | The admin editor. |
+| `/discussion/[id]/edit` | The same editor, loaded with an existing thread. |
+| `/discussion/guidelines` | The long form of the sidebar rules card. |
 
-The cards are built from the enum rather than from what happens to be in the
-table, so an empty room still shows as a room. Selecting a card filters the
-list; selecting it again clears the filter, which is why there is no separate
-"All" control competing with the five.
+`[id]` resolves an id **or** a slug, so links can move to readable URLs later
+without a data migration. `toSlug` refuses `new`, `edit`, `guidelines` and
+`contributors` so a thread cannot shadow a page.
 
-Each category owns one of the theme's categorical colours, reused by the card,
-the chip on a thread row and the row's thumbnail, so a reader learns a colour
-once. The thumbnails are the category marks rather than photographs: the design
-they come from used stock imagery there, which would mean shipping pictures
-nobody chose for the thread or building an upload path the board has not asked
-for.
+## The permission rule
+
+`POST /api/v1/discussions` is behind `requireAdmin`, and the service re-checks
+`viewer.isAdmin` before the write — hiding the button is the courtesy, the 403
+is the rule. Verified against the running app:
+
+| Caller | POST /api/v1/discussions | PATCH | DELETE |
+| --- | --- | --- | --- |
+| anonymous | 401 | 401 | 401 |
+| member | **403** | **403** | **403** |
+| admin | 201 | 200 | 200 |
+
+Drafts are admin-only everywhere: absent from a member's listing, 404 on direct
+access, and 404 when commenting.
+
+Members may delete their own comment; admins may delete any. Hiding a comment
+keeps the row — a reply chain would otherwise lose its middle — and withholds
+only the text, which admins still see.
+
+## Comment depth
+
+One level. `resolveParent` hangs a reply-to-a-reply off the same parent as the
+comment it answers, so a thread cannot indent itself into a column two words
+wide. This is enforced server-side, not trusted from the client.
+
+## Content
+
+`discussion-content.ts` parses a small markdown subset — headings, bullet and
+numbered lists, quotes, images, `**bold**`, `*italic*`, `[links](…)` and
+`$TICKER` — into typed blocks that render as React elements. No
+`dangerouslySetInnerHTML` anywhere on the path, so a body can never inject
+markup whoever wrote it, and `isSafeHref` keeps `javascript:` and `data:` out of
+links: "trusted author" is not a reason to let a compromised admin session
+become script execution in every reader's browser.
+
+A full markdown library was not worth several hundred kilobytes plus an HTML
+sanitiser for six constructs. The editor writes the same subset through a
+toolbar, so what is stored is plain text all the way to the database.
 
 ## Views
 
-`view_count` counts opens, not unique readers — the schema says so out loud so
-nothing comes to depend on it being exact. It is incremented by
-`GET /api/v1/discussions/[id]`, which is the thing a view is.
+`view_count` counts opens, not unique readers. The increment is **raw SQL**
+because `updatedAt` drives the "Recently Updated" sort and Prisma's `@updatedAt`
+fires on every `update()` — passing `updatedAt: undefined` does not opt out.
+Measured before the fix: opening an old thread floated it above genuinely active
+ones. The counter is also fire-and-forget; a broken counter must not cost the
+reader the thread they asked for.
 
-**The increment is raw SQL on purpose.** `updatedAt` drives the "recently
-active" sort, and Prisma's `@updatedAt` fires on every `update()` the client
-makes; passing `updatedAt: undefined` does not opt out. Measured before the
-fix: opening an old thread floated it above genuinely active ones. Moving one
-column and leaving the other alone needs SQL.
+## Ranking
 
-The counter is also fire-and-forget. A failure there must not cost the reader
-the thread they asked for, so the read returns either way and the figure shown
-is the pre-read one.
+Top Contributors ranks by **comments written**. On a board where only admins
+start threads, comments are the whole of member participation, so they are the
+only honest thing to rank by. No points, no badges, no levels.
 
-## Top contributors
+## What is deliberately absent
 
-Ranked by **replies written**, not threads started. Someone who answers other
-people's questions is holding the board up; someone who only posts their own is
-not, and counting threads would rank them the same.
+- **Notifications.** The app has none. Follow state is stored and surfaced, and
+  `PUT/DELETE /api/v1/discussions/[id]/follow` is the boundary a future system
+  would read — not a parallel one built alongside it.
+- **Ticker links.** There is no stock detail route yet, so `TickerBadge` renders
+  a badge. When that route exists it is the one component to change.
+- **Per-user unread state.** Nothing tracks what a member has opened. The feed's
+  "New" badge marks threads published in the last 72 hours and is named for what
+  it actually is.
+- **Reposting, quoting, follower graphs.** They turn a research board into a
+  feed.
 
-## One request, not two
+## Tags and tickers
 
-`GET /api/v1/discussions` returns the thread page *and* the overview — the
-category counts and the contributor ranking. The board renders them together,
-and two round trips would let the counts disagree with the rows beneath them.
-
-## Community rules
-
-Static copy in `community-rules.tsx`. They change rarely, and a rule that can be
-edited without anyone noticing is not much of a rule. "Read full guidelines"
-opens the pinned house-rules thread.
-
-**One rule from the design is deliberately not shipped.** The mockup listed
-"Only discussions started by admin". Any member can start a thread today, and
-`POST /api/v1/discussions` allows it, so printing that rule would have stated
-something the app does not do. Enforcing it instead would disable the board's
-main member action off the back of a line of mockup copy. If admin-only threads
-are wanted, `POST /api/v1/discussions` needs `requireAdmin` and the rule goes
-back in the list.
+`String[]` columns, not join tables — matching `Signal.keyCatalysts` and
+`Ebook.tickers`, which the schema already justifies as "display-only text, so
+kept inline rather than in its own table". Neither has an attribute of its own
+or an independent lifecycle. Search matches them with `has`, so a search for
+"ADRO" or "Commodities" finds the thread that is about it even when the word
+never appears in the prose.
 
 ## Seeding
 
-`npm run seed:discussion` reseeds only the board — ten threads across the five
-categories, eighteen replies, and seeded view counts. Replies are rebuilt each
-run so they never accumulate.
+`npm run seed:discussion` reseeds the board: seven admin-authored threads across
+the five categories, twenty comments including nested replies, plus reactions
+and a follow so those states are exercised rather than only written.

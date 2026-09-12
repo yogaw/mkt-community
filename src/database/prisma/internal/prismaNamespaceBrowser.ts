@@ -65,6 +65,9 @@ export const ModelName = {
   CalendarEvent: 'CalendarEvent',
   DiscussionThread: 'DiscussionThread',
   DiscussionReply: 'DiscussionReply',
+  DiscussionReaction: 'DiscussionReaction',
+  CommentReaction: 'CommentReaction',
+  DiscussionFollow: 'DiscussionFollow',
   BrokerSummary: 'BrokerSummary',
   StockSummary: 'StockSummary',
   IndexSummary: 'IndexSummary',
@@ -283,12 +286,20 @@ export const DiscussionThreadScalarFieldEnum = {
   id: 'id',
   authorId: 'authorId',
   title: 'title',
+  slug: 'slug',
+  excerpt: 'excerpt',
   body: 'body',
   category: 'category',
-  ticker: 'ticker',
+  status: 'status',
+  tags: 'tags',
+  tickers: 'tickers',
+  thumbnailUrl: 'thumbnailUrl',
   viewCount: 'viewCount',
   isPinned: 'isPinned',
+  isFeatured: 'isFeatured',
   isLocked: 'isLocked',
+  commentsEnabled: 'commentsEnabled',
+  publishedAt: 'publishedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -301,13 +312,47 @@ export const DiscussionReplyScalarFieldEnum = {
   id: 'id',
   threadId: 'threadId',
   authorId: 'authorId',
+  parentId: 'parentId',
   body: 'body',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
 } as const
 
 export type DiscussionReplyScalarFieldEnum = (typeof DiscussionReplyScalarFieldEnum)[keyof typeof DiscussionReplyScalarFieldEnum]
+
+
+export const DiscussionReactionScalarFieldEnum = {
+  id: 'id',
+  threadId: 'threadId',
+  userId: 'userId',
+  type: 'type',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscussionReactionScalarFieldEnum = (typeof DiscussionReactionScalarFieldEnum)[keyof typeof DiscussionReactionScalarFieldEnum]
+
+
+export const CommentReactionScalarFieldEnum = {
+  id: 'id',
+  replyId: 'replyId',
+  userId: 'userId',
+  type: 'type',
+  createdAt: 'createdAt'
+} as const
+
+export type CommentReactionScalarFieldEnum = (typeof CommentReactionScalarFieldEnum)[keyof typeof CommentReactionScalarFieldEnum]
+
+
+export const DiscussionFollowScalarFieldEnum = {
+  id: 'id',
+  threadId: 'threadId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscussionFollowScalarFieldEnum = (typeof DiscussionFollowScalarFieldEnum)[keyof typeof DiscussionFollowScalarFieldEnum]
 
 
 export const BrokerSummaryScalarFieldEnum = {

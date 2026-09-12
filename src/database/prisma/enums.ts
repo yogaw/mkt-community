@@ -129,6 +129,30 @@ export const DiscussionCategoryKind = {
 export type DiscussionCategoryKind = (typeof DiscussionCategoryKind)[keyof typeof DiscussionCategoryKind]
 
 
+export const DiscussionStatusKind = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type DiscussionStatusKind = (typeof DiscussionStatusKind)[keyof typeof DiscussionStatusKind]
+
+
+export const CommentStatusKind = {
+  VISIBLE: 'VISIBLE',
+  HIDDEN: 'HIDDEN'
+} as const
+
+export type CommentStatusKind = (typeof CommentStatusKind)[keyof typeof CommentStatusKind]
+
+
+export const ReactionKind = {
+  LIKE: 'LIKE'
+} as const
+
+export type ReactionKind = (typeof ReactionKind)[keyof typeof ReactionKind]
+
+
 export const EbookTagKind = {
   RESEARCH_REPORT: 'RESEARCH_REPORT',
   ARTICLE: 'ARTICLE'

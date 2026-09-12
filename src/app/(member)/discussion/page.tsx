@@ -1,11 +1,18 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { DiscussionBoard } from "@/features/discussion/components/discussion-board";
+import { DiscussionPage } from "@/features/discussion/components/discussion-page";
 
 export const metadata: Metadata = {
-  title: "Discussion — Piranha",
-  description: "Member discussion threads on IDX stocks and the market.",
+  title: "Discussions — Piranha",
+  description: "Curated conversations to help you become a better investor.",
 };
 
-export default function DiscussionPage() {
-  return <DiscussionBoard />;
+export default function DiscussionIndexPage() {
+  // The board reads its filters from the query string, so it needs a Suspense
+  // boundary: useSearchParams opts the subtree out of static prerendering.
+  return (
+    <Suspense>
+      <DiscussionPage />
+    </Suspense>
+  );
 }

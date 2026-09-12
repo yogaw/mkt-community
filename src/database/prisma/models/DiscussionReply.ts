@@ -14,7 +14,9 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model DiscussionReply
- * 
+ * A comment, or a reply to one. parentId is at most one level deep — the
+ * service flattens anything deeper onto its grandparent, because a finance
+ * thread indented five times stops being readable.
  */
 export type DiscussionReplyModel = runtime.Types.Result.DefaultSelection<Prisma.$DiscussionReplyPayload>
 
@@ -28,7 +30,9 @@ export type DiscussionReplyMinAggregateOutputType = {
   id: string | null
   threadId: string | null
   authorId: string | null
+  parentId: string | null
   body: string | null
+  status: $Enums.CommentStatusKind | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -38,7 +42,9 @@ export type DiscussionReplyMaxAggregateOutputType = {
   id: string | null
   threadId: string | null
   authorId: string | null
+  parentId: string | null
   body: string | null
+  status: $Enums.CommentStatusKind | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -48,7 +54,9 @@ export type DiscussionReplyCountAggregateOutputType = {
   id: number
   threadId: number
   authorId: number
+  parentId: number
   body: number
+  status: number
   createdAt: number
   updatedAt: number
   deletedAt: number
@@ -60,7 +68,9 @@ export type DiscussionReplyMinAggregateInputType = {
   id?: true
   threadId?: true
   authorId?: true
+  parentId?: true
   body?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -70,7 +80,9 @@ export type DiscussionReplyMaxAggregateInputType = {
   id?: true
   threadId?: true
   authorId?: true
+  parentId?: true
   body?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -80,7 +92,9 @@ export type DiscussionReplyCountAggregateInputType = {
   id?: true
   threadId?: true
   authorId?: true
+  parentId?: true
   body?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -163,7 +177,9 @@ export type DiscussionReplyGroupByOutputType = {
   id: string
   threadId: string
   authorId: string
+  parentId: string | null
   body: string
+  status: $Enums.CommentStatusKind
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
@@ -194,24 +210,34 @@ export type DiscussionReplyWhereInput = {
   id?: Prisma.StringFilter<"DiscussionReply"> | string
   threadId?: Prisma.StringFilter<"DiscussionReply"> | string
   authorId?: Prisma.StringFilter<"DiscussionReply"> | string
+  parentId?: Prisma.StringNullableFilter<"DiscussionReply"> | string | null
   body?: Prisma.StringFilter<"DiscussionReply"> | string
+  status?: Prisma.EnumCommentStatusKindFilter<"DiscussionReply"> | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFilter<"DiscussionReply"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DiscussionReply"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"DiscussionReply"> | Date | string | null
   thread?: Prisma.XOR<Prisma.DiscussionThreadScalarRelationFilter, Prisma.DiscussionThreadWhereInput>
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  parent?: Prisma.XOR<Prisma.DiscussionReplyNullableScalarRelationFilter, Prisma.DiscussionReplyWhereInput> | null
+  child?: Prisma.DiscussionReplyListRelationFilter
+  reaction?: Prisma.CommentReactionListRelationFilter
 }
 
 export type DiscussionReplyOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   threadId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   body?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   thread?: Prisma.DiscussionThreadOrderByWithRelationInput
   author?: Prisma.UserOrderByWithRelationInput
+  parent?: Prisma.DiscussionReplyOrderByWithRelationInput
+  child?: Prisma.DiscussionReplyOrderByRelationAggregateInput
+  reaction?: Prisma.CommentReactionOrderByRelationAggregateInput
 }
 
 export type DiscussionReplyWhereUniqueInput = Prisma.AtLeast<{
@@ -221,19 +247,26 @@ export type DiscussionReplyWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.DiscussionReplyWhereInput | Prisma.DiscussionReplyWhereInput[]
   threadId?: Prisma.StringFilter<"DiscussionReply"> | string
   authorId?: Prisma.StringFilter<"DiscussionReply"> | string
+  parentId?: Prisma.StringNullableFilter<"DiscussionReply"> | string | null
   body?: Prisma.StringFilter<"DiscussionReply"> | string
+  status?: Prisma.EnumCommentStatusKindFilter<"DiscussionReply"> | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFilter<"DiscussionReply"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DiscussionReply"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"DiscussionReply"> | Date | string | null
   thread?: Prisma.XOR<Prisma.DiscussionThreadScalarRelationFilter, Prisma.DiscussionThreadWhereInput>
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  parent?: Prisma.XOR<Prisma.DiscussionReplyNullableScalarRelationFilter, Prisma.DiscussionReplyWhereInput> | null
+  child?: Prisma.DiscussionReplyListRelationFilter
+  reaction?: Prisma.CommentReactionListRelationFilter
 }, "id">
 
 export type DiscussionReplyOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   threadId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   body?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -249,7 +282,9 @@ export type DiscussionReplyScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"DiscussionReply"> | string
   threadId?: Prisma.StringWithAggregatesFilter<"DiscussionReply"> | string
   authorId?: Prisma.StringWithAggregatesFilter<"DiscussionReply"> | string
+  parentId?: Prisma.StringNullableWithAggregatesFilter<"DiscussionReply"> | string | null
   body?: Prisma.StringWithAggregatesFilter<"DiscussionReply"> | string
+  status?: Prisma.EnumCommentStatusKindWithAggregatesFilter<"DiscussionReply"> | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DiscussionReply"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"DiscussionReply"> | Date | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DiscussionReply"> | Date | string | null
@@ -258,48 +293,66 @@ export type DiscussionReplyScalarWhereWithAggregatesInput = {
 export type DiscussionReplyCreateInput = {
   id?: string
   body: string
+  status?: $Enums.CommentStatusKind
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   thread: Prisma.DiscussionThreadCreateNestedOneWithoutReplyInput
   author: Prisma.UserCreateNestedOneWithoutDiscussionReplyInput
+  parent?: Prisma.DiscussionReplyCreateNestedOneWithoutChildInput
+  child?: Prisma.DiscussionReplyCreateNestedManyWithoutParentInput
+  reaction?: Prisma.CommentReactionCreateNestedManyWithoutReplyInput
 }
 
 export type DiscussionReplyUncheckedCreateInput = {
   id?: string
   threadId: string
   authorId: string
+  parentId?: string | null
   body: string
+  status?: $Enums.CommentStatusKind
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  child?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutParentInput
+  reaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutReplyInput
 }
 
 export type DiscussionReplyUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   thread?: Prisma.DiscussionThreadUpdateOneRequiredWithoutReplyNestedInput
   author?: Prisma.UserUpdateOneRequiredWithoutDiscussionReplyNestedInput
+  parent?: Prisma.DiscussionReplyUpdateOneWithoutChildNestedInput
+  child?: Prisma.DiscussionReplyUpdateManyWithoutParentNestedInput
+  reaction?: Prisma.CommentReactionUpdateManyWithoutReplyNestedInput
 }
 
 export type DiscussionReplyUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   threadId?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  child?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutParentNestedInput
+  reaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutReplyNestedInput
 }
 
 export type DiscussionReplyCreateManyInput = {
   id?: string
   threadId: string
   authorId: string
+  parentId?: string | null
   body: string
+  status?: $Enums.CommentStatusKind
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -308,6 +361,7 @@ export type DiscussionReplyCreateManyInput = {
 export type DiscussionReplyUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -317,7 +371,9 @@ export type DiscussionReplyUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   threadId?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -333,11 +389,18 @@ export type DiscussionReplyOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type DiscussionReplyNullableScalarRelationFilter = {
+  is?: Prisma.DiscussionReplyWhereInput | null
+  isNot?: Prisma.DiscussionReplyWhereInput | null
+}
+
 export type DiscussionReplyCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   threadId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -347,7 +410,9 @@ export type DiscussionReplyMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   threadId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -357,10 +422,17 @@ export type DiscussionReplyMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   threadId?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
+}
+
+export type DiscussionReplyScalarRelationFilter = {
+  is?: Prisma.DiscussionReplyWhereInput
+  isNot?: Prisma.DiscussionReplyWhereInput
 }
 
 export type DiscussionReplyCreateNestedManyWithoutAuthorInput = {
@@ -447,22 +519,106 @@ export type DiscussionReplyUncheckedUpdateManyWithoutThreadNestedInput = {
   deleteMany?: Prisma.DiscussionReplyScalarWhereInput | Prisma.DiscussionReplyScalarWhereInput[]
 }
 
+export type DiscussionReplyCreateNestedOneWithoutChildInput = {
+  create?: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutChildInput, Prisma.DiscussionReplyUncheckedCreateWithoutChildInput>
+  connectOrCreate?: Prisma.DiscussionReplyCreateOrConnectWithoutChildInput
+  connect?: Prisma.DiscussionReplyWhereUniqueInput
+}
+
+export type DiscussionReplyCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutParentInput, Prisma.DiscussionReplyUncheckedCreateWithoutParentInput> | Prisma.DiscussionReplyCreateWithoutParentInput[] | Prisma.DiscussionReplyUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.DiscussionReplyCreateOrConnectWithoutParentInput | Prisma.DiscussionReplyCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.DiscussionReplyCreateManyParentInputEnvelope
+  connect?: Prisma.DiscussionReplyWhereUniqueInput | Prisma.DiscussionReplyWhereUniqueInput[]
+}
+
+export type DiscussionReplyUncheckedCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutParentInput, Prisma.DiscussionReplyUncheckedCreateWithoutParentInput> | Prisma.DiscussionReplyCreateWithoutParentInput[] | Prisma.DiscussionReplyUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.DiscussionReplyCreateOrConnectWithoutParentInput | Prisma.DiscussionReplyCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.DiscussionReplyCreateManyParentInputEnvelope
+  connect?: Prisma.DiscussionReplyWhereUniqueInput | Prisma.DiscussionReplyWhereUniqueInput[]
+}
+
+export type EnumCommentStatusKindFieldUpdateOperationsInput = {
+  set?: $Enums.CommentStatusKind
+}
+
+export type DiscussionReplyUpdateOneWithoutChildNestedInput = {
+  create?: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutChildInput, Prisma.DiscussionReplyUncheckedCreateWithoutChildInput>
+  connectOrCreate?: Prisma.DiscussionReplyCreateOrConnectWithoutChildInput
+  upsert?: Prisma.DiscussionReplyUpsertWithoutChildInput
+  disconnect?: Prisma.DiscussionReplyWhereInput | boolean
+  delete?: Prisma.DiscussionReplyWhereInput | boolean
+  connect?: Prisma.DiscussionReplyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DiscussionReplyUpdateToOneWithWhereWithoutChildInput, Prisma.DiscussionReplyUpdateWithoutChildInput>, Prisma.DiscussionReplyUncheckedUpdateWithoutChildInput>
+}
+
+export type DiscussionReplyUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutParentInput, Prisma.DiscussionReplyUncheckedCreateWithoutParentInput> | Prisma.DiscussionReplyCreateWithoutParentInput[] | Prisma.DiscussionReplyUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.DiscussionReplyCreateOrConnectWithoutParentInput | Prisma.DiscussionReplyCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.DiscussionReplyUpsertWithWhereUniqueWithoutParentInput | Prisma.DiscussionReplyUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.DiscussionReplyCreateManyParentInputEnvelope
+  set?: Prisma.DiscussionReplyWhereUniqueInput | Prisma.DiscussionReplyWhereUniqueInput[]
+  disconnect?: Prisma.DiscussionReplyWhereUniqueInput | Prisma.DiscussionReplyWhereUniqueInput[]
+  delete?: Prisma.DiscussionReplyWhereUniqueInput | Prisma.DiscussionReplyWhereUniqueInput[]
+  connect?: Prisma.DiscussionReplyWhereUniqueInput | Prisma.DiscussionReplyWhereUniqueInput[]
+  update?: Prisma.DiscussionReplyUpdateWithWhereUniqueWithoutParentInput | Prisma.DiscussionReplyUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.DiscussionReplyUpdateManyWithWhereWithoutParentInput | Prisma.DiscussionReplyUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.DiscussionReplyScalarWhereInput | Prisma.DiscussionReplyScalarWhereInput[]
+}
+
+export type DiscussionReplyUncheckedUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutParentInput, Prisma.DiscussionReplyUncheckedCreateWithoutParentInput> | Prisma.DiscussionReplyCreateWithoutParentInput[] | Prisma.DiscussionReplyUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.DiscussionReplyCreateOrConnectWithoutParentInput | Prisma.DiscussionReplyCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.DiscussionReplyUpsertWithWhereUniqueWithoutParentInput | Prisma.DiscussionReplyUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.DiscussionReplyCreateManyParentInputEnvelope
+  set?: Prisma.DiscussionReplyWhereUniqueInput | Prisma.DiscussionReplyWhereUniqueInput[]
+  disconnect?: Prisma.DiscussionReplyWhereUniqueInput | Prisma.DiscussionReplyWhereUniqueInput[]
+  delete?: Prisma.DiscussionReplyWhereUniqueInput | Prisma.DiscussionReplyWhereUniqueInput[]
+  connect?: Prisma.DiscussionReplyWhereUniqueInput | Prisma.DiscussionReplyWhereUniqueInput[]
+  update?: Prisma.DiscussionReplyUpdateWithWhereUniqueWithoutParentInput | Prisma.DiscussionReplyUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.DiscussionReplyUpdateManyWithWhereWithoutParentInput | Prisma.DiscussionReplyUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.DiscussionReplyScalarWhereInput | Prisma.DiscussionReplyScalarWhereInput[]
+}
+
+export type DiscussionReplyCreateNestedOneWithoutReactionInput = {
+  create?: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutReactionInput, Prisma.DiscussionReplyUncheckedCreateWithoutReactionInput>
+  connectOrCreate?: Prisma.DiscussionReplyCreateOrConnectWithoutReactionInput
+  connect?: Prisma.DiscussionReplyWhereUniqueInput
+}
+
+export type DiscussionReplyUpdateOneRequiredWithoutReactionNestedInput = {
+  create?: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutReactionInput, Prisma.DiscussionReplyUncheckedCreateWithoutReactionInput>
+  connectOrCreate?: Prisma.DiscussionReplyCreateOrConnectWithoutReactionInput
+  upsert?: Prisma.DiscussionReplyUpsertWithoutReactionInput
+  connect?: Prisma.DiscussionReplyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DiscussionReplyUpdateToOneWithWhereWithoutReactionInput, Prisma.DiscussionReplyUpdateWithoutReactionInput>, Prisma.DiscussionReplyUncheckedUpdateWithoutReactionInput>
+}
+
 export type DiscussionReplyCreateWithoutAuthorInput = {
   id?: string
   body: string
+  status?: $Enums.CommentStatusKind
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   thread: Prisma.DiscussionThreadCreateNestedOneWithoutReplyInput
+  parent?: Prisma.DiscussionReplyCreateNestedOneWithoutChildInput
+  child?: Prisma.DiscussionReplyCreateNestedManyWithoutParentInput
+  reaction?: Prisma.CommentReactionCreateNestedManyWithoutReplyInput
 }
 
 export type DiscussionReplyUncheckedCreateWithoutAuthorInput = {
   id?: string
   threadId: string
+  parentId?: string | null
   body: string
+  status?: $Enums.CommentStatusKind
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  child?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutParentInput
+  reaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutReplyInput
 }
 
 export type DiscussionReplyCreateOrConnectWithoutAuthorInput = {
@@ -498,7 +654,9 @@ export type DiscussionReplyScalarWhereInput = {
   id?: Prisma.StringFilter<"DiscussionReply"> | string
   threadId?: Prisma.StringFilter<"DiscussionReply"> | string
   authorId?: Prisma.StringFilter<"DiscussionReply"> | string
+  parentId?: Prisma.StringNullableFilter<"DiscussionReply"> | string | null
   body?: Prisma.StringFilter<"DiscussionReply"> | string
+  status?: Prisma.EnumCommentStatusKindFilter<"DiscussionReply"> | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFilter<"DiscussionReply"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DiscussionReply"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"DiscussionReply"> | Date | string | null
@@ -507,19 +665,27 @@ export type DiscussionReplyScalarWhereInput = {
 export type DiscussionReplyCreateWithoutThreadInput = {
   id?: string
   body: string
+  status?: $Enums.CommentStatusKind
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   author: Prisma.UserCreateNestedOneWithoutDiscussionReplyInput
+  parent?: Prisma.DiscussionReplyCreateNestedOneWithoutChildInput
+  child?: Prisma.DiscussionReplyCreateNestedManyWithoutParentInput
+  reaction?: Prisma.CommentReactionCreateNestedManyWithoutReplyInput
 }
 
 export type DiscussionReplyUncheckedCreateWithoutThreadInput = {
   id?: string
   authorId: string
+  parentId?: string | null
   body: string
+  status?: $Enums.CommentStatusKind
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  child?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutParentInput
+  reaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutReplyInput
 }
 
 export type DiscussionReplyCreateOrConnectWithoutThreadInput = {
@@ -548,10 +714,200 @@ export type DiscussionReplyUpdateManyWithWhereWithoutThreadInput = {
   data: Prisma.XOR<Prisma.DiscussionReplyUpdateManyMutationInput, Prisma.DiscussionReplyUncheckedUpdateManyWithoutThreadInput>
 }
 
+export type DiscussionReplyCreateWithoutChildInput = {
+  id?: string
+  body: string
+  status?: $Enums.CommentStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  thread: Prisma.DiscussionThreadCreateNestedOneWithoutReplyInput
+  author: Prisma.UserCreateNestedOneWithoutDiscussionReplyInput
+  parent?: Prisma.DiscussionReplyCreateNestedOneWithoutChildInput
+  reaction?: Prisma.CommentReactionCreateNestedManyWithoutReplyInput
+}
+
+export type DiscussionReplyUncheckedCreateWithoutChildInput = {
+  id?: string
+  threadId: string
+  authorId: string
+  parentId?: string | null
+  body: string
+  status?: $Enums.CommentStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  reaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutReplyInput
+}
+
+export type DiscussionReplyCreateOrConnectWithoutChildInput = {
+  where: Prisma.DiscussionReplyWhereUniqueInput
+  create: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutChildInput, Prisma.DiscussionReplyUncheckedCreateWithoutChildInput>
+}
+
+export type DiscussionReplyCreateWithoutParentInput = {
+  id?: string
+  body: string
+  status?: $Enums.CommentStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  thread: Prisma.DiscussionThreadCreateNestedOneWithoutReplyInput
+  author: Prisma.UserCreateNestedOneWithoutDiscussionReplyInput
+  child?: Prisma.DiscussionReplyCreateNestedManyWithoutParentInput
+  reaction?: Prisma.CommentReactionCreateNestedManyWithoutReplyInput
+}
+
+export type DiscussionReplyUncheckedCreateWithoutParentInput = {
+  id?: string
+  threadId: string
+  authorId: string
+  body: string
+  status?: $Enums.CommentStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  child?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutParentInput
+  reaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutReplyInput
+}
+
+export type DiscussionReplyCreateOrConnectWithoutParentInput = {
+  where: Prisma.DiscussionReplyWhereUniqueInput
+  create: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutParentInput, Prisma.DiscussionReplyUncheckedCreateWithoutParentInput>
+}
+
+export type DiscussionReplyCreateManyParentInputEnvelope = {
+  data: Prisma.DiscussionReplyCreateManyParentInput | Prisma.DiscussionReplyCreateManyParentInput[]
+  skipDuplicates?: boolean
+}
+
+export type DiscussionReplyUpsertWithoutChildInput = {
+  update: Prisma.XOR<Prisma.DiscussionReplyUpdateWithoutChildInput, Prisma.DiscussionReplyUncheckedUpdateWithoutChildInput>
+  create: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutChildInput, Prisma.DiscussionReplyUncheckedCreateWithoutChildInput>
+  where?: Prisma.DiscussionReplyWhereInput
+}
+
+export type DiscussionReplyUpdateToOneWithWhereWithoutChildInput = {
+  where?: Prisma.DiscussionReplyWhereInput
+  data: Prisma.XOR<Prisma.DiscussionReplyUpdateWithoutChildInput, Prisma.DiscussionReplyUncheckedUpdateWithoutChildInput>
+}
+
+export type DiscussionReplyUpdateWithoutChildInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  thread?: Prisma.DiscussionThreadUpdateOneRequiredWithoutReplyNestedInput
+  author?: Prisma.UserUpdateOneRequiredWithoutDiscussionReplyNestedInput
+  parent?: Prisma.DiscussionReplyUpdateOneWithoutChildNestedInput
+  reaction?: Prisma.CommentReactionUpdateManyWithoutReplyNestedInput
+}
+
+export type DiscussionReplyUncheckedUpdateWithoutChildInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  threadId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutReplyNestedInput
+}
+
+export type DiscussionReplyUpsertWithWhereUniqueWithoutParentInput = {
+  where: Prisma.DiscussionReplyWhereUniqueInput
+  update: Prisma.XOR<Prisma.DiscussionReplyUpdateWithoutParentInput, Prisma.DiscussionReplyUncheckedUpdateWithoutParentInput>
+  create: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutParentInput, Prisma.DiscussionReplyUncheckedCreateWithoutParentInput>
+}
+
+export type DiscussionReplyUpdateWithWhereUniqueWithoutParentInput = {
+  where: Prisma.DiscussionReplyWhereUniqueInput
+  data: Prisma.XOR<Prisma.DiscussionReplyUpdateWithoutParentInput, Prisma.DiscussionReplyUncheckedUpdateWithoutParentInput>
+}
+
+export type DiscussionReplyUpdateManyWithWhereWithoutParentInput = {
+  where: Prisma.DiscussionReplyScalarWhereInput
+  data: Prisma.XOR<Prisma.DiscussionReplyUpdateManyMutationInput, Prisma.DiscussionReplyUncheckedUpdateManyWithoutParentInput>
+}
+
+export type DiscussionReplyCreateWithoutReactionInput = {
+  id?: string
+  body: string
+  status?: $Enums.CommentStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  thread: Prisma.DiscussionThreadCreateNestedOneWithoutReplyInput
+  author: Prisma.UserCreateNestedOneWithoutDiscussionReplyInput
+  parent?: Prisma.DiscussionReplyCreateNestedOneWithoutChildInput
+  child?: Prisma.DiscussionReplyCreateNestedManyWithoutParentInput
+}
+
+export type DiscussionReplyUncheckedCreateWithoutReactionInput = {
+  id?: string
+  threadId: string
+  authorId: string
+  parentId?: string | null
+  body: string
+  status?: $Enums.CommentStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  child?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutParentInput
+}
+
+export type DiscussionReplyCreateOrConnectWithoutReactionInput = {
+  where: Prisma.DiscussionReplyWhereUniqueInput
+  create: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutReactionInput, Prisma.DiscussionReplyUncheckedCreateWithoutReactionInput>
+}
+
+export type DiscussionReplyUpsertWithoutReactionInput = {
+  update: Prisma.XOR<Prisma.DiscussionReplyUpdateWithoutReactionInput, Prisma.DiscussionReplyUncheckedUpdateWithoutReactionInput>
+  create: Prisma.XOR<Prisma.DiscussionReplyCreateWithoutReactionInput, Prisma.DiscussionReplyUncheckedCreateWithoutReactionInput>
+  where?: Prisma.DiscussionReplyWhereInput
+}
+
+export type DiscussionReplyUpdateToOneWithWhereWithoutReactionInput = {
+  where?: Prisma.DiscussionReplyWhereInput
+  data: Prisma.XOR<Prisma.DiscussionReplyUpdateWithoutReactionInput, Prisma.DiscussionReplyUncheckedUpdateWithoutReactionInput>
+}
+
+export type DiscussionReplyUpdateWithoutReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  thread?: Prisma.DiscussionThreadUpdateOneRequiredWithoutReplyNestedInput
+  author?: Prisma.UserUpdateOneRequiredWithoutDiscussionReplyNestedInput
+  parent?: Prisma.DiscussionReplyUpdateOneWithoutChildNestedInput
+  child?: Prisma.DiscussionReplyUpdateManyWithoutParentNestedInput
+}
+
+export type DiscussionReplyUncheckedUpdateWithoutReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  threadId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  child?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutParentNestedInput
+}
+
 export type DiscussionReplyCreateManyAuthorInput = {
   id?: string
   threadId: string
+  parentId?: string | null
   body: string
+  status?: $Enums.CommentStatusKind
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -560,25 +916,35 @@ export type DiscussionReplyCreateManyAuthorInput = {
 export type DiscussionReplyUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   thread?: Prisma.DiscussionThreadUpdateOneRequiredWithoutReplyNestedInput
+  parent?: Prisma.DiscussionReplyUpdateOneWithoutChildNestedInput
+  child?: Prisma.DiscussionReplyUpdateManyWithoutParentNestedInput
+  reaction?: Prisma.CommentReactionUpdateManyWithoutReplyNestedInput
 }
 
 export type DiscussionReplyUncheckedUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   threadId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  child?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutParentNestedInput
+  reaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutReplyNestedInput
 }
 
 export type DiscussionReplyUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   threadId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -587,7 +953,9 @@ export type DiscussionReplyUncheckedUpdateManyWithoutAuthorInput = {
 export type DiscussionReplyCreateManyThreadInput = {
   id?: string
   authorId: string
+  parentId?: string | null
   body: string
+  status?: $Enums.CommentStatusKind
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -596,90 +964,206 @@ export type DiscussionReplyCreateManyThreadInput = {
 export type DiscussionReplyUpdateWithoutThreadInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   author?: Prisma.UserUpdateOneRequiredWithoutDiscussionReplyNestedInput
+  parent?: Prisma.DiscussionReplyUpdateOneWithoutChildNestedInput
+  child?: Prisma.DiscussionReplyUpdateManyWithoutParentNestedInput
+  reaction?: Prisma.CommentReactionUpdateManyWithoutReplyNestedInput
 }
 
 export type DiscussionReplyUncheckedUpdateWithoutThreadInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  child?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutParentNestedInput
+  reaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutReplyNestedInput
 }
 
 export type DiscussionReplyUncheckedUpdateManyWithoutThreadInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
+export type DiscussionReplyCreateManyParentInput = {
+  id?: string
+  threadId: string
+  authorId: string
+  body: string
+  status?: $Enums.CommentStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+}
+
+export type DiscussionReplyUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  thread?: Prisma.DiscussionThreadUpdateOneRequiredWithoutReplyNestedInput
+  author?: Prisma.UserUpdateOneRequiredWithoutDiscussionReplyNestedInput
+  child?: Prisma.DiscussionReplyUpdateManyWithoutParentNestedInput
+  reaction?: Prisma.CommentReactionUpdateManyWithoutReplyNestedInput
+}
+
+export type DiscussionReplyUncheckedUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  threadId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  child?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutParentNestedInput
+  reaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutReplyNestedInput
+}
+
+export type DiscussionReplyUncheckedUpdateManyWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  threadId?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumCommentStatusKindFieldUpdateOperationsInput | $Enums.CommentStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+
+/**
+ * Count Type DiscussionReplyCountOutputType
+ */
+
+export type DiscussionReplyCountOutputType = {
+  child: number
+  reaction: number
+}
+
+export type DiscussionReplyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  child?: boolean | DiscussionReplyCountOutputTypeCountChildArgs
+  reaction?: boolean | DiscussionReplyCountOutputTypeCountReactionArgs
+}
+
+/**
+ * DiscussionReplyCountOutputType without action
+ */
+export type DiscussionReplyCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionReplyCountOutputType
+   */
+  select?: Prisma.DiscussionReplyCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * DiscussionReplyCountOutputType without action
+ */
+export type DiscussionReplyCountOutputTypeCountChildArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionReplyWhereInput
+}
+
+/**
+ * DiscussionReplyCountOutputType without action
+ */
+export type DiscussionReplyCountOutputTypeCountReactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentReactionWhereInput
+}
 
 
 export type DiscussionReplySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   threadId?: boolean
   authorId?: boolean
+  parentId?: boolean
   body?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
   thread?: boolean | Prisma.DiscussionThreadDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
+  child?: boolean | Prisma.DiscussionReply$childArgs<ExtArgs>
+  reaction?: boolean | Prisma.DiscussionReply$reactionArgs<ExtArgs>
+  _count?: boolean | Prisma.DiscussionReplyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionReply"]>
 
 export type DiscussionReplySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   threadId?: boolean
   authorId?: boolean
+  parentId?: boolean
   body?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
   thread?: boolean | Prisma.DiscussionThreadDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
 }, ExtArgs["result"]["discussionReply"]>
 
 export type DiscussionReplySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   threadId?: boolean
   authorId?: boolean
+  parentId?: boolean
   body?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
   thread?: boolean | Prisma.DiscussionThreadDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
 }, ExtArgs["result"]["discussionReply"]>
 
 export type DiscussionReplySelectScalar = {
   id?: boolean
   threadId?: boolean
   authorId?: boolean
+  parentId?: boolean
   body?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
 }
 
-export type DiscussionReplyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "threadId" | "authorId" | "body" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["discussionReply"]>
+export type DiscussionReplyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "threadId" | "authorId" | "parentId" | "body" | "status" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["discussionReply"]>
 export type DiscussionReplyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   thread?: boolean | Prisma.DiscussionThreadDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
+  child?: boolean | Prisma.DiscussionReply$childArgs<ExtArgs>
+  reaction?: boolean | Prisma.DiscussionReply$reactionArgs<ExtArgs>
+  _count?: boolean | Prisma.DiscussionReplyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DiscussionReplyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   thread?: boolean | Prisma.DiscussionThreadDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
 }
 export type DiscussionReplyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   thread?: boolean | Prisma.DiscussionThreadDefaultArgs<ExtArgs>
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.DiscussionReply$parentArgs<ExtArgs>
 }
 
 export type $DiscussionReplyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -687,12 +1171,17 @@ export type $DiscussionReplyPayload<ExtArgs extends runtime.Types.Extensions.Int
   objects: {
     thread: Prisma.$DiscussionThreadPayload<ExtArgs>
     author: Prisma.$UserPayload<ExtArgs>
+    parent: Prisma.$DiscussionReplyPayload<ExtArgs> | null
+    child: Prisma.$DiscussionReplyPayload<ExtArgs>[]
+    reaction: Prisma.$CommentReactionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     threadId: string
     authorId: string
+    parentId: string | null
     body: string
+    status: $Enums.CommentStatusKind
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -1092,6 +1581,9 @@ export interface Prisma__DiscussionReplyClient<T, Null = never, ExtArgs extends 
   readonly [Symbol.toStringTag]: "PrismaPromise"
   thread<T extends Prisma.DiscussionThreadDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionThreadDefaultArgs<ExtArgs>>): Prisma.Prisma__DiscussionThreadClient<runtime.Types.Result.GetResult<Prisma.$DiscussionThreadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  parent<T extends Prisma.DiscussionReply$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionReply$parentArgs<ExtArgs>>): Prisma.Prisma__DiscussionReplyClient<runtime.Types.Result.GetResult<Prisma.$DiscussionReplyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  child<T extends Prisma.DiscussionReply$childArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionReply$childArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reaction<T extends Prisma.DiscussionReply$reactionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionReply$reactionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1124,7 +1616,9 @@ export interface DiscussionReplyFieldRefs {
   readonly id: Prisma.FieldRef<"DiscussionReply", 'String'>
   readonly threadId: Prisma.FieldRef<"DiscussionReply", 'String'>
   readonly authorId: Prisma.FieldRef<"DiscussionReply", 'String'>
+  readonly parentId: Prisma.FieldRef<"DiscussionReply", 'String'>
   readonly body: Prisma.FieldRef<"DiscussionReply", 'String'>
+  readonly status: Prisma.FieldRef<"DiscussionReply", 'CommentStatusKind'>
   readonly createdAt: Prisma.FieldRef<"DiscussionReply", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"DiscussionReply", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"DiscussionReply", 'DateTime'>
@@ -1526,6 +2020,73 @@ export type DiscussionReplyDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many DiscussionReplies to delete.
    */
   limit?: number
+}
+
+/**
+ * DiscussionReply.parent
+ */
+export type DiscussionReply$parentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionReply
+   */
+  select?: Prisma.DiscussionReplySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionReply
+   */
+  omit?: Prisma.DiscussionReplyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionReplyInclude<ExtArgs> | null
+  where?: Prisma.DiscussionReplyWhereInput
+}
+
+/**
+ * DiscussionReply.child
+ */
+export type DiscussionReply$childArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionReply
+   */
+  select?: Prisma.DiscussionReplySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionReply
+   */
+  omit?: Prisma.DiscussionReplyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionReplyInclude<ExtArgs> | null
+  where?: Prisma.DiscussionReplyWhereInput
+  orderBy?: Prisma.DiscussionReplyOrderByWithRelationInput | Prisma.DiscussionReplyOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionReplyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionReplyScalarFieldEnum | Prisma.DiscussionReplyScalarFieldEnum[]
+}
+
+/**
+ * DiscussionReply.reaction
+ */
+export type DiscussionReply$reactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommentReaction
+   */
+  select?: Prisma.CommentReactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CommentReaction
+   */
+  omit?: Prisma.CommentReactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentReactionInclude<ExtArgs> | null
+  where?: Prisma.CommentReactionWhereInput
+  orderBy?: Prisma.CommentReactionOrderByWithRelationInput | Prisma.CommentReactionOrderByWithRelationInput[]
+  cursor?: Prisma.CommentReactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentReactionScalarFieldEnum | Prisma.CommentReactionScalarFieldEnum[]
 }
 
 /**

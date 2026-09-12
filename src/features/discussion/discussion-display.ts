@@ -2,6 +2,7 @@ import {
   CATEGORY_BLURB,
   CATEGORY_LABEL,
   type DiscussionCategory,
+  type DiscussionStatus,
 } from "@/features/discussion/discussion-types";
 
 /**
@@ -17,9 +18,8 @@ export interface CategoryStyle {
   blurb: string;
   /** Fill and text for the tinted card and the thumbnail. */
   tint: string;
-  /** Text-only, for the chip on a thread row. */
+  /** The same pairing at chip scale. */
   chip: string;
-  ring: string;
 }
 
 export const CATEGORY_STYLE: Record<DiscussionCategory, CategoryStyle> = {
@@ -28,40 +28,41 @@ export const CATEGORY_STYLE: Record<DiscussionCategory, CategoryStyle> = {
     blurb: CATEGORY_BLURB.MARKET_OUTLOOK,
     tint: "bg-info/10 text-info",
     chip: "bg-info/10 text-info",
-    ring: "ring-info/40",
   },
   STOCK_DISCUSSION: {
     label: CATEGORY_LABEL.STOCK_DISCUSSION,
     blurb: CATEGORY_BLURB.STOCK_DISCUSSION,
     tint: "bg-accent/10 text-accent",
     chip: "bg-accent/10 text-accent",
-    ring: "ring-accent/40",
   },
   MACRO_ECONOMY: {
     label: CATEGORY_LABEL.MACRO_ECONOMY,
     blurb: CATEGORY_BLURB.MACRO_ECONOMY,
     tint: "bg-alt/10 text-alt",
     chip: "bg-alt/10 text-alt",
-    ring: "ring-alt/40",
   },
   SECTOR_ANALYSIS: {
     label: CATEGORY_LABEL.SECTOR_ANALYSIS,
     blurb: CATEGORY_BLURB.SECTOR_ANALYSIS,
     tint: "bg-warn/10 text-warn",
     chip: "bg-warn/10 text-warn",
-    ring: "ring-warn/40",
   },
   STRATEGY_PSYCHOLOGY: {
     label: CATEGORY_LABEL.STRATEGY_PSYCHOLOGY,
     blurb: CATEGORY_BLURB.STRATEGY_PSYCHOLOGY,
     tint: "bg-down/10 text-down",
     chip: "bg-down/10 text-down",
-    ring: "ring-down/40",
   },
 };
 
-/** "3.4K" under a thread, "412" above a thousand's worth of reading. */
-export function formatViews(count: number): string {
+export const STATUS_LABEL: Record<DiscussionStatus, string> = {
+  DRAFT: "Draft",
+  PUBLISHED: "Published",
+  ARCHIVED: "Archived",
+};
+
+/** "3.4K" under a thread, "412" below a thousand's worth of reading. */
+export function formatCount(count: number): string {
   if (count < 1000) {
     return String(count);
   }
@@ -74,4 +75,28 @@ export function formatViews(count: number): string {
 
 export function pluralize(count: number, singular: string, plural = `${singular}s`): string {
   return `${count} ${count === 1 ? singular : plural}`;
+}
+
+/**
+ * "16 Sep 2026, 09:12 WIB" — the market's own clock, stated.
+ *
+ * Assembled from parts rather than taken from a single locale: en-GB gives the
+ * day-first order this wants but abbreviates September as "Sept", which would
+ * sit next to the "Sep" that formatDate prints on the same page.
+ */
+export function formatJakartaDateTime(value: string): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZone: "Asia/Jakarta",
+  }).formatToParts(new Date(value));
+
+  const get = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value ?? "";
+
+  return `${get("day")} ${get("month")} ${get("year")}, ${get("hour")}:${get("minute")} WIB`;
 }

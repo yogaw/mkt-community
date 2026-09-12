@@ -217,6 +217,9 @@ export type UserWhereInput = {
   signalWatchlist?: Prisma.SignalWatchlistItemListRelationFilter
   discussionThread?: Prisma.DiscussionThreadListRelationFilter
   discussionReply?: Prisma.DiscussionReplyListRelationFilter
+  discussionReaction?: Prisma.DiscussionReactionListRelationFilter
+  commentReaction?: Prisma.CommentReactionListRelationFilter
+  discussionFollow?: Prisma.DiscussionFollowListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -232,6 +235,9 @@ export type UserOrderByWithRelationInput = {
   signalWatchlist?: Prisma.SignalWatchlistItemOrderByRelationAggregateInput
   discussionThread?: Prisma.DiscussionThreadOrderByRelationAggregateInput
   discussionReply?: Prisma.DiscussionReplyOrderByRelationAggregateInput
+  discussionReaction?: Prisma.DiscussionReactionOrderByRelationAggregateInput
+  commentReaction?: Prisma.CommentReactionOrderByRelationAggregateInput
+  discussionFollow?: Prisma.DiscussionFollowOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -250,6 +256,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   signalWatchlist?: Prisma.SignalWatchlistItemListRelationFilter
   discussionThread?: Prisma.DiscussionThreadListRelationFilter
   discussionReply?: Prisma.DiscussionReplyListRelationFilter
+  discussionReaction?: Prisma.DiscussionReactionListRelationFilter
+  commentReaction?: Prisma.CommentReactionListRelationFilter
+  discussionFollow?: Prisma.DiscussionFollowListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -295,6 +304,9 @@ export type UserCreateInput = {
   signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
   discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
   discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -310,6 +322,9 @@ export type UserUncheckedCreateInput = {
   signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
   discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
   discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -325,6 +340,9 @@ export type UserUpdateInput = {
   signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
   discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
   discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -340,6 +358,9 @@ export type UserUncheckedUpdateInput = {
   signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
   discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -481,6 +502,48 @@ export type UserUpdateOneRequiredWithoutDiscussionReplyNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscussionReplyInput, Prisma.UserUpdateWithoutDiscussionReplyInput>, Prisma.UserUncheckedUpdateWithoutDiscussionReplyInput>
 }
 
+export type UserCreateNestedOneWithoutDiscussionReactionInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReactionInput, Prisma.UserUncheckedCreateWithoutDiscussionReactionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionReactionInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDiscussionReactionNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReactionInput, Prisma.UserUncheckedCreateWithoutDiscussionReactionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionReactionInput
+  upsert?: Prisma.UserUpsertWithoutDiscussionReactionInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscussionReactionInput, Prisma.UserUpdateWithoutDiscussionReactionInput>, Prisma.UserUncheckedUpdateWithoutDiscussionReactionInput>
+}
+
+export type UserCreateNestedOneWithoutCommentReactionInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentReactionInput, Prisma.UserUncheckedCreateWithoutCommentReactionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentReactionInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCommentReactionNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentReactionInput, Prisma.UserUncheckedCreateWithoutCommentReactionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentReactionInput
+  upsert?: Prisma.UserUpsertWithoutCommentReactionInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentReactionInput, Prisma.UserUpdateWithoutCommentReactionInput>, Prisma.UserUncheckedUpdateWithoutCommentReactionInput>
+}
+
+export type UserCreateNestedOneWithoutDiscussionFollowInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionFollowInput, Prisma.UserUncheckedCreateWithoutDiscussionFollowInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionFollowInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDiscussionFollowNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionFollowInput, Prisma.UserUncheckedCreateWithoutDiscussionFollowInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionFollowInput
+  upsert?: Prisma.UserUpsertWithoutDiscussionFollowInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscussionFollowInput, Prisma.UserUpdateWithoutDiscussionFollowInput>, Prisma.UserUncheckedUpdateWithoutDiscussionFollowInput>
+}
+
 export type UserCreateWithoutSignalWatchlistInput = {
   id?: string
   email: string
@@ -493,6 +556,9 @@ export type UserCreateWithoutSignalWatchlistInput = {
   deletedAt?: Date | string | null
   discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
   discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSignalWatchlistInput = {
@@ -507,6 +573,9 @@ export type UserUncheckedCreateWithoutSignalWatchlistInput = {
   deletedAt?: Date | string | null
   discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
   discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSignalWatchlistInput = {
@@ -537,6 +606,9 @@ export type UserUpdateWithoutSignalWatchlistInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
   discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSignalWatchlistInput = {
@@ -551,6 +623,9 @@ export type UserUncheckedUpdateWithoutSignalWatchlistInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
   discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDiscussionThreadInput = {
@@ -565,6 +640,9 @@ export type UserCreateWithoutDiscussionThreadInput = {
   deletedAt?: Date | string | null
   signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
   discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDiscussionThreadInput = {
@@ -579,6 +657,9 @@ export type UserUncheckedCreateWithoutDiscussionThreadInput = {
   deletedAt?: Date | string | null
   signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
   discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDiscussionThreadInput = {
@@ -609,6 +690,9 @@ export type UserUpdateWithoutDiscussionThreadInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
   discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDiscussionThreadInput = {
@@ -623,6 +707,9 @@ export type UserUncheckedUpdateWithoutDiscussionThreadInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
   discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDiscussionReplyInput = {
@@ -637,6 +724,9 @@ export type UserCreateWithoutDiscussionReplyInput = {
   deletedAt?: Date | string | null
   signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
   discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDiscussionReplyInput = {
@@ -651,6 +741,9 @@ export type UserUncheckedCreateWithoutDiscussionReplyInput = {
   deletedAt?: Date | string | null
   signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
   discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDiscussionReplyInput = {
@@ -681,6 +774,9 @@ export type UserUpdateWithoutDiscussionReplyInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
   discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDiscussionReplyInput = {
@@ -695,6 +791,261 @@ export type UserUncheckedUpdateWithoutDiscussionReplyInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
   discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDiscussionReactionInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDiscussionReactionInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDiscussionReactionInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReactionInput, Prisma.UserUncheckedCreateWithoutDiscussionReactionInput>
+}
+
+export type UserUpsertWithoutDiscussionReactionInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionReactionInput, Prisma.UserUncheckedUpdateWithoutDiscussionReactionInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReactionInput, Prisma.UserUncheckedCreateWithoutDiscussionReactionInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDiscussionReactionInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionReactionInput, Prisma.UserUncheckedUpdateWithoutDiscussionReactionInput>
+}
+
+export type UserUpdateWithoutDiscussionReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDiscussionReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCommentReactionInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCommentReactionInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCommentReactionInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentReactionInput, Prisma.UserUncheckedCreateWithoutCommentReactionInput>
+}
+
+export type UserUpsertWithoutCommentReactionInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCommentReactionInput, Prisma.UserUncheckedUpdateWithoutCommentReactionInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentReactionInput, Prisma.UserUncheckedCreateWithoutCommentReactionInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCommentReactionInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCommentReactionInput, Prisma.UserUncheckedUpdateWithoutCommentReactionInput>
+}
+
+export type UserUpdateWithoutCommentReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCommentReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDiscussionFollowInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDiscussionFollowInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDiscussionFollowInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionFollowInput, Prisma.UserUncheckedCreateWithoutDiscussionFollowInput>
+}
+
+export type UserUpsertWithoutDiscussionFollowInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionFollowInput, Prisma.UserUncheckedUpdateWithoutDiscussionFollowInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionFollowInput, Prisma.UserUncheckedCreateWithoutDiscussionFollowInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDiscussionFollowInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionFollowInput, Prisma.UserUncheckedUpdateWithoutDiscussionFollowInput>
+}
+
+export type UserUpdateWithoutDiscussionFollowInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDiscussionFollowInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -706,12 +1057,18 @@ export type UserCountOutputType = {
   signalWatchlist: number
   discussionThread: number
   discussionReply: number
+  discussionReaction: number
+  commentReaction: number
+  discussionFollow: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   signalWatchlist?: boolean | UserCountOutputTypeCountSignalWatchlistArgs
   discussionThread?: boolean | UserCountOutputTypeCountDiscussionThreadArgs
   discussionReply?: boolean | UserCountOutputTypeCountDiscussionReplyArgs
+  discussionReaction?: boolean | UserCountOutputTypeCountDiscussionReactionArgs
+  commentReaction?: boolean | UserCountOutputTypeCountCommentReactionArgs
+  discussionFollow?: boolean | UserCountOutputTypeCountDiscussionFollowArgs
 }
 
 /**
@@ -745,6 +1102,27 @@ export type UserCountOutputTypeCountDiscussionReplyArgs<ExtArgs extends runtime.
   where?: Prisma.DiscussionReplyWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDiscussionReactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionReactionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCommentReactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentReactionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDiscussionFollowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionFollowWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -759,6 +1137,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   signalWatchlist?: boolean | Prisma.User$signalWatchlistArgs<ExtArgs>
   discussionThread?: boolean | Prisma.User$discussionThreadArgs<ExtArgs>
   discussionReply?: boolean | Prisma.User$discussionReplyArgs<ExtArgs>
+  discussionReaction?: boolean | Prisma.User$discussionReactionArgs<ExtArgs>
+  commentReaction?: boolean | Prisma.User$commentReactionArgs<ExtArgs>
+  discussionFollow?: boolean | Prisma.User$discussionFollowArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -803,6 +1184,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   signalWatchlist?: boolean | Prisma.User$signalWatchlistArgs<ExtArgs>
   discussionThread?: boolean | Prisma.User$discussionThreadArgs<ExtArgs>
   discussionReply?: boolean | Prisma.User$discussionReplyArgs<ExtArgs>
+  discussionReaction?: boolean | Prisma.User$discussionReactionArgs<ExtArgs>
+  commentReaction?: boolean | Prisma.User$commentReactionArgs<ExtArgs>
+  discussionFollow?: boolean | Prisma.User$discussionFollowArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -814,6 +1198,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     signalWatchlist: Prisma.$SignalWatchlistItemPayload<ExtArgs>[]
     discussionThread: Prisma.$DiscussionThreadPayload<ExtArgs>[]
     discussionReply: Prisma.$DiscussionReplyPayload<ExtArgs>[]
+    discussionReaction: Prisma.$DiscussionReactionPayload<ExtArgs>[]
+    commentReaction: Prisma.$CommentReactionPayload<ExtArgs>[]
+    discussionFollow: Prisma.$DiscussionFollowPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1222,6 +1609,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   signalWatchlist<T extends Prisma.User$signalWatchlistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$signalWatchlistArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SignalWatchlistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   discussionThread<T extends Prisma.User$discussionThreadArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discussionThreadArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionThreadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   discussionReply<T extends Prisma.User$discussionReplyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discussionReplyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discussionReaction<T extends Prisma.User$discussionReactionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discussionReactionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  commentReaction<T extends Prisma.User$commentReactionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentReactionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discussionFollow<T extends Prisma.User$discussionFollowArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discussionFollowArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionFollowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1722,6 +2112,78 @@ export type User$discussionReplyArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.DiscussionReplyScalarFieldEnum | Prisma.DiscussionReplyScalarFieldEnum[]
+}
+
+/**
+ * User.discussionReaction
+ */
+export type User$discussionReactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionReaction
+   */
+  select?: Prisma.DiscussionReactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionReaction
+   */
+  omit?: Prisma.DiscussionReactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionReactionInclude<ExtArgs> | null
+  where?: Prisma.DiscussionReactionWhereInput
+  orderBy?: Prisma.DiscussionReactionOrderByWithRelationInput | Prisma.DiscussionReactionOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionReactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionReactionScalarFieldEnum | Prisma.DiscussionReactionScalarFieldEnum[]
+}
+
+/**
+ * User.commentReaction
+ */
+export type User$commentReactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommentReaction
+   */
+  select?: Prisma.CommentReactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CommentReaction
+   */
+  omit?: Prisma.CommentReactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentReactionInclude<ExtArgs> | null
+  where?: Prisma.CommentReactionWhereInput
+  orderBy?: Prisma.CommentReactionOrderByWithRelationInput | Prisma.CommentReactionOrderByWithRelationInput[]
+  cursor?: Prisma.CommentReactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentReactionScalarFieldEnum | Prisma.CommentReactionScalarFieldEnum[]
+}
+
+/**
+ * User.discussionFollow
+ */
+export type User$discussionFollowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionFollow
+   */
+  select?: Prisma.DiscussionFollowSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionFollow
+   */
+  omit?: Prisma.DiscussionFollowOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionFollowInclude<ExtArgs> | null
+  where?: Prisma.DiscussionFollowWhereInput
+  orderBy?: Prisma.DiscussionFollowOrderByWithRelationInput | Prisma.DiscussionFollowOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionFollowWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionFollowScalarFieldEnum | Prisma.DiscussionFollowScalarFieldEnum[]
 }
 
 /**

@@ -14,7 +14,12 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model DiscussionThread
- * A member-started conversation. Locking stops new replies; pinning floats it.
+ * An admin-published conversation. Members comment; only admins start one, so
+ * this is a curated research board rather than an open forum.
+ * 
+ * Locking stops new comments on an otherwise live thread; archiving retires
+ * the thread but keeps it readable. Both exist because they mean different
+ * things to a reader.
  */
 export type DiscussionThreadModel = runtime.Types.Result.DefaultSelection<Prisma.$DiscussionThreadPayload>
 
@@ -38,12 +43,18 @@ export type DiscussionThreadMinAggregateOutputType = {
   id: string | null
   authorId: string | null
   title: string | null
+  slug: string | null
+  excerpt: string | null
   body: string | null
   category: $Enums.DiscussionCategoryKind | null
-  ticker: string | null
+  status: $Enums.DiscussionStatusKind | null
+  thumbnailUrl: string | null
   viewCount: number | null
   isPinned: boolean | null
+  isFeatured: boolean | null
   isLocked: boolean | null
+  commentsEnabled: boolean | null
+  publishedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -53,12 +64,18 @@ export type DiscussionThreadMaxAggregateOutputType = {
   id: string | null
   authorId: string | null
   title: string | null
+  slug: string | null
+  excerpt: string | null
   body: string | null
   category: $Enums.DiscussionCategoryKind | null
-  ticker: string | null
+  status: $Enums.DiscussionStatusKind | null
+  thumbnailUrl: string | null
   viewCount: number | null
   isPinned: boolean | null
+  isFeatured: boolean | null
   isLocked: boolean | null
+  commentsEnabled: boolean | null
+  publishedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -68,12 +85,20 @@ export type DiscussionThreadCountAggregateOutputType = {
   id: number
   authorId: number
   title: number
+  slug: number
+  excerpt: number
   body: number
   category: number
-  ticker: number
+  status: number
+  tags: number
+  tickers: number
+  thumbnailUrl: number
   viewCount: number
   isPinned: number
+  isFeatured: number
   isLocked: number
+  commentsEnabled: number
+  publishedAt: number
   createdAt: number
   updatedAt: number
   deletedAt: number
@@ -93,12 +118,18 @@ export type DiscussionThreadMinAggregateInputType = {
   id?: true
   authorId?: true
   title?: true
+  slug?: true
+  excerpt?: true
   body?: true
   category?: true
-  ticker?: true
+  status?: true
+  thumbnailUrl?: true
   viewCount?: true
   isPinned?: true
+  isFeatured?: true
   isLocked?: true
+  commentsEnabled?: true
+  publishedAt?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -108,12 +139,18 @@ export type DiscussionThreadMaxAggregateInputType = {
   id?: true
   authorId?: true
   title?: true
+  slug?: true
+  excerpt?: true
   body?: true
   category?: true
-  ticker?: true
+  status?: true
+  thumbnailUrl?: true
   viewCount?: true
   isPinned?: true
+  isFeatured?: true
   isLocked?: true
+  commentsEnabled?: true
+  publishedAt?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -123,12 +160,20 @@ export type DiscussionThreadCountAggregateInputType = {
   id?: true
   authorId?: true
   title?: true
+  slug?: true
+  excerpt?: true
   body?: true
   category?: true
-  ticker?: true
+  status?: true
+  tags?: true
+  tickers?: true
+  thumbnailUrl?: true
   viewCount?: true
   isPinned?: true
+  isFeatured?: true
   isLocked?: true
+  commentsEnabled?: true
+  publishedAt?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -225,12 +270,20 @@ export type DiscussionThreadGroupByOutputType = {
   id: string
   authorId: string
   title: string
+  slug: string
+  excerpt: string
   body: string
   category: $Enums.DiscussionCategoryKind
-  ticker: string | null
+  status: $Enums.DiscussionStatusKind
+  tags: string[]
+  tickers: string[]
+  thumbnailUrl: string | null
   viewCount: number
   isPinned: boolean
+  isFeatured: boolean
   isLocked: boolean
+  commentsEnabled: boolean
+  publishedAt: Date | null
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
@@ -263,66 +316,104 @@ export type DiscussionThreadWhereInput = {
   id?: Prisma.StringFilter<"DiscussionThread"> | string
   authorId?: Prisma.StringFilter<"DiscussionThread"> | string
   title?: Prisma.StringFilter<"DiscussionThread"> | string
+  slug?: Prisma.StringFilter<"DiscussionThread"> | string
+  excerpt?: Prisma.StringFilter<"DiscussionThread"> | string
   body?: Prisma.StringFilter<"DiscussionThread"> | string
   category?: Prisma.EnumDiscussionCategoryKindFilter<"DiscussionThread"> | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.StringNullableFilter<"DiscussionThread"> | string | null
+  status?: Prisma.EnumDiscussionStatusKindFilter<"DiscussionThread"> | $Enums.DiscussionStatusKind
+  tags?: Prisma.StringNullableListFilter<"DiscussionThread">
+  tickers?: Prisma.StringNullableListFilter<"DiscussionThread">
+  thumbnailUrl?: Prisma.StringNullableFilter<"DiscussionThread"> | string | null
   viewCount?: Prisma.IntFilter<"DiscussionThread"> | number
   isPinned?: Prisma.BoolFilter<"DiscussionThread"> | boolean
+  isFeatured?: Prisma.BoolFilter<"DiscussionThread"> | boolean
   isLocked?: Prisma.BoolFilter<"DiscussionThread"> | boolean
+  commentsEnabled?: Prisma.BoolFilter<"DiscussionThread"> | boolean
+  publishedAt?: Prisma.DateTimeNullableFilter<"DiscussionThread"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DiscussionThread"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DiscussionThread"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"DiscussionThread"> | Date | string | null
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   reply?: Prisma.DiscussionReplyListRelationFilter
+  reaction?: Prisma.DiscussionReactionListRelationFilter
+  follow?: Prisma.DiscussionFollowListRelationFilter
 }
 
 export type DiscussionThreadOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  excerpt?: Prisma.SortOrder
   body?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  ticker?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
+  tickers?: Prisma.SortOrder
+  thumbnailUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
+  isFeatured?: Prisma.SortOrder
   isLocked?: Prisma.SortOrder
+  commentsEnabled?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
   reply?: Prisma.DiscussionReplyOrderByRelationAggregateInput
+  reaction?: Prisma.DiscussionReactionOrderByRelationAggregateInput
+  follow?: Prisma.DiscussionFollowOrderByRelationAggregateInput
 }
 
 export type DiscussionThreadWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  slug?: string
   AND?: Prisma.DiscussionThreadWhereInput | Prisma.DiscussionThreadWhereInput[]
   OR?: Prisma.DiscussionThreadWhereInput[]
   NOT?: Prisma.DiscussionThreadWhereInput | Prisma.DiscussionThreadWhereInput[]
   authorId?: Prisma.StringFilter<"DiscussionThread"> | string
   title?: Prisma.StringFilter<"DiscussionThread"> | string
+  excerpt?: Prisma.StringFilter<"DiscussionThread"> | string
   body?: Prisma.StringFilter<"DiscussionThread"> | string
   category?: Prisma.EnumDiscussionCategoryKindFilter<"DiscussionThread"> | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.StringNullableFilter<"DiscussionThread"> | string | null
+  status?: Prisma.EnumDiscussionStatusKindFilter<"DiscussionThread"> | $Enums.DiscussionStatusKind
+  tags?: Prisma.StringNullableListFilter<"DiscussionThread">
+  tickers?: Prisma.StringNullableListFilter<"DiscussionThread">
+  thumbnailUrl?: Prisma.StringNullableFilter<"DiscussionThread"> | string | null
   viewCount?: Prisma.IntFilter<"DiscussionThread"> | number
   isPinned?: Prisma.BoolFilter<"DiscussionThread"> | boolean
+  isFeatured?: Prisma.BoolFilter<"DiscussionThread"> | boolean
   isLocked?: Prisma.BoolFilter<"DiscussionThread"> | boolean
+  commentsEnabled?: Prisma.BoolFilter<"DiscussionThread"> | boolean
+  publishedAt?: Prisma.DateTimeNullableFilter<"DiscussionThread"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DiscussionThread"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DiscussionThread"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"DiscussionThread"> | Date | string | null
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   reply?: Prisma.DiscussionReplyListRelationFilter
-}, "id">
+  reaction?: Prisma.DiscussionReactionListRelationFilter
+  follow?: Prisma.DiscussionFollowListRelationFilter
+}, "id" | "slug">
 
 export type DiscussionThreadOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  excerpt?: Prisma.SortOrder
   body?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  ticker?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
+  tickers?: Prisma.SortOrder
+  thumbnailUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
+  isFeatured?: Prisma.SortOrder
   isLocked?: Prisma.SortOrder
+  commentsEnabled?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -340,12 +431,20 @@ export type DiscussionThreadScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"DiscussionThread"> | string
   authorId?: Prisma.StringWithAggregatesFilter<"DiscussionThread"> | string
   title?: Prisma.StringWithAggregatesFilter<"DiscussionThread"> | string
+  slug?: Prisma.StringWithAggregatesFilter<"DiscussionThread"> | string
+  excerpt?: Prisma.StringWithAggregatesFilter<"DiscussionThread"> | string
   body?: Prisma.StringWithAggregatesFilter<"DiscussionThread"> | string
   category?: Prisma.EnumDiscussionCategoryKindWithAggregatesFilter<"DiscussionThread"> | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.StringNullableWithAggregatesFilter<"DiscussionThread"> | string | null
+  status?: Prisma.EnumDiscussionStatusKindWithAggregatesFilter<"DiscussionThread"> | $Enums.DiscussionStatusKind
+  tags?: Prisma.StringNullableListFilter<"DiscussionThread">
+  tickers?: Prisma.StringNullableListFilter<"DiscussionThread">
+  thumbnailUrl?: Prisma.StringNullableWithAggregatesFilter<"DiscussionThread"> | string | null
   viewCount?: Prisma.IntWithAggregatesFilter<"DiscussionThread"> | number
   isPinned?: Prisma.BoolWithAggregatesFilter<"DiscussionThread"> | boolean
+  isFeatured?: Prisma.BoolWithAggregatesFilter<"DiscussionThread"> | boolean
   isLocked?: Prisma.BoolWithAggregatesFilter<"DiscussionThread"> | boolean
+  commentsEnabled?: Prisma.BoolWithAggregatesFilter<"DiscussionThread"> | boolean
+  publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DiscussionThread"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DiscussionThread"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"DiscussionThread"> | Date | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DiscussionThread"> | Date | string | null
@@ -354,77 +453,125 @@ export type DiscussionThreadScalarWhereWithAggregatesInput = {
 export type DiscussionThreadCreateInput = {
   id?: string
   title: string
+  slug: string
+  excerpt: string
   body: string
   category?: $Enums.DiscussionCategoryKind
-  ticker?: string | null
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
   viewCount?: number
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   author: Prisma.UserCreateNestedOneWithoutDiscussionThreadInput
   reply?: Prisma.DiscussionReplyCreateNestedManyWithoutThreadInput
+  reaction?: Prisma.DiscussionReactionCreateNestedManyWithoutThreadInput
+  follow?: Prisma.DiscussionFollowCreateNestedManyWithoutThreadInput
 }
 
 export type DiscussionThreadUncheckedCreateInput = {
   id?: string
   authorId: string
   title: string
+  slug: string
+  excerpt: string
   body: string
   category?: $Enums.DiscussionCategoryKind
-  ticker?: string | null
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
   viewCount?: number
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   reply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutThreadInput
+  reaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutThreadInput
+  follow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutThreadInput
 }
 
 export type DiscussionThreadUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   author?: Prisma.UserUpdateOneRequiredWithoutDiscussionThreadNestedInput
   reply?: Prisma.DiscussionReplyUpdateManyWithoutThreadNestedInput
+  reaction?: Prisma.DiscussionReactionUpdateManyWithoutThreadNestedInput
+  follow?: Prisma.DiscussionFollowUpdateManyWithoutThreadNestedInput
 }
 
 export type DiscussionThreadUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutThreadNestedInput
+  reaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutThreadNestedInput
+  follow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutThreadNestedInput
 }
 
 export type DiscussionThreadCreateManyInput = {
   id?: string
   authorId: string
   title: string
+  slug: string
+  excerpt: string
   body: string
   category?: $Enums.DiscussionCategoryKind
-  ticker?: string | null
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
   viewCount?: number
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -433,12 +580,20 @@ export type DiscussionThreadCreateManyInput = {
 export type DiscussionThreadUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -448,12 +603,20 @@ export type DiscussionThreadUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -473,12 +636,20 @@ export type DiscussionThreadCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  excerpt?: Prisma.SortOrder
   body?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  ticker?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
+  tickers?: Prisma.SortOrder
+  thumbnailUrl?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
+  isFeatured?: Prisma.SortOrder
   isLocked?: Prisma.SortOrder
+  commentsEnabled?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -492,12 +663,18 @@ export type DiscussionThreadMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  excerpt?: Prisma.SortOrder
   body?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  ticker?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  thumbnailUrl?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
+  isFeatured?: Prisma.SortOrder
   isLocked?: Prisma.SortOrder
+  commentsEnabled?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -507,12 +684,18 @@ export type DiscussionThreadMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  excerpt?: Prisma.SortOrder
   body?: Prisma.SortOrder
   category?: Prisma.SortOrder
-  ticker?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  thumbnailUrl?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
+  isFeatured?: Prisma.SortOrder
   isLocked?: Prisma.SortOrder
+  commentsEnabled?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -569,8 +752,30 @@ export type DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput = {
   deleteMany?: Prisma.DiscussionThreadScalarWhereInput | Prisma.DiscussionThreadScalarWhereInput[]
 }
 
+export type DiscussionThreadCreatetagsInput = {
+  set: string[]
+}
+
+export type DiscussionThreadCreatetickersInput = {
+  set: string[]
+}
+
 export type EnumDiscussionCategoryKindFieldUpdateOperationsInput = {
   set?: $Enums.DiscussionCategoryKind
+}
+
+export type EnumDiscussionStatusKindFieldUpdateOperationsInput = {
+  set?: $Enums.DiscussionStatusKind
+}
+
+export type DiscussionThreadUpdatetagsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type DiscussionThreadUpdatetickersInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type DiscussionThreadCreateNestedOneWithoutReplyInput = {
@@ -587,34 +792,82 @@ export type DiscussionThreadUpdateOneRequiredWithoutReplyNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DiscussionThreadUpdateToOneWithWhereWithoutReplyInput, Prisma.DiscussionThreadUpdateWithoutReplyInput>, Prisma.DiscussionThreadUncheckedUpdateWithoutReplyInput>
 }
 
+export type DiscussionThreadCreateNestedOneWithoutReactionInput = {
+  create?: Prisma.XOR<Prisma.DiscussionThreadCreateWithoutReactionInput, Prisma.DiscussionThreadUncheckedCreateWithoutReactionInput>
+  connectOrCreate?: Prisma.DiscussionThreadCreateOrConnectWithoutReactionInput
+  connect?: Prisma.DiscussionThreadWhereUniqueInput
+}
+
+export type DiscussionThreadUpdateOneRequiredWithoutReactionNestedInput = {
+  create?: Prisma.XOR<Prisma.DiscussionThreadCreateWithoutReactionInput, Prisma.DiscussionThreadUncheckedCreateWithoutReactionInput>
+  connectOrCreate?: Prisma.DiscussionThreadCreateOrConnectWithoutReactionInput
+  upsert?: Prisma.DiscussionThreadUpsertWithoutReactionInput
+  connect?: Prisma.DiscussionThreadWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DiscussionThreadUpdateToOneWithWhereWithoutReactionInput, Prisma.DiscussionThreadUpdateWithoutReactionInput>, Prisma.DiscussionThreadUncheckedUpdateWithoutReactionInput>
+}
+
+export type DiscussionThreadCreateNestedOneWithoutFollowInput = {
+  create?: Prisma.XOR<Prisma.DiscussionThreadCreateWithoutFollowInput, Prisma.DiscussionThreadUncheckedCreateWithoutFollowInput>
+  connectOrCreate?: Prisma.DiscussionThreadCreateOrConnectWithoutFollowInput
+  connect?: Prisma.DiscussionThreadWhereUniqueInput
+}
+
+export type DiscussionThreadUpdateOneRequiredWithoutFollowNestedInput = {
+  create?: Prisma.XOR<Prisma.DiscussionThreadCreateWithoutFollowInput, Prisma.DiscussionThreadUncheckedCreateWithoutFollowInput>
+  connectOrCreate?: Prisma.DiscussionThreadCreateOrConnectWithoutFollowInput
+  upsert?: Prisma.DiscussionThreadUpsertWithoutFollowInput
+  connect?: Prisma.DiscussionThreadWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DiscussionThreadUpdateToOneWithWhereWithoutFollowInput, Prisma.DiscussionThreadUpdateWithoutFollowInput>, Prisma.DiscussionThreadUncheckedUpdateWithoutFollowInput>
+}
+
 export type DiscussionThreadCreateWithoutAuthorInput = {
   id?: string
   title: string
+  slug: string
+  excerpt: string
   body: string
   category?: $Enums.DiscussionCategoryKind
-  ticker?: string | null
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
   viewCount?: number
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   reply?: Prisma.DiscussionReplyCreateNestedManyWithoutThreadInput
+  reaction?: Prisma.DiscussionReactionCreateNestedManyWithoutThreadInput
+  follow?: Prisma.DiscussionFollowCreateNestedManyWithoutThreadInput
 }
 
 export type DiscussionThreadUncheckedCreateWithoutAuthorInput = {
   id?: string
   title: string
+  slug: string
+  excerpt: string
   body: string
   category?: $Enums.DiscussionCategoryKind
-  ticker?: string | null
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
   viewCount?: number
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   reply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutThreadInput
+  reaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutThreadInput
+  follow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutThreadInput
 }
 
 export type DiscussionThreadCreateOrConnectWithoutAuthorInput = {
@@ -650,12 +903,20 @@ export type DiscussionThreadScalarWhereInput = {
   id?: Prisma.StringFilter<"DiscussionThread"> | string
   authorId?: Prisma.StringFilter<"DiscussionThread"> | string
   title?: Prisma.StringFilter<"DiscussionThread"> | string
+  slug?: Prisma.StringFilter<"DiscussionThread"> | string
+  excerpt?: Prisma.StringFilter<"DiscussionThread"> | string
   body?: Prisma.StringFilter<"DiscussionThread"> | string
   category?: Prisma.EnumDiscussionCategoryKindFilter<"DiscussionThread"> | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.StringNullableFilter<"DiscussionThread"> | string | null
+  status?: Prisma.EnumDiscussionStatusKindFilter<"DiscussionThread"> | $Enums.DiscussionStatusKind
+  tags?: Prisma.StringNullableListFilter<"DiscussionThread">
+  tickers?: Prisma.StringNullableListFilter<"DiscussionThread">
+  thumbnailUrl?: Prisma.StringNullableFilter<"DiscussionThread"> | string | null
   viewCount?: Prisma.IntFilter<"DiscussionThread"> | number
   isPinned?: Prisma.BoolFilter<"DiscussionThread"> | boolean
+  isFeatured?: Prisma.BoolFilter<"DiscussionThread"> | boolean
   isLocked?: Prisma.BoolFilter<"DiscussionThread"> | boolean
+  commentsEnabled?: Prisma.BoolFilter<"DiscussionThread"> | boolean
+  publishedAt?: Prisma.DateTimeNullableFilter<"DiscussionThread"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DiscussionThread"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DiscussionThread"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"DiscussionThread"> | Date | string | null
@@ -664,31 +925,51 @@ export type DiscussionThreadScalarWhereInput = {
 export type DiscussionThreadCreateWithoutReplyInput = {
   id?: string
   title: string
+  slug: string
+  excerpt: string
   body: string
   category?: $Enums.DiscussionCategoryKind
-  ticker?: string | null
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
   viewCount?: number
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   author: Prisma.UserCreateNestedOneWithoutDiscussionThreadInput
+  reaction?: Prisma.DiscussionReactionCreateNestedManyWithoutThreadInput
+  follow?: Prisma.DiscussionFollowCreateNestedManyWithoutThreadInput
 }
 
 export type DiscussionThreadUncheckedCreateWithoutReplyInput = {
   id?: string
   authorId: string
   title: string
+  slug: string
+  excerpt: string
   body: string
   category?: $Enums.DiscussionCategoryKind
-  ticker?: string | null
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
   viewCount?: number
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  reaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutThreadInput
+  follow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutThreadInput
 }
 
 export type DiscussionThreadCreateOrConnectWithoutReplyInput = {
@@ -710,42 +991,302 @@ export type DiscussionThreadUpdateToOneWithWhereWithoutReplyInput = {
 export type DiscussionThreadUpdateWithoutReplyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   author?: Prisma.UserUpdateOneRequiredWithoutDiscussionThreadNestedInput
+  reaction?: Prisma.DiscussionReactionUpdateManyWithoutThreadNestedInput
+  follow?: Prisma.DiscussionFollowUpdateManyWithoutThreadNestedInput
 }
 
 export type DiscussionThreadUncheckedUpdateWithoutReplyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutThreadNestedInput
+  follow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutThreadNestedInput
+}
+
+export type DiscussionThreadCreateWithoutReactionInput = {
+  id?: string
+  title: string
+  slug: string
+  excerpt: string
+  body: string
+  category?: $Enums.DiscussionCategoryKind
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
+  viewCount?: number
+  isPinned?: boolean
+  isFeatured?: boolean
+  isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  author: Prisma.UserCreateNestedOneWithoutDiscussionThreadInput
+  reply?: Prisma.DiscussionReplyCreateNestedManyWithoutThreadInput
+  follow?: Prisma.DiscussionFollowCreateNestedManyWithoutThreadInput
+}
+
+export type DiscussionThreadUncheckedCreateWithoutReactionInput = {
+  id?: string
+  authorId: string
+  title: string
+  slug: string
+  excerpt: string
+  body: string
+  category?: $Enums.DiscussionCategoryKind
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
+  viewCount?: number
+  isPinned?: boolean
+  isFeatured?: boolean
+  isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  reply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutThreadInput
+  follow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutThreadInput
+}
+
+export type DiscussionThreadCreateOrConnectWithoutReactionInput = {
+  where: Prisma.DiscussionThreadWhereUniqueInput
+  create: Prisma.XOR<Prisma.DiscussionThreadCreateWithoutReactionInput, Prisma.DiscussionThreadUncheckedCreateWithoutReactionInput>
+}
+
+export type DiscussionThreadUpsertWithoutReactionInput = {
+  update: Prisma.XOR<Prisma.DiscussionThreadUpdateWithoutReactionInput, Prisma.DiscussionThreadUncheckedUpdateWithoutReactionInput>
+  create: Prisma.XOR<Prisma.DiscussionThreadCreateWithoutReactionInput, Prisma.DiscussionThreadUncheckedCreateWithoutReactionInput>
+  where?: Prisma.DiscussionThreadWhereInput
+}
+
+export type DiscussionThreadUpdateToOneWithWhereWithoutReactionInput = {
+  where?: Prisma.DiscussionThreadWhereInput
+  data: Prisma.XOR<Prisma.DiscussionThreadUpdateWithoutReactionInput, Prisma.DiscussionThreadUncheckedUpdateWithoutReactionInput>
+}
+
+export type DiscussionThreadUpdateWithoutReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  author?: Prisma.UserUpdateOneRequiredWithoutDiscussionThreadNestedInput
+  reply?: Prisma.DiscussionReplyUpdateManyWithoutThreadNestedInput
+  follow?: Prisma.DiscussionFollowUpdateManyWithoutThreadNestedInput
+}
+
+export type DiscussionThreadUncheckedUpdateWithoutReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutThreadNestedInput
+  follow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutThreadNestedInput
+}
+
+export type DiscussionThreadCreateWithoutFollowInput = {
+  id?: string
+  title: string
+  slug: string
+  excerpt: string
+  body: string
+  category?: $Enums.DiscussionCategoryKind
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
+  viewCount?: number
+  isPinned?: boolean
+  isFeatured?: boolean
+  isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  author: Prisma.UserCreateNestedOneWithoutDiscussionThreadInput
+  reply?: Prisma.DiscussionReplyCreateNestedManyWithoutThreadInput
+  reaction?: Prisma.DiscussionReactionCreateNestedManyWithoutThreadInput
+}
+
+export type DiscussionThreadUncheckedCreateWithoutFollowInput = {
+  id?: string
+  authorId: string
+  title: string
+  slug: string
+  excerpt: string
+  body: string
+  category?: $Enums.DiscussionCategoryKind
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
+  viewCount?: number
+  isPinned?: boolean
+  isFeatured?: boolean
+  isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  reply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutThreadInput
+  reaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutThreadInput
+}
+
+export type DiscussionThreadCreateOrConnectWithoutFollowInput = {
+  where: Prisma.DiscussionThreadWhereUniqueInput
+  create: Prisma.XOR<Prisma.DiscussionThreadCreateWithoutFollowInput, Prisma.DiscussionThreadUncheckedCreateWithoutFollowInput>
+}
+
+export type DiscussionThreadUpsertWithoutFollowInput = {
+  update: Prisma.XOR<Prisma.DiscussionThreadUpdateWithoutFollowInput, Prisma.DiscussionThreadUncheckedUpdateWithoutFollowInput>
+  create: Prisma.XOR<Prisma.DiscussionThreadCreateWithoutFollowInput, Prisma.DiscussionThreadUncheckedCreateWithoutFollowInput>
+  where?: Prisma.DiscussionThreadWhereInput
+}
+
+export type DiscussionThreadUpdateToOneWithWhereWithoutFollowInput = {
+  where?: Prisma.DiscussionThreadWhereInput
+  data: Prisma.XOR<Prisma.DiscussionThreadUpdateWithoutFollowInput, Prisma.DiscussionThreadUncheckedUpdateWithoutFollowInput>
+}
+
+export type DiscussionThreadUpdateWithoutFollowInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  author?: Prisma.UserUpdateOneRequiredWithoutDiscussionThreadNestedInput
+  reply?: Prisma.DiscussionReplyUpdateManyWithoutThreadNestedInput
+  reaction?: Prisma.DiscussionReactionUpdateManyWithoutThreadNestedInput
+}
+
+export type DiscussionThreadUncheckedUpdateWithoutFollowInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutThreadNestedInput
+  reaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutThreadNestedInput
 }
 
 export type DiscussionThreadCreateManyAuthorInput = {
   id?: string
   title: string
+  slug: string
+  excerpt: string
   body: string
   category?: $Enums.DiscussionCategoryKind
-  ticker?: string | null
+  status?: $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadCreatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadCreatetickersInput | string[]
+  thumbnailUrl?: string | null
   viewCount?: number
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -754,42 +1295,70 @@ export type DiscussionThreadCreateManyAuthorInput = {
 export type DiscussionThreadUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reply?: Prisma.DiscussionReplyUpdateManyWithoutThreadNestedInput
+  reaction?: Prisma.DiscussionReactionUpdateManyWithoutThreadNestedInput
+  follow?: Prisma.DiscussionFollowUpdateManyWithoutThreadNestedInput
 }
 
 export type DiscussionThreadUncheckedUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutThreadNestedInput
+  reaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutThreadNestedInput
+  follow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutThreadNestedInput
 }
 
 export type DiscussionThreadUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
-  ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDiscussionStatusKindFieldUpdateOperationsInput | $Enums.DiscussionStatusKind
+  tags?: Prisma.DiscussionThreadUpdatetagsInput | string[]
+  tickers?: Prisma.DiscussionThreadUpdatetickersInput | string[]
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  commentsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -802,10 +1371,14 @@ export type DiscussionThreadUncheckedUpdateManyWithoutAuthorInput = {
 
 export type DiscussionThreadCountOutputType = {
   reply: number
+  reaction: number
+  follow: number
 }
 
 export type DiscussionThreadCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reply?: boolean | DiscussionThreadCountOutputTypeCountReplyArgs
+  reaction?: boolean | DiscussionThreadCountOutputTypeCountReactionArgs
+  follow?: boolean | DiscussionThreadCountOutputTypeCountFollowArgs
 }
 
 /**
@@ -825,22 +1398,46 @@ export type DiscussionThreadCountOutputTypeCountReplyArgs<ExtArgs extends runtim
   where?: Prisma.DiscussionReplyWhereInput
 }
 
+/**
+ * DiscussionThreadCountOutputType without action
+ */
+export type DiscussionThreadCountOutputTypeCountReactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionReactionWhereInput
+}
+
+/**
+ * DiscussionThreadCountOutputType without action
+ */
+export type DiscussionThreadCountOutputTypeCountFollowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionFollowWhereInput
+}
+
 
 export type DiscussionThreadSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   authorId?: boolean
   title?: boolean
+  slug?: boolean
+  excerpt?: boolean
   body?: boolean
   category?: boolean
-  ticker?: boolean
+  status?: boolean
+  tags?: boolean
+  tickers?: boolean
+  thumbnailUrl?: boolean
   viewCount?: boolean
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reply?: boolean | Prisma.DiscussionThread$replyArgs<ExtArgs>
+  reaction?: boolean | Prisma.DiscussionThread$reactionArgs<ExtArgs>
+  follow?: boolean | Prisma.DiscussionThread$followArgs<ExtArgs>
   _count?: boolean | Prisma.DiscussionThreadCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["discussionThread"]>
 
@@ -848,12 +1445,20 @@ export type DiscussionThreadSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   id?: boolean
   authorId?: boolean
   title?: boolean
+  slug?: boolean
+  excerpt?: boolean
   body?: boolean
   category?: boolean
-  ticker?: boolean
+  status?: boolean
+  tags?: boolean
+  tickers?: boolean
+  thumbnailUrl?: boolean
   viewCount?: boolean
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -864,12 +1469,20 @@ export type DiscussionThreadSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   id?: boolean
   authorId?: boolean
   title?: boolean
+  slug?: boolean
+  excerpt?: boolean
   body?: boolean
   category?: boolean
-  ticker?: boolean
+  status?: boolean
+  tags?: boolean
+  tickers?: boolean
+  thumbnailUrl?: boolean
   viewCount?: boolean
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -880,21 +1493,31 @@ export type DiscussionThreadSelectScalar = {
   id?: boolean
   authorId?: boolean
   title?: boolean
+  slug?: boolean
+  excerpt?: boolean
   body?: boolean
   category?: boolean
-  ticker?: boolean
+  status?: boolean
+  tags?: boolean
+  tickers?: boolean
+  thumbnailUrl?: boolean
   viewCount?: boolean
   isPinned?: boolean
+  isFeatured?: boolean
   isLocked?: boolean
+  commentsEnabled?: boolean
+  publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
 }
 
-export type DiscussionThreadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "title" | "body" | "category" | "ticker" | "viewCount" | "isPinned" | "isLocked" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["discussionThread"]>
+export type DiscussionThreadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "title" | "slug" | "excerpt" | "body" | "category" | "status" | "tags" | "tickers" | "thumbnailUrl" | "viewCount" | "isPinned" | "isFeatured" | "isLocked" | "commentsEnabled" | "publishedAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["discussionThread"]>
 export type DiscussionThreadInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reply?: boolean | Prisma.DiscussionThread$replyArgs<ExtArgs>
+  reaction?: boolean | Prisma.DiscussionThread$reactionArgs<ExtArgs>
+  follow?: boolean | Prisma.DiscussionThread$followArgs<ExtArgs>
   _count?: boolean | Prisma.DiscussionThreadCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DiscussionThreadIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -909,24 +1532,54 @@ export type $DiscussionThreadPayload<ExtArgs extends runtime.Types.Extensions.In
   objects: {
     author: Prisma.$UserPayload<ExtArgs>
     reply: Prisma.$DiscussionReplyPayload<ExtArgs>[]
+    reaction: Prisma.$DiscussionReactionPayload<ExtArgs>[]
+    follow: Prisma.$DiscussionFollowPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     authorId: string
     title: string
+    /**
+     * Readable URL key. The detail route resolves either this or the id, so the
+     * links can move to slugs later without a data migration.
+     */
+    slug: string
+    /**
+     * One or two sentences for the feed row. Stored rather than derived so an
+     * admin controls what the list says, not the first 180 characters of prose.
+     */
+    excerpt: string
     body: string
     category: $Enums.DiscussionCategoryKind
+    status: $Enums.DiscussionStatusKind
     /**
-     * Optional ticker tag, so a thread can hang off a listing.
+     * Free-text topics. Attribute-free, like Signal.keyCatalysts, so they stay
+     * inline rather than becoming a table that only ever holds one column.
      */
-    ticker: string | null
+    tags: string[]
+    /**
+     * IDX tickers the thread covers.
+     */
+    tickers: string[]
+    thumbnailUrl: string | null
     /**
      * Incremented when a thread is opened. Approximate by design: it counts
      * opens, not unique readers, and nothing depends on it being exact.
      */
     viewCount: number
     isPinned: boolean
+    isFeatured: boolean
+    /**
+     * Locked by an admin, or implied by archiving. Stored separately so
+     * unarchiving does not silently reopen a thread that was locked on purpose.
+     */
     isLocked: boolean
+    commentsEnabled: boolean
+    /**
+     * Null until first published; kept across an archive so the original date
+     * survives.
+     */
+    publishedAt: Date | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -1326,6 +1979,8 @@ export interface Prisma__DiscussionThreadClient<T, Null = never, ExtArgs extends
   readonly [Symbol.toStringTag]: "PrismaPromise"
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   reply<T extends Prisma.DiscussionThread$replyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionThread$replyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reaction<T extends Prisma.DiscussionThread$reactionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionThread$reactionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  follow<T extends Prisma.DiscussionThread$followArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscussionThread$followArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionFollowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1358,12 +2013,20 @@ export interface DiscussionThreadFieldRefs {
   readonly id: Prisma.FieldRef<"DiscussionThread", 'String'>
   readonly authorId: Prisma.FieldRef<"DiscussionThread", 'String'>
   readonly title: Prisma.FieldRef<"DiscussionThread", 'String'>
+  readonly slug: Prisma.FieldRef<"DiscussionThread", 'String'>
+  readonly excerpt: Prisma.FieldRef<"DiscussionThread", 'String'>
   readonly body: Prisma.FieldRef<"DiscussionThread", 'String'>
   readonly category: Prisma.FieldRef<"DiscussionThread", 'DiscussionCategoryKind'>
-  readonly ticker: Prisma.FieldRef<"DiscussionThread", 'String'>
+  readonly status: Prisma.FieldRef<"DiscussionThread", 'DiscussionStatusKind'>
+  readonly tags: Prisma.FieldRef<"DiscussionThread", 'String[]'>
+  readonly tickers: Prisma.FieldRef<"DiscussionThread", 'String[]'>
+  readonly thumbnailUrl: Prisma.FieldRef<"DiscussionThread", 'String'>
   readonly viewCount: Prisma.FieldRef<"DiscussionThread", 'Int'>
   readonly isPinned: Prisma.FieldRef<"DiscussionThread", 'Boolean'>
+  readonly isFeatured: Prisma.FieldRef<"DiscussionThread", 'Boolean'>
   readonly isLocked: Prisma.FieldRef<"DiscussionThread", 'Boolean'>
+  readonly commentsEnabled: Prisma.FieldRef<"DiscussionThread", 'Boolean'>
+  readonly publishedAt: Prisma.FieldRef<"DiscussionThread", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"DiscussionThread", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"DiscussionThread", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"DiscussionThread", 'DateTime'>
@@ -1789,6 +2452,54 @@ export type DiscussionThread$replyArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.DiscussionReplyScalarFieldEnum | Prisma.DiscussionReplyScalarFieldEnum[]
+}
+
+/**
+ * DiscussionThread.reaction
+ */
+export type DiscussionThread$reactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionReaction
+   */
+  select?: Prisma.DiscussionReactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionReaction
+   */
+  omit?: Prisma.DiscussionReactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionReactionInclude<ExtArgs> | null
+  where?: Prisma.DiscussionReactionWhereInput
+  orderBy?: Prisma.DiscussionReactionOrderByWithRelationInput | Prisma.DiscussionReactionOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionReactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionReactionScalarFieldEnum | Prisma.DiscussionReactionScalarFieldEnum[]
+}
+
+/**
+ * DiscussionThread.follow
+ */
+export type DiscussionThread$followArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionFollow
+   */
+  select?: Prisma.DiscussionFollowSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionFollow
+   */
+  omit?: Prisma.DiscussionFollowOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionFollowInclude<ExtArgs> | null
+  where?: Prisma.DiscussionFollowWhereInput
+  orderBy?: Prisma.DiscussionFollowOrderByWithRelationInput | Prisma.DiscussionFollowOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionFollowWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionFollowScalarFieldEnum | Prisma.DiscussionFollowScalarFieldEnum[]
 }
 
 /**

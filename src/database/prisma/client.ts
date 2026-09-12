@@ -103,14 +103,39 @@ export type IdxDisclosure = Prisma.IdxDisclosureModel
 export type CalendarEvent = Prisma.CalendarEventModel
 /**
  * Model DiscussionThread
- * A member-started conversation. Locking stops new replies; pinning floats it.
+ * An admin-published conversation. Members comment; only admins start one, so
+ * this is a curated research board rather than an open forum.
+ * 
+ * Locking stops new comments on an otherwise live thread; archiving retires
+ * the thread but keeps it readable. Both exist because they mean different
+ * things to a reader.
  */
 export type DiscussionThread = Prisma.DiscussionThreadModel
 /**
  * Model DiscussionReply
- * 
+ * A comment, or a reply to one. parentId is at most one level deep — the
+ * service flattens anything deeper onto its grandparent, because a finance
+ * thread indented five times stops being readable.
  */
 export type DiscussionReply = Prisma.DiscussionReplyModel
+/**
+ * Model DiscussionReaction
+ * One row per member per thread per reaction. The unique key is what makes a
+ * like idempotent rather than a counter anyone can run up.
+ */
+export type DiscussionReaction = Prisma.DiscussionReactionModel
+/**
+ * Model CommentReaction
+ * 
+ */
+export type CommentReaction = Prisma.CommentReactionModel
+/**
+ * Model DiscussionFollow
+ * Following is stored and surfaced; delivering anything is not. The app has no
+ * notification infrastructure, and building a parallel one for this feature
+ * would be the wrong place to start. This table is the integration boundary.
+ */
+export type DiscussionFollow = Prisma.DiscussionFollowModel
 /**
  * Model BrokerSummary
  * Daily broker-level trade totals from IDX, one row per broker / ticker / day

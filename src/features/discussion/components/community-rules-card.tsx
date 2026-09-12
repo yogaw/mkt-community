@@ -1,19 +1,21 @@
+"use client";
+
 /**
  * House rules, shown beside the board rather than buried in a pinned thread.
  *
  * Static copy on purpose — these change rarely, and a rule that can be edited
- * without anyone noticing is not much of a rule. The full version lives in the
- * pinned thread, which is where the link goes.
+ * without anyone noticing is not much of a rule. Rule four states the board's
+ * actual permission model, which the API enforces.
  */
 const RULES = [
   "Be respectful and constructive",
   "Stay on topic",
   "No stock pumping or misleading information",
+  "Only admins can start discussions",
   "Share insights, not just opinions",
-  "Signals are ideas, not instructions — size them yourself",
 ];
 
-export function CommunityRules({ onOpenGuidelines }: { onOpenGuidelines: () => void }) {
+export function CommunityRulesCard({ onOpenGuidelines }: { onOpenGuidelines: () => void }) {
   return (
     <section className="rounded-xl border border-edge bg-panel p-5">
       <h2 className="flex items-center gap-2.5 text-base font-semibold text-ink">
@@ -47,7 +49,7 @@ export function CommunityRules({ onOpenGuidelines }: { onOpenGuidelines: () => v
       <button
         type="button"
         onClick={onOpenGuidelines}
-        className="mt-4 text-sm font-semibold text-accent transition-colors hover:text-accent-strong"
+        className="mt-4 rounded text-sm font-semibold text-accent transition-colors hover:text-accent-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         Read full guidelines &rarr;
       </button>
