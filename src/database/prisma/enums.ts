@@ -91,3 +91,28 @@ export const SignalEventStateKind = {
 } as const
 
 export type SignalEventStateKind = (typeof SignalEventStateKind)[keyof typeof SignalEventStateKind]
+
+
+export const IdxDisclosureKind = {
+  RUPS: 'RUPS',
+  DIVIDEND: 'DIVIDEND',
+  MATERIAL_TRANSACTION: 'MATERIAL_TRANSACTION',
+  FINANCIAL_REPORT: 'FINANCIAL_REPORT',
+  SHARE_BUYBACK: 'SHARE_BUYBACK',
+  OTHER: 'OTHER'
+} as const
+
+export type IdxDisclosureKind = (typeof IdxDisclosureKind)[keyof typeof IdxDisclosureKind]
+
+
+export const CalendarEventKind = {
+  EARNINGS: 'EARNINGS',
+  DIVIDEND_EX_DATE: 'DIVIDEND_EX_DATE',
+  DIVIDEND_PAYMENT: 'DIVIDEND_PAYMENT',
+  RUPS: 'RUPS',
+  IPO_LISTING: 'IPO_LISTING',
+  MACRO: 'MACRO',
+  OTHER: 'OTHER'
+} as const
+
+export type CalendarEventKind = (typeof CalendarEventKind)[keyof typeof CalendarEventKind]

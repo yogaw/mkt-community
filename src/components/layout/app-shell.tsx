@@ -11,9 +11,9 @@ import { cn } from "@/lib/cn";
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/signals", label: "Signals" },
-  { href: "/stocks", label: "Stocks" },
+  { href: "/discussion", label: "Discussion" },
   { href: "/videos", label: "Videos" },
-  { href: "/live", label: "Live" },
+  { href: "/news", label: "News" },
   { href: "/watchlist", label: "Watchlist" },
   { href: "/profile", label: "Profile" },
 ];
@@ -22,8 +22,8 @@ const pageTitleRules: Array<{ prefix: string; title: string }> = [
   { prefix: "/videos", title: "Videos" },
   { prefix: "/updates", title: "Updates" },
   { prefix: "/signals", title: "Signals" },
-  { prefix: "/stocks", title: "Stocks" },
-  { prefix: "/live", title: "Live" },
+  { prefix: "/discussion", title: "Discussion" },
+  { prefix: "/news", title: "News" },
   { prefix: "/watchlist", title: "Watchlist" },
   { prefix: "/search", title: "Search" },
   { prefix: "/profile", title: "Profile" },

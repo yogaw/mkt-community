@@ -1,0 +1,32 @@
+import { NextResponse, type NextRequest } from "next/server";
+import { discussionService } from "@/features/discussion/service/discussion-service";
+import { createThreadSchema, threadsQuerySchema } from "@/features/discussion/discussion-types";
+import { requireAuth } from "@/lib/api/auth";
+import { toErrorResponse } from "@/lib/api/response";
+
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  try {
+    const claims = await requireAuth(request);
+
+    const query = threadsQuerySchema.parse(Object.fromEntries(request.nextUrl.searchParams));
+    const result = await discussionService.listThreads(query, claims.sub);
+
+    return NextResponse.json({ data: result.items, pagination: result.pagination }, { status: 200 });
+  } catch (error) {
+    return toErrorResponse(error);
+  }
+}
+
+/** Any signed-in member can start a thread. */
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  try {
+    const claims = await requireAuth(request);
+
+    const input = createThreadSchema.parse(await request.json().catch(() => ({})));
+    const thread = await discussionService.createThread(claims.sub, input);
+
+    return NextResponse.json({ data: thread }, { status: 201 });
+  } catch (error) {
+    return toErrorResponse(error);
+  }
+}

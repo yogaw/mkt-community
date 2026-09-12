@@ -60,7 +60,11 @@ export const ModelName = {
   Signal: 'Signal',
   SignalEvent: 'SignalEvent',
   SignalWatchlistItem: 'SignalWatchlistItem',
-  Stock: 'Stock'
+  Stock: 'Stock',
+  IdxDisclosure: 'IdxDisclosure',
+  CalendarEvent: 'CalendarEvent',
+  DiscussionThread: 'DiscussionThread',
+  DiscussionReply: 'DiscussionReply'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -236,6 +240,67 @@ export const StockScalarFieldEnum = {
 } as const
 
 export type StockScalarFieldEnum = (typeof StockScalarFieldEnum)[keyof typeof StockScalarFieldEnum]
+
+
+export const IdxDisclosureScalarFieldEnum = {
+  id: 'id',
+  ticker: 'ticker',
+  companyName: 'companyName',
+  kind: 'kind',
+  title: 'title',
+  summary: 'summary',
+  documentUrl: 'documentUrl',
+  disclosedAt: 'disclosedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type IdxDisclosureScalarFieldEnum = (typeof IdxDisclosureScalarFieldEnum)[keyof typeof IdxDisclosureScalarFieldEnum]
+
+
+export const CalendarEventScalarFieldEnum = {
+  id: 'id',
+  ticker: 'ticker',
+  title: 'title',
+  kind: 'kind',
+  detail: 'detail',
+  eventDate: 'eventDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CalendarEventScalarFieldEnum = (typeof CalendarEventScalarFieldEnum)[keyof typeof CalendarEventScalarFieldEnum]
+
+
+export const DiscussionThreadScalarFieldEnum = {
+  id: 'id',
+  authorId: 'authorId',
+  title: 'title',
+  body: 'body',
+  ticker: 'ticker',
+  isPinned: 'isPinned',
+  isLocked: 'isLocked',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type DiscussionThreadScalarFieldEnum = (typeof DiscussionThreadScalarFieldEnum)[keyof typeof DiscussionThreadScalarFieldEnum]
+
+
+export const DiscussionReplyScalarFieldEnum = {
+  id: 'id',
+  threadId: 'threadId',
+  authorId: 'authorId',
+  body: 'body',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type DiscussionReplyScalarFieldEnum = (typeof DiscussionReplyScalarFieldEnum)[keyof typeof DiscussionReplyScalarFieldEnum]
 
 
 export const SortOrder = {

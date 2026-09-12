@@ -48,7 +48,9 @@ model User {
   updatedAt        DateTime             @updatedAt @map("updated_at")
   deletedAt        DateTime?            @map("deleted_at")
 
-  signalWatchlist SignalWatchlistItem[]
+  signalWatchlist  SignalWatchlistItem[]
+  discussionThread DiscussionThread[]
+  discussionReply  DiscussionReply[]
 
   @@index([membershipStatus])
   @@index([email, membershipStatus])
@@ -249,4 +251,95 @@ model Stock {
 
   @@index([isActive])
   @@map("t_stock")
+}
+
+enum IdxDisclosureKind {
+  RUPS
+  DIVIDEND
+  MATERIAL_TRANSACTION
+  FINANCIAL_REPORT
+  SHARE_BUYBACK
+  OTHER
+}
+
+/// Keterbukaan informasi: a filing a listed company made to the exchange.
+model IdxDisclosure {
+  id          String            @id @default(cuid()) @db.VarChar(30)
+  ticker      String            @db.VarChar(10)
+  companyName String            @map("company_name") @db.VarChar(200)
+  kind        IdxDisclosureKind
+  title       String            @db.VarChar(300)
+  summary     String?           @db.Text
+  documentUrl String?           @map("document_url") @db.Text
+  disclosedAt DateTime          @map("disclosed_at")
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+  deletedAt   DateTime?         @map("deleted_at")
+
+  @@index([disclosedAt])
+  @@index([ticker])
+  @@map("t_idx_disclosure")
+}
+
+enum CalendarEventKind {
+  EARNINGS
+  DIVIDEND_EX_DATE
+  DIVIDEND_PAYMENT
+  RUPS
+  IPO_LISTING
+  MACRO
+  OTHER
+}
+
+/// A dated market event. Ticker is null for market-wide entries such as a rate decision.
+model CalendarEvent {
+  id        String            @id @default(cuid()) @db.VarChar(30)
+  ticker    String?           @db.VarChar(10)
+  title     String            @db.VarChar(200)
+  kind      CalendarEventKind
+  detail    String?           @db.Text
+  eventDate DateTime          @map("event_date")
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+  deletedAt DateTime?         @map("deleted_at")
+
+  @@index([eventDate])
+  @@map("t_calendar_event")
+}
+
+/// A member-started conversation. Locking stops new replies; pinning floats it.
+model DiscussionThread {
+  id        String    @id @default(cuid()) @db.VarChar(30)
+  authorId  String    @map("author_id") @db.VarChar(30)
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title     String    @db.VarChar(200)
+  body      String    @db.Text
+  /// Optional ticker tag, so a thread can hang off a listing.
+  ticker    String?   @db.VarChar(10)
+  isPinned  Boolean   @default(false) @map("is_pinned")
+  isLocked  Boolean   @default(false) @map("is_locked")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  reply DiscussionReply[]
+
+  @@index([isPinned, createdAt])
+  @@index([ticker])
+  @@map("t_discussion_thread")
+}
+
+model DiscussionReply {
+  id        String           @id @default(cuid()) @db.VarChar(30)
+  threadId  String           @map("thread_id") @db.VarChar(30)
+  thread    DiscussionThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  authorId  String           @map("author_id") @db.VarChar(30)
+  author    User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body      String           @db.Text
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+  deletedAt DateTime?        @map("deleted_at")
+
+  @@index([threadId, createdAt])
+  @@map("t_discussion_reply")
 }

@@ -67,3 +67,23 @@ export type SignalWatchlistItem = Prisma.SignalWatchlistItemModel
  * The IDX listings an admin can publish a signal against.
  */
 export type Stock = Prisma.StockModel
+/**
+ * Model IdxDisclosure
+ * Keterbukaan informasi: a filing a listed company made to the exchange.
+ */
+export type IdxDisclosure = Prisma.IdxDisclosureModel
+/**
+ * Model CalendarEvent
+ * A dated market event. Ticker is null for market-wide entries such as a rate decision.
+ */
+export type CalendarEvent = Prisma.CalendarEventModel
+/**
+ * Model DiscussionThread
+ * A member-started conversation. Locking stops new replies; pinning floats it.
+ */
+export type DiscussionThread = Prisma.DiscussionThreadModel
+/**
+ * Model DiscussionReply
+ * 
+ */
+export type DiscussionReply = Prisma.DiscussionReplyModel

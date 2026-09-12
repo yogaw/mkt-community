@@ -10,6 +10,8 @@ import {
 import { hashPassword } from "../src/lib/auth/password";
 import { seedStocks } from "./seed-stocks";
 import { seedSignals, seedSignalWatchlist } from "./seed-signals";
+import { seedNewsSections } from "./seed-news-sections";
+import { seedDiscussion } from "./seed-discussion";
 
 const HOUR_IN_MS = 60 * 60 * 1000;
 
@@ -301,6 +303,8 @@ async function main(): Promise<void> {
   await seedStocks();
   await seedSignals();
   await seedSignalWatchlist();
+  await seedNewsSections();
+  await seedDiscussion();
 
   await db.$disconnect();
 }

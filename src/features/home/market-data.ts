@@ -82,7 +82,7 @@ export const stocksInFocus: FocusStock[] = [
     changePercent: 1.24,
     thesis: "Accumulation remains visible around large-cap banking stocks.",
     keyLevel: 9700,
-    href: "/stocks",
+    href: "/discussion",
   },
   {
     ticker: "ANTM",
@@ -91,7 +91,7 @@ export const stocksInFocus: FocusStock[] = [
     changePercent: 3.12,
     thesis: "Momentum remains supported by commodity sentiment.",
     keyLevel: 2050,
-    href: "/stocks",
+    href: "/discussion",
   },
   {
     ticker: "BMRI",
@@ -100,7 +100,7 @@ export const stocksInFocus: FocusStock[] = [
     changePercent: 0.93,
     thesis: "Valuation still trails peers while loan growth stays solid.",
     keyLevel: 5300,
-    href: "/stocks",
+    href: "/discussion",
   },
   {
     ticker: "TLKM",
@@ -109,7 +109,7 @@ export const stocksInFocus: FocusStock[] = [
     changePercent: -0.67,
     thesis: "Defensive positioning continues ahead of policy decisions.",
     keyLevel: 2900,
-    href: "/stocks",
+    href: "/discussion",
   },
 ];
 
