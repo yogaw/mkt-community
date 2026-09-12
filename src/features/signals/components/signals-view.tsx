@@ -342,22 +342,10 @@ export function SignalsView() {
           Actionable trade ideas backed by our analysis, with the entry, targets and stop for
           each one laid out before you commit.
         </p>
-        <div className="flex flex-wrap items-center gap-3">
-          <p className="rounded-lg border border-edge bg-panel px-4 py-2.5 text-sm text-ink-muted">
-            <span className="text-ink">&ldquo;Discipline turns good trades into great results.&rdquo;</span>{" "}
-            <span className="text-ink-faint">— Piranha</span>
-          </p>
-          {isAdmin ? (
-            <div className="shrink-0">
-              <Button onClick={() => setIsAddOpen(true)} className="px-4">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                </svg>
-                Add Signal
-              </Button>
-            </div>
-          ) : null}
-        </div>
+        <p className="rounded-lg border border-edge bg-panel px-4 py-2.5 text-sm text-ink-muted">
+          <span className="text-ink">&ldquo;Discipline turns good trades into great results.&rdquo;</span>{" "}
+          <span className="text-ink-faint">— Piranha</span>
+        </p>
       </div>
 
       {isAdmin ? (
@@ -380,7 +368,7 @@ export function SignalsView() {
         )}
       </div>
 
-      <div className="mt-8 border-b border-edge">
+      <div className="mt-8 flex flex-wrap items-end justify-between gap-3 border-b border-edge">
         <div role="tablist" aria-label="Signal views" className="flex gap-1 overflow-x-auto">
           {tabs.map((item) => {
             const isActive = item.value === tab;
@@ -404,6 +392,19 @@ export function SignalsView() {
             );
           })}
         </div>
+
+        {isAdmin ? (
+          // pb matches the tabs' own padding so the button sits on the same
+          // baseline rather than on the rule itself.
+          <div className="shrink-0 pb-1.5">
+            <Button onClick={() => setIsAddOpen(true)} className="px-4">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              Add Signal
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       {tab === "performance" ? (
