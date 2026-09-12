@@ -30,7 +30,14 @@ rate-limited requests. The fetcher is for topping up days the export predates.
 ```bash
 # 3. after each close, store that day's COMPOSITE (IHSG) figures
 npm run fetch:index-summary
+
+# 4. derive market-level foreign/domestic flow from the broker rows (local only)
+npm run build:market-flows
 ```
+
+Step 3 also backfills: `-- --from 2026-06-01 --to 2026-09-12`. Step 4 makes no
+IDX requests at all — it aggregates `broker_summaries` — so it is cheap to
+re-run. Field meanings and units for both are in `docs/idx-market-data.md`.
 
 Steps 2b and 3 need the setup below.
 

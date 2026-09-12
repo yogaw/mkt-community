@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BriefingHero } from "@/components/home/briefing-hero";
-import { MarketSnapshot } from "@/components/home/market-snapshot";
+import { MarketOverview } from "@/features/market-overview/components/market-overview";
 import { SectorPulse } from "@/components/home/sector-pulse";
 import { StocksInFocus } from "@/components/home/stocks-in-focus";
 import { UpcomingLive } from "@/components/home/upcoming-live";
@@ -113,12 +113,7 @@ export function HomeDashboard() {
         <div className="space-y-10">
           <WelcomeHeader greeting={profile.greeting} name={profile.name} />
 
-          <MarketSnapshot
-            snapshot={feed.marketIndex}
-            onUpdated={(snapshot) =>
-              setFeed((current) => (current ? { ...current, marketIndex: snapshot } : current))
-            }
-          />
+          <MarketOverview />
 
           {feed.featuredContent ? <BriefingHero featured={feed.featuredContent} /> : null}
 
