@@ -59,7 +59,8 @@ export const ModelName = {
   LiveSession: 'LiveSession',
   Signal: 'Signal',
   SignalEvent: 'SignalEvent',
-  SignalWatchlistItem: 'SignalWatchlistItem'
+  SignalWatchlistItem: 'SignalWatchlistItem',
+  Stock: 'Stock'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -184,10 +185,10 @@ export const SignalScalarFieldEnum = {
   target2: 'target2',
   stopLoss: 'stopLoss',
   status: 'status',
-  riskLevel: 'riskLevel',
-  positionSize: 'positionSize',
+  riskReward: 'riskReward',
   timeHorizon: 'timeHorizon',
   thesis: 'thesis',
+  chartImages: 'chartImages',
   keyCatalysts: 'keyCatalysts',
   issuedAt: 'issuedAt',
   closedAt: 'closedAt',
@@ -223,6 +224,18 @@ export const SignalWatchlistItemScalarFieldEnum = {
 } as const
 
 export type SignalWatchlistItemScalarFieldEnum = (typeof SignalWatchlistItemScalarFieldEnum)[keyof typeof SignalWatchlistItemScalarFieldEnum]
+
+
+export const StockScalarFieldEnum = {
+  id: 'id',
+  ticker: 'ticker',
+  name: 'name',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StockScalarFieldEnum = (typeof StockScalarFieldEnum)[keyof typeof StockScalarFieldEnum]
 
 
 export const SortOrder = {

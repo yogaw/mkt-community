@@ -285,20 +285,6 @@ export type EnumSignalStatusKindFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel> | $Enums.SignalStatusKind
 }
 
-export type EnumSignalRiskKindFilter<$PrismaModel = never> = {
-  equals?: $Enums.SignalRiskKind | Prisma.EnumSignalRiskKindFieldRefInput<$PrismaModel>
-  in?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel> | $Enums.SignalRiskKind
-}
-
-export type EnumSignalPositionSizeKindFilter<$PrismaModel = never> = {
-  equals?: $Enums.SignalPositionSizeKind | Prisma.EnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  in?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel> | $Enums.SignalPositionSizeKind
-}
-
 export type EnumSignalTypeKindWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.SignalTypeKind | Prisma.EnumSignalTypeKindFieldRefInput<$PrismaModel>
   in?: $Enums.SignalTypeKind[] | Prisma.ListEnumSignalTypeKindFieldRefInput<$PrismaModel>
@@ -333,26 +319,6 @@ export type EnumSignalStatusKindWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel>
   _max?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel>
-}
-
-export type EnumSignalRiskKindWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.SignalRiskKind | Prisma.EnumSignalRiskKindFieldRefInput<$PrismaModel>
-  in?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSignalRiskKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalRiskKind
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel>
-}
-
-export type EnumSignalPositionSizeKindWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.SignalPositionSizeKind | Prisma.EnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  in?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSignalPositionSizeKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalPositionSizeKind
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel>
 }
 
 export type EnumSignalEventKindFilter<$PrismaModel = never> = {
@@ -662,20 +628,6 @@ export type NestedEnumSignalStatusKindFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel> | $Enums.SignalStatusKind
 }
 
-export type NestedEnumSignalRiskKindFilter<$PrismaModel = never> = {
-  equals?: $Enums.SignalRiskKind | Prisma.EnumSignalRiskKindFieldRefInput<$PrismaModel>
-  in?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel> | $Enums.SignalRiskKind
-}
-
-export type NestedEnumSignalPositionSizeKindFilter<$PrismaModel = never> = {
-  equals?: $Enums.SignalPositionSizeKind | Prisma.EnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  in?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel> | $Enums.SignalPositionSizeKind
-}
-
 export type NestedEnumSignalTypeKindWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.SignalTypeKind | Prisma.EnumSignalTypeKindFieldRefInput<$PrismaModel>
   in?: $Enums.SignalTypeKind[] | Prisma.ListEnumSignalTypeKindFieldRefInput<$PrismaModel>
@@ -721,26 +673,6 @@ export type NestedEnumSignalStatusKindWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel>
   _max?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel>
-}
-
-export type NestedEnumSignalRiskKindWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.SignalRiskKind | Prisma.EnumSignalRiskKindFieldRefInput<$PrismaModel>
-  in?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSignalRiskKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalRiskKind
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel>
-}
-
-export type NestedEnumSignalPositionSizeKindWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.SignalPositionSizeKind | Prisma.EnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  in?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSignalPositionSizeKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalPositionSizeKind
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel>
 }
 
 export type NestedEnumSignalEventKindFilter<$PrismaModel = never> = {

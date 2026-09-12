@@ -9,29 +9,25 @@ import { cn } from "@/lib/cn";
 import { getToken } from "@/lib/auth/token-storage";
 import { humanizeErrorCode } from "@/lib/errors/error-messages";
 import type { ApiErrorBody } from "@/lib/api/response";
-import {
-  signalPositionSizeLabel,
-  signalRiskLabel,
-  signalStatusLabel,
-  signalTypeLabel,
-} from "@/features/signals/signal-display";
+import { signalTypeLabel } from "@/features/signals/signal-display";
+import { statusFromClose } from "@/features/signals/signal-status";
+import { signalStatusLabel } from "@/features/signals/signal-display";
 import type { SignalDetailDto } from "@/features/signals/signal-types";
+import { TickerPicker } from "./ticker-picker";
+import { ChartImageInput } from "./chart-image-input";
 
 type FieldErrors = Record<string, string>;
 
 const emptyForm = {
   ticker: "",
-  companyName: "",
   type: "SWING",
-  status: "ACTIVE",
-  riskLevel: "MEDIUM",
-  positionSize: "NORMAL",
   entryLow: "",
   entryHigh: "",
   currentPrice: "",
   target1: "",
   target2: "",
   stopLoss: "",
+  riskReward: "",
   timeHorizon: "",
   issuedAt: "",
   thesis: "",
@@ -46,10 +42,12 @@ const controlClass =
 function Field({
   label,
   error,
+  hint,
   children,
 }: {
   label: string;
   error?: string;
+  hint?: string;
   children: (id: string) => ReactNode;
 }) {
   const id = useId();
@@ -59,6 +57,7 @@ function Field({
         {label}
       </label>
       {children(id)}
+      {hint && !error ? <p className="text-xs text-ink-faint">{hint}</p> : null}
       {error ? <p className="text-xs text-down">{error}</p> : null}
     </div>
   );
@@ -69,17 +68,19 @@ function todayInputValue(): string {
 }
 
 /**
- * Mirrors the schema's refinements so the trader sees what is wrong with the
- * levels straight away. The route re-validates; this is only for the message.
+ * Mirrors the schema's refinements so the trader sees which level is wrong.
+ * The route re-validates; this exists only to make the message specific.
  */
 function validate(form: FormState): FieldErrors {
   const errors: FieldErrors = {};
   const num = (value: string) => (value.trim() === "" ? Number.NaN : Number(value));
 
-  if (form.ticker.trim().length < 2) errors.ticker = "Enter a ticker.";
-  if (form.companyName.trim().length < 2) errors.companyName = "Enter the company name.";
+  if (form.ticker.trim().length < 2) errors.ticker = "Pick a ticker from the list.";
   if (form.timeHorizon.trim().length < 2) errors.timeHorizon = "Enter a time horizon.";
   if (form.thesis.trim().length < 10) errors.thesis = "Write at least a sentence of thesis.";
+  if (!/^1:\d{1,3}(\.\d{1,2})?$/.test(form.riskReward.trim())) {
+    errors.riskReward = 'Use the form "1:3".';
+  }
 
   const entryLow = num(form.entryLow);
   const entryHigh = num(form.entryHigh);
@@ -112,6 +113,21 @@ function validate(form: FormState): FieldErrors {
   return errors;
 }
 
+/** Shows the admin what the close they typed will set the status to. */
+function previewStatus(form: FormState): string | null {
+  const close = Number(form.currentPrice);
+  const target1 = Number(form.target1);
+  const stopLoss = Number(form.stopLoss);
+  if (![close, target1, stopLoss].every((value) => Number.isFinite(value) && value > 0)) {
+    return null;
+  }
+  const target2 = form.target2.trim() === "" ? null : Number(form.target2);
+
+  return signalStatusLabel[
+    statusFromClose(close, { target1, target2: Number.isFinite(target2) ? target2 : null, stopLoss })
+  ];
+}
+
 interface AddSignalModalProps {
   open: boolean;
   onClose: () => void;
@@ -120,6 +136,7 @@ interface AddSignalModalProps {
 
 export function AddSignalModal({ open, onClose, onCreated }: AddSignalModalProps) {
   const [form, setForm] = useState<FormState>({ ...emptyForm, issuedAt: todayInputValue() });
+  const [chartImages, setChartImages] = useState<string[]>([]);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -128,13 +145,18 @@ export function AddSignalModal({ open, onClose, onCreated }: AddSignalModalProps
     setForm((current) => ({ ...current, [key]: value }));
   }
 
+  function reset() {
+    setForm({ ...emptyForm, issuedAt: todayInputValue() });
+    setChartImages([]);
+    setFieldErrors({});
+    setFormError(null);
+  }
+
   function handleClose() {
     if (isSubmitting) {
       return;
     }
-    setForm({ ...emptyForm, issuedAt: todayInputValue() });
-    setFieldErrors({});
-    setFormError(null);
+    reset();
     onClose();
   }
 
@@ -164,19 +186,17 @@ export function AddSignalModal({ open, onClose, onCreated }: AddSignalModalProps
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           ticker: form.ticker,
-          companyName: form.companyName,
           type: form.type,
-          status: form.status,
-          riskLevel: form.riskLevel,
-          positionSize: form.positionSize,
           entryLow: Number(form.entryLow),
           entryHigh: Number(form.entryHigh),
           currentPrice: Number(form.currentPrice),
           target1: Number(form.target1),
           target2: form.target2.trim() === "" ? null : Number(form.target2),
           stopLoss: Number(form.stopLoss),
+          riskReward: form.riskReward.trim(),
           timeHorizon: form.timeHorizon,
           thesis: form.thesis,
+          chartImages,
           keyCatalysts: form.keyCatalysts
             .split("\n")
             .map((line) => line.trim())
@@ -193,7 +213,7 @@ export function AddSignalModal({ open, onClose, onCreated }: AddSignalModalProps
       }
 
       onCreated((body as { data: SignalDetailDto }).data);
-      setForm({ ...emptyForm, issuedAt: todayInputValue() });
+      reset();
       onClose();
     } catch {
       setFormError(humanizeErrorCode("general.error.server_error"));
@@ -201,6 +221,8 @@ export function AddSignalModal({ open, onClose, onCreated }: AddSignalModalProps
       setIsSubmitting(false);
     }
   }
+
+  const status = previewStatus(form);
 
   return (
     <Modal
@@ -213,56 +235,23 @@ export function AddSignalModal({ open, onClose, onCreated }: AddSignalModalProps
         {formError ? <Alert>{formError}</Alert> : null}
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Input
-            label="Ticker"
-            placeholder="CUAN"
+          <TickerPicker
             value={form.ticker}
-            onChange={(event) => update("ticker", event.target.value.toUpperCase())}
+            onChange={(ticker) => update("ticker", ticker)}
             error={fieldErrors.ticker}
-            maxLength={10}
           />
-          <Input
-            label="Company Name"
-            placeholder="Petrindo Jaya Kreasi Tbk"
-            value={form.companyName}
-            onChange={(event) => update("companyName", event.target.value)}
-            error={fieldErrors.companyName}
-          />
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Field label="Type" error={fieldErrors.type}>
             {(id) => (
-              <select id={id} className={controlClass} value={form.type} onChange={(e) => update("type", e.target.value)}>
+              <select
+                id={id}
+                className={controlClass}
+                value={form.type}
+                onChange={(event) => update("type", event.target.value)}
+              >
                 {Object.entries(signalTypeLabel).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
-            )}
-          </Field>
-          <Field label="Status" error={fieldErrors.status}>
-            {(id) => (
-              <select id={id} className={controlClass} value={form.status} onChange={(e) => update("status", e.target.value)}>
-                {Object.entries(signalStatusLabel).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
-            )}
-          </Field>
-          <Field label="Risk Level" error={fieldErrors.riskLevel}>
-            {(id) => (
-              <select id={id} className={controlClass} value={form.riskLevel} onChange={(e) => update("riskLevel", e.target.value)}>
-                {Object.entries(signalRiskLabel).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
-            )}
-          </Field>
-          <Field label="Position Size" error={fieldErrors.positionSize}>
-            {(id) => (
-              <select id={id} className={controlClass} value={form.positionSize} onChange={(e) => update("positionSize", e.target.value)}>
-                {Object.entries(signalPositionSizeLabel).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
                 ))}
               </select>
             )}
@@ -272,7 +261,7 @@ export function AddSignalModal({ open, onClose, onCreated }: AddSignalModalProps
         <div className="grid gap-4 sm:grid-cols-3">
           <Input label="Entry Low" inputMode="numeric" placeholder="1500" value={form.entryLow} onChange={(e) => update("entryLow", e.target.value)} error={fieldErrors.entryLow} />
           <Input label="Entry High" inputMode="numeric" placeholder="1550" value={form.entryHigh} onChange={(e) => update("entryHigh", e.target.value)} error={fieldErrors.entryHigh} />
-          <Input label="Current Price" inputMode="numeric" placeholder="1650" value={form.currentPrice} onChange={(e) => update("currentPrice", e.target.value)} error={fieldErrors.currentPrice} />
+          <Input label="Closing Price" inputMode="numeric" placeholder="1650" value={form.currentPrice} onChange={(e) => update("currentPrice", e.target.value)} error={fieldErrors.currentPrice} />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
@@ -281,7 +270,16 @@ export function AddSignalModal({ open, onClose, onCreated }: AddSignalModalProps
           <Input label="Stop Loss" inputMode="numeric" placeholder="1420" value={form.stopLoss} onChange={(e) => update("stopLoss", e.target.value)} error={fieldErrors.stopLoss} />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        {status ? (
+          <p className="rounded-lg border border-edge bg-panel-raised/50 px-3 py-2 text-xs text-ink-muted">
+            Status is set from the closing price, not chosen. This one publishes as{" "}
+            <span className="font-semibold text-ink">{status}</span>, and moves on as later closes
+            reach a target or the stop.
+          </p>
+        ) : null}
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Input label="Risk / Reward" placeholder="1:3" value={form.riskReward} onChange={(e) => update("riskReward", e.target.value)} error={fieldErrors.riskReward} />
           <Input label="Time Horizon" placeholder="1 – 4 weeks" value={form.timeHorizon} onChange={(e) => update("timeHorizon", e.target.value)} error={fieldErrors.timeHorizon} />
           <Input label="Issued On" type="date" value={form.issuedAt} onChange={(e) => update("issuedAt", e.target.value)} error={fieldErrors.issuedAt} />
         </div>
@@ -299,11 +297,13 @@ export function AddSignalModal({ open, onClose, onCreated }: AddSignalModalProps
           )}
         </Field>
 
+        <ChartImageInput images={chartImages} onChange={setChartImages} disabled={isSubmitting} />
+
         <Field label="Key Catalysts (one per line)" error={fieldErrors.keyCatalysts}>
           {(id) => (
             <textarea
               id={id}
-              rows={4}
+              rows={3}
               className={cn(controlClass, "resize-y")}
               placeholder={"Breakout above major resistance at 1,550\nIncreasing trading volume"}
               value={form.keyCatalysts}

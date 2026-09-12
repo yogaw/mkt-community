@@ -31,8 +31,6 @@ export interface SignalFilter extends SignalsQuery {
 
 export type SignalType = "SWING" | "TRADING" | "POSITION";
 export type SignalStatus = "ACTIVE" | "TP1_HIT" | "TP2_HIT" | "STOP_LOSS" | "CLOSED";
-export type SignalRisk = "LOW" | "MEDIUM" | "HIGH";
-export type SignalPositionSize = "SMALL" | "NORMAL" | "LARGE";
 export type SignalEventState = "DONE" | "PENDING" | "ACTIVE";
 export type SignalEventType = "ENTRY" | "UPDATE" | "TARGET" | "STOP_LOSS";
 
@@ -64,10 +62,12 @@ export interface SignalEventDto {
 }
 
 export interface SignalDetailDto extends SignalRowDto {
-  riskLevel: SignalRisk;
-  positionSize: SignalPositionSize;
+  /** Reward per unit of risk, e.g. "1:3". */
+  riskReward: string;
   timeHorizon: string;
   thesis: string;
+  /** Chart images attached to the thesis, in the order they were added. */
+  chartImages: string[];
   keyCatalysts: string[];
   /** Remaining move from the current price to each level, in percent. */
   target1UpsidePercent: number;
@@ -108,7 +108,15 @@ export interface SignalPerformanceDto {
   byType: SignalTypePerformanceDto[];
 }
 
+export const MAX_CHART_IMAGES = 6;
+
 const priceField = z.coerce.number().int().positive().max(100_000_000);
+
+/** Written the way traders say it: risk of 1 against some multiple of reward. */
+const riskRewardField = z
+  .string()
+  .trim()
+  .regex(/^1:\d{1,3}(\.\d{1,2})?$/, 'Use the form "1:3"');
 
 /**
  * Admin input for publishing a signal. The refinements below encode the
@@ -117,8 +125,9 @@ const priceField = z.coerce.number().int().positive().max(100_000_000);
  */
 export const createSignalSchema = z
   .object({
+    // No company name: it is resolved from the stock list by ticker, so a
+    // signal can only be published against a real listing.
     ticker: z.string().trim().toUpperCase().min(2).max(10),
-    companyName: z.string().trim().min(2).max(150),
     type: z.enum(["SWING", "TRADING", "POSITION"]),
     entryLow: priceField,
     entryHigh: priceField,
@@ -129,11 +138,10 @@ export const createSignalSchema = z
       .optional()
       .transform((value) => (value === "" || value === null || value === undefined ? null : value)),
     stopLoss: priceField,
-    status: z.enum(["ACTIVE", "TP1_HIT", "TP2_HIT", "STOP_LOSS", "CLOSED"]).default("ACTIVE"),
-    riskLevel: z.enum(["LOW", "MEDIUM", "HIGH"]),
-    positionSize: z.enum(["SMALL", "NORMAL", "LARGE"]),
+    riskReward: riskRewardField,
     timeHorizon: z.string().trim().min(2).max(50),
     thesis: z.string().trim().min(10).max(4000),
+    chartImages: z.array(z.string().trim().max(300)).max(MAX_CHART_IMAGES).default([]),
     keyCatalysts: z.array(z.string().trim().min(1).max(200)).max(10).default([]),
     issuedAt: z.coerce.date().default(() => new Date()),
   })
@@ -155,3 +163,27 @@ export const createSignalSchema = z
   });
 
 export type CreateSignalInput = z.infer<typeof createSignalSchema>;
+
+/** Admin update of the day's close. Status is re-derived from it, never sent. */
+export const updateSignalPriceSchema = z.object({
+  currentPrice: priceField,
+});
+
+export type UpdateSignalPriceInput = z.infer<typeof updateSignalPriceSchema>;
+
+export interface StockOptionDto {
+  ticker: string;
+  name: string;
+}
+
+export const stocksQuerySchema = z.object({
+  search: z
+    .string()
+    .trim()
+    .max(50)
+    .optional()
+    .transform((value) => (value ? value : undefined)),
+  limit: z.coerce.number().int().min(1).max(1000).default(50),
+});
+
+export type StocksQuery = z.infer<typeof stocksQuerySchema>;

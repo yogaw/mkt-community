@@ -1,7 +1,12 @@
 import { db } from "@/database";
-import type { SignalModel, SignalEventModel } from "@/database/prisma/models";
+import type { SignalModel, SignalEventModel, StockModel } from "@/database/prisma/models";
 import type { PaginatedResult } from "@/lib/api/pagination";
-import type { CreateSignalInput, SignalFilter } from "@/features/signals/signal-types";
+import type {
+  CreateSignalInput,
+  SignalFilter,
+  SignalStatus,
+  StocksQuery,
+} from "@/features/signals/signal-types";
 
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -23,6 +28,14 @@ export interface NewSignalEvent {
   sortOrder: number;
 }
 
+/** A signal row ready to insert: the admin's input plus the values the
+ *  service resolves for it (company name from the stock list, derived status). */
+export interface NewSignalData extends Omit<CreateSignalInput, "ticker"> {
+  ticker: string;
+  companyName: string;
+  status: SignalStatus;
+}
+
 export interface SignalWeeklyCounts {
   targetHit: number;
   stopLoss: number;
@@ -36,7 +49,11 @@ export interface SignalRepository {
   countWatchlist(userId: string): Promise<number>;
   countWeeklyMilestones(): Promise<SignalWeeklyCounts>;
   findClosedOutcomes(): Promise<ClosedSignalOutcome[]>;
-  create(input: CreateSignalInput, events: NewSignalEvent[]): Promise<SignalModel>;
+  create(data: NewSignalData, events: NewSignalEvent[]): Promise<SignalModel>;
+  updatePrice(id: string, currentPrice: number, status: SignalStatus): Promise<SignalModel>;
+  markEventReached(signalId: string, title: string, detail: string, occurredAt: Date): Promise<void>;
+  findStocks(query: StocksQuery): Promise<StockModel[]>;
+  findStockByTicker(ticker: string): Promise<StockModel | null>;
   addToWatchlist(userId: string, signalId: string): Promise<void>;
   removeFromWatchlist(userId: string, signalId: string): Promise<void>;
 }
@@ -138,29 +155,69 @@ export class PrismaSignalRepository implements SignalRepository {
     });
   }
 
-  async create(input: CreateSignalInput, events: NewSignalEvent[]): Promise<SignalModel> {
-    // One transaction so a signal never lands without its timeline.
+  async create(data: NewSignalData, events: NewSignalEvent[]): Promise<SignalModel> {
+    // One statement so a signal never lands without its timeline.
     return db.signal.create({
       data: {
-        ticker: input.ticker,
-        companyName: input.companyName,
-        type: input.type,
-        entryLow: input.entryLow,
-        entryHigh: input.entryHigh,
-        currentPrice: input.currentPrice,
-        target1: input.target1,
-        target2: input.target2,
-        stopLoss: input.stopLoss,
-        status: input.status,
-        riskLevel: input.riskLevel,
-        positionSize: input.positionSize,
-        timeHorizon: input.timeHorizon,
-        thesis: input.thesis,
-        keyCatalysts: input.keyCatalysts,
-        issuedAt: input.issuedAt,
+        ticker: data.ticker,
+        companyName: data.companyName,
+        type: data.type,
+        entryLow: data.entryLow,
+        entryHigh: data.entryHigh,
+        currentPrice: data.currentPrice,
+        target1: data.target1,
+        target2: data.target2,
+        stopLoss: data.stopLoss,
+        status: data.status,
+        riskReward: data.riskReward,
+        timeHorizon: data.timeHorizon,
+        thesis: data.thesis,
+        chartImages: data.chartImages,
+        keyCatalysts: data.keyCatalysts,
+        issuedAt: data.issuedAt,
         event: { create: events },
       },
     });
+  }
+
+  async updatePrice(id: string, currentPrice: number, status: SignalStatus): Promise<SignalModel> {
+    return db.signal.update({ where: { id }, data: { currentPrice, status } });
+  }
+
+  /** Flips the milestone row the opening timeline already laid down, so a
+   *  reached target replaces its own placeholder rather than duplicating it. */
+  async markEventReached(
+    signalId: string,
+    title: string,
+    detail: string,
+    occurredAt: Date,
+  ): Promise<void> {
+    await db.signalEvent.updateMany({
+      where: { signalId, title },
+      data: { state: "DONE", detail, occurredAt },
+    });
+  }
+
+  async findStocks(query: StocksQuery): Promise<StockModel[]> {
+    return db.stock.findMany({
+      where: {
+        isActive: true,
+        ...(query.search
+          ? {
+              OR: [
+                { ticker: { contains: query.search, mode: "insensitive" as const } },
+                { name: { contains: query.search, mode: "insensitive" as const } },
+              ],
+            }
+          : {}),
+      },
+      orderBy: { ticker: "asc" },
+      take: query.limit,
+    });
+  }
+
+  async findStockByTicker(ticker: string): Promise<StockModel | null> {
+    return db.stock.findFirst({ where: { ticker, isActive: true } });
   }
 
   async addToWatchlist(userId: string, signalId: string): Promise<void> {

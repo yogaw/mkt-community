@@ -2,10 +2,15 @@ import { AppError } from "@/lib/errors/app-error";
 import { ErrorCode } from "@/lib/errors/error-code";
 import type { PaginatedResult } from "@/lib/api/pagination";
 import { toSignalDetailDto, toSignalRowDto } from "@/features/signals/signal-mappers";
+import { advanceStatus, initialStatus, type SignalLevels } from "@/features/signals/signal-status";
 import type {
   CreateSignalInput,
   SignalDetailDto,
   SignalFilter,
+  SignalStatus,
+  StockOptionDto,
+  StocksQuery,
+  UpdateSignalPriceInput,
   SignalPerformanceDto,
   SignalRowDto,
   SignalStatsDto,
@@ -14,6 +19,7 @@ import type {
 } from "@/features/signals/signal-types";
 import type {
   ClosedSignalOutcome,
+  NewSignalData,
   NewSignalEvent,
   SignalRepository,
 } from "@/features/signals/repository/signal-repository";
@@ -29,6 +35,12 @@ export interface SignalService {
   listSignals(filter: SignalFilter): Promise<SignalListResult>;
   getSignalById(id: string, userId: string): Promise<SignalDetailDto>;
   createSignal(input: CreateSignalInput, userId: string): Promise<SignalDetailDto>;
+  updateSignalPrice(
+    id: string,
+    input: UpdateSignalPriceInput,
+    userId: string,
+  ): Promise<SignalDetailDto>;
+  listStocks(query: StocksQuery): Promise<StockOptionDto[]>;
   getPerformance(): Promise<SignalPerformanceDto>;
   setWatchlisted(userId: string, signalId: string, watchlisted: boolean): Promise<void>;
 }
@@ -71,11 +83,58 @@ export class SignalServiceImpl implements SignalService {
   }
 
   async createSignal(input: CreateSignalInput, userId: string): Promise<SignalDetailDto> {
-    const created = await this.repository.create(input, toOpeningTimeline(input));
+    // The company name comes from the stock list rather than the form, so a
+    // signal can only ever be published against a real listing.
+    const stock = await this.repository.findStockByTicker(input.ticker);
+    if (!stock) {
+      throw new AppError(400, ErrorCode.validation, "ticker");
+    }
+
+    const status = initialStatus(input.currentPrice, toLevels(input));
+    const data: NewSignalData = { ...input, companyName: stock.name, status };
+    const created = await this.repository.create(data, toOpeningTimeline(data));
 
     // Re-read so the response carries the timeline the same shape the detail
     // endpoint returns, rather than a second hand-built version of it.
     return this.getSignalById(created.id, userId);
+  }
+
+  /**
+   * Posts the day's close. The close decides the status — it is never sent by
+   * the client — and any milestone it newly reaches is appended to the timeline.
+   */
+  async updateSignalPrice(
+    id: string,
+    input: UpdateSignalPriceInput,
+    userId: string,
+  ): Promise<SignalDetailDto> {
+    const signal = await this.repository.findById(id);
+    if (!signal) {
+      throw new AppError(404, ErrorCode.notFound);
+    }
+
+    const levels = toLevels(signal);
+    const nextStatus = advanceStatus(signal.status, input.currentPrice, levels);
+
+    await this.repository.updatePrice(id, input.currentPrice, nextStatus);
+
+    if (nextStatus !== signal.status) {
+      for (const milestone of reachedMilestones(signal.status, nextStatus, input.currentPrice)) {
+        await this.repository.markEventReached(
+          id,
+          milestone.title,
+          milestone.detail,
+          milestone.occurredAt,
+        );
+      }
+    }
+
+    return this.getSignalById(id, userId);
+  }
+
+  async listStocks(query: StocksQuery): Promise<StockOptionDto[]> {
+    const stocks = await this.repository.findStocks(query);
+    return stocks.map((stock) => ({ ticker: stock.ticker, name: stock.name }));
   }
 
   async getPerformance(): Promise<SignalPerformanceDto> {
@@ -147,7 +206,7 @@ function formatPrice(value: number): string {
  * The timeline a signal starts life with: the entry that was taken, each
  * target still to come, and the stop standing guard underneath.
  */
-function toOpeningTimeline(input: CreateSignalInput): NewSignalEvent[] {
+function toOpeningTimeline(input: NewSignalData): NewSignalEvent[] {
   const reachedTp1 = input.status === "TP1_HIT" || input.status === "TP2_HIT";
   const reachedTp2 = input.status === "TP2_HIT";
   const stopped = input.status === "STOP_LOSS";
@@ -188,6 +247,38 @@ function toOpeningTimeline(input: CreateSignalInput): NewSignalEvent[] {
   });
 
   return events.map((event, index) => ({ ...event, sortOrder: index }));
+}
+
+function toLevels(signal: SignalLevels): SignalLevels {
+  return { target1: signal.target1, target2: signal.target2, stopLoss: signal.stopLoss };
+}
+
+/**
+ * The milestone rows a new close just turned from pending into fact. The
+ * opening timeline already holds a row for each one, so these are updates
+ * rather than additions, and a close that clears both targets at once marks
+ * both.
+ */
+function reachedMilestones(
+  previous: SignalStatus,
+  next: SignalStatus,
+  close: number,
+): Array<{ title: string; detail: string; occurredAt: Date }> {
+  const occurredAt = new Date();
+  const reached: Array<{ title: string; detail: string; occurredAt: Date }> = [];
+
+  if (next === "STOP_LOSS") {
+    return [{ title: "Stop Loss", detail: `Stopped out at ${formatPrice(close)}`, occurredAt }];
+  }
+
+  if (previous === "ACTIVE" && (next === "TP1_HIT" || next === "TP2_HIT")) {
+    reached.push({ title: "Target 1", detail: `Reached at ${formatPrice(close)}`, occurredAt });
+  }
+  if (next === "TP2_HIT") {
+    reached.push({ title: "Target 2", detail: `Reached at ${formatPrice(close)}`, occurredAt });
+  }
+
+  return reached;
 }
 
 interface ScoredOutcome extends ClosedSignalOutcome {

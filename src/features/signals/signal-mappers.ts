@@ -58,10 +58,10 @@ export function toSignalDetailDto(
 ): SignalDetailDto {
   return {
     ...toSignalRowDto(signal, isWatchlisted),
-    riskLevel: signal.riskLevel,
-    positionSize: signal.positionSize,
+    riskReward: signal.riskReward,
     timeHorizon: signal.timeHorizon,
     thesis: signal.thesis,
+    chartImages: signal.chartImages,
     keyCatalysts: signal.keyCatalysts,
     target1UpsidePercent: upsidePercent(signal.currentPrice, signal.target1),
     target2UpsidePercent:

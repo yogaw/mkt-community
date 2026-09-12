@@ -405,7 +405,8 @@ export const ModelName = {
   LiveSession: 'LiveSession',
   Signal: 'Signal',
   SignalEvent: 'SignalEvent',
-  SignalWatchlistItem: 'SignalWatchlistItem'
+  SignalWatchlistItem: 'SignalWatchlistItem',
+  Stock: 'Stock'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "category" | "video" | "news" | "announcement" | "liveSession" | "signal" | "signalEvent" | "signalWatchlistItem"
+    modelProps: "user" | "category" | "video" | "news" | "announcement" | "liveSession" | "signal" | "signalEvent" | "signalWatchlistItem" | "stock"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1091,6 +1092,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Stock: {
+      payload: Prisma.$StockPayload<ExtArgs>
+      fields: Prisma.StockFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StockFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StockFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload>
+        }
+        findFirst: {
+          args: Prisma.StockFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StockFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload>
+        }
+        findMany: {
+          args: Prisma.StockFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload>[]
+        }
+        create: {
+          args: Prisma.StockCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload>
+        }
+        createMany: {
+          args: Prisma.StockCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.StockCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload>[]
+        }
+        delete: {
+          args: Prisma.StockDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload>
+        }
+        update: {
+          args: Prisma.StockUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload>
+        }
+        deleteMany: {
+          args: Prisma.StockDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StockUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.StockUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload>[]
+        }
+        upsert: {
+          args: Prisma.StockUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StockPayload>
+        }
+        aggregate: {
+          args: Prisma.StockAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStock>
+        }
+        groupBy: {
+          args: Prisma.StockGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StockGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StockCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StockCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1236,10 +1311,10 @@ export const SignalScalarFieldEnum = {
   target2: 'target2',
   stopLoss: 'stopLoss',
   status: 'status',
-  riskLevel: 'riskLevel',
-  positionSize: 'positionSize',
+  riskReward: 'riskReward',
   timeHorizon: 'timeHorizon',
   thesis: 'thesis',
+  chartImages: 'chartImages',
   keyCatalysts: 'keyCatalysts',
   issuedAt: 'issuedAt',
   closedAt: 'closedAt',
@@ -1275,6 +1350,18 @@ export const SignalWatchlistItemScalarFieldEnum = {
 } as const
 
 export type SignalWatchlistItemScalarFieldEnum = (typeof SignalWatchlistItemScalarFieldEnum)[keyof typeof SignalWatchlistItemScalarFieldEnum]
+
+
+export const StockScalarFieldEnum = {
+  id: 'id',
+  ticker: 'ticker',
+  name: 'name',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StockScalarFieldEnum = (typeof StockScalarFieldEnum)[keyof typeof StockScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1451,34 +1538,6 @@ export type EnumSignalStatusKindFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'SignalStatusKind[]'
  */
 export type ListEnumSignalStatusKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalStatusKind[]'>
-    
-
-
-/**
- * Reference to a field of type 'SignalRiskKind'
- */
-export type EnumSignalRiskKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalRiskKind'>
-    
-
-
-/**
- * Reference to a field of type 'SignalRiskKind[]'
- */
-export type ListEnumSignalRiskKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalRiskKind[]'>
-    
-
-
-/**
- * Reference to a field of type 'SignalPositionSizeKind'
- */
-export type EnumSignalPositionSizeKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalPositionSizeKind'>
-    
-
-
-/**
- * Reference to a field of type 'SignalPositionSizeKind[]'
- */
-export type ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalPositionSizeKind[]'>
     
 
 
@@ -1683,6 +1742,7 @@ export type GlobalOmitConfig = {
   signal?: Prisma.SignalOmit
   signalEvent?: Prisma.SignalEventOmit
   signalWatchlistItem?: Prisma.SignalWatchlistItemOmit
+  stock?: Prisma.StockOmit
 }
 
 /* Types for Logging */

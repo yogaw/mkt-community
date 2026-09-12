@@ -1,9 +1,4 @@
-import type {
-  SignalPositionSize,
-  SignalRisk,
-  SignalStatus,
-  SignalType,
-} from "@/features/signals/signal-types";
+import type { SignalStatus, SignalType } from "@/features/signals/signal-types";
 
 export const signalTypeLabel: Record<SignalType, string> = {
   SWING: "Swing",
@@ -19,18 +14,6 @@ export const signalStatusLabel: Record<SignalStatus, string> = {
   CLOSED: "Closed",
 };
 
-export const signalRiskLabel: Record<SignalRisk, string> = {
-  LOW: "Low",
-  MEDIUM: "Medium",
-  HIGH: "High",
-};
-
-export const signalPositionSizeLabel: Record<SignalPositionSize, string> = {
-  SMALL: "Small",
-  NORMAL: "Normal",
-  LARGE: "Large",
-};
-
 /** Three categorical tones, readable in both themes (see the info/alt tokens). */
 export const signalTypeTone: Record<SignalType, string> = {
   SWING: "bg-info/10 text-info",
@@ -44,12 +27,6 @@ export const signalStatusTone: Record<SignalStatus, string> = {
   TP2_HIT: "bg-accent/10 text-accent",
   STOP_LOSS: "bg-down/10 text-down",
   CLOSED: "bg-panel-raised text-ink-muted",
-};
-
-export const signalRiskTone: Record<SignalRisk, string> = {
-  LOW: "text-accent",
-  MEDIUM: "text-warn",
-  HIGH: "text-down",
 };
 
 /** Always signed, always one decimal, so the column reads as a single number. */

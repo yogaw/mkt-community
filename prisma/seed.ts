@@ -8,6 +8,7 @@ import {
   VideoProviderKind,
 } from "../src/database/prisma/enums";
 import { hashPassword } from "../src/lib/auth/password";
+import { seedStocks } from "./seed-stocks";
 import { seedSignals, seedSignalWatchlist } from "./seed-signals";
 
 const HOUR_IN_MS = 60 * 60 * 1000;
@@ -297,6 +298,7 @@ async function main(): Promise<void> {
   });
   console.log(`Seeded live session on ${scheduledAt.toISOString()}`);
 
+  await seedStocks();
   await seedSignals();
   await seedSignalWatchlist();
 

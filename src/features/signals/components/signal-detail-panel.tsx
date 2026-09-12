@@ -1,16 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/cn";
 import { formatDate, formatPrice } from "@/lib/datetime/format";
-import {
-  formatPercent,
-  signalPositionSizeLabel,
-  signalRiskLabel,
-  signalRiskTone,
-  toReturnTone,
-} from "@/features/signals/signal-display";
+import { formatPercent, toReturnTone } from "@/features/signals/signal-display";
 import { SignalStatusBadge, SignalTypeBadge } from "./signal-badges";
 import { SignalTimeline } from "./signal-timeline";
 import type { SignalDetailDto } from "@/features/signals/signal-types";
@@ -124,19 +119,30 @@ export function SignalDetailPanel({
               noteTone={toReturnTone(signal.stopLossDownsidePercent)}
             />
             <DetailFact label="Time Horizon" value={signal.timeHorizon} />
-            <DetailFact
-              label="Risk Level"
-              value={signalRiskLabel[signal.riskLevel]}
-              valueTone={signalRiskTone[signal.riskLevel]}
-            />
-            <DetailFact
-              label="Position Size"
-              value={signalPositionSizeLabel[signal.positionSize]}
-            />
+            <DetailFact label="Risk / Reward" value={signal.riskReward} />
           </div>
 
           <h3 className="mt-6 text-sm font-semibold text-ink">Thesis</h3>
           <p className="mt-2 text-sm leading-relaxed text-ink-muted">{signal.thesis}</p>
+
+          {signal.chartImages.length > 0 ? (
+            <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {signal.chartImages.map((url) => (
+                <li key={url} className="overflow-hidden rounded-lg border border-edge bg-panel-raised">
+                  <a href={url} target="_blank" rel="noreferrer" aria-label="Open chart full size">
+                    <Image
+                      src={url}
+                      alt={`${signal.ticker} chart`}
+                      width={640}
+                      height={400}
+                      unoptimized
+                      className="h-auto w-full"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : null}
 
           {signal.keyCatalysts.length > 0 ? (
             <>

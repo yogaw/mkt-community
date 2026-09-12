@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "import:stocks": "tsx prisma/import-stocks.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",

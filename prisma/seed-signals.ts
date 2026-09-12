@@ -2,11 +2,11 @@ import { db } from "../src/database";
 import {
   SignalEventKind,
   SignalEventStateKind,
-  SignalPositionSizeKind,
-  SignalRiskKind,
   SignalStatusKind,
   SignalTypeKind,
 } from "../src/database/prisma/enums";
+import { advanceStatus } from "../src/features/signals/signal-status";
+import type { SignalStatus } from "../src/features/signals/signal-types";
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
@@ -32,13 +32,13 @@ interface SeedSignal {
   type: SignalTypeKind;
   entryLow: number;
   entryHigh: number;
-  currentPrice: number;
   target1: number;
   target2: number;
   stopLoss: number;
-  status: SignalStatusKind;
-  riskLevel: SignalRiskKind;
-  positionSize: SignalPositionSizeKind;
+  /** Daily closes since entry, oldest first. Status is folded from these, and
+   *  the last one is the current price. */
+  closes: number[];
+  riskReward: string;
   timeHorizon: string;
   thesis: string;
   keyCatalysts: string[];
@@ -59,13 +59,11 @@ const activeSignals: SeedSignal[] = [
     type: SignalTypeKind.SWING,
     entryLow: 1500,
     entryHigh: 1550,
-    currentPrice: 1650,
+    closes: [1600, 1650],
     target1: 1700,
     target2: 1850,
     stopLoss: 1420,
-    status: SignalStatusKind.ACTIVE,
-    riskLevel: SignalRiskKind.MEDIUM,
-    positionSize: SignalPositionSizeKind.NORMAL,
+    riskReward: "1:1.2",
     timeHorizon: "1 – 4 weeks",
     thesis:
       "CUAN is showing a strong breakout above previous resistance with high volume, indicating continued bullish momentum. The company is also benefiting from improving coal prices and positive sector sentiment. We expect a move towards 1,700 in the short term, with potential extension to 1,850 if volume remains strong.",
@@ -95,13 +93,11 @@ const activeSignals: SeedSignal[] = [
     type: SignalTypeKind.SWING,
     entryLow: 3400,
     entryHigh: 3500,
-    currentPrice: 3750,
+    closes: [3900, 3750],
     target1: 3900,
     target2: 4200,
     stopLoss: 3250,
-    status: SignalStatusKind.TP1_HIT,
-    riskLevel: SignalRiskKind.MEDIUM,
-    positionSize: SignalPositionSizeKind.NORMAL,
+    riskReward: "1:1.6",
     timeHorizon: "2 – 6 weeks",
     thesis:
       "PTRO continues to win contract extensions in the mining services segment, and the order book gives good visibility into next year's revenue. The chart has held its rising trendline on every pullback since the breakout, and the first target has now been reached.",
@@ -124,13 +120,11 @@ const activeSignals: SeedSignal[] = [
     type: SignalTypeKind.TRADING,
     entryLow: 2100,
     entryHigh: 2150,
-    currentPrice: 1990,
+    closes: [2200, 1980, 1990],
     target1: 2350,
     target2: 2600,
     stopLoss: 1980,
-    status: SignalStatusKind.STOP_LOSS,
-    riskLevel: SignalRiskKind.HIGH,
-    positionSize: SignalPositionSizeKind.SMALL,
+    riskReward: "1:1.2",
     timeHorizon: "3 – 10 days",
     thesis:
       "A short-term momentum setup on the back of the gas distribution expansion story. The trade lost its footing when broad energy sentiment turned and the level we were leaning on gave way, so the stop was respected as planned.",
@@ -153,13 +147,11 @@ const activeSignals: SeedSignal[] = [
     type: SignalTypeKind.SWING,
     entryLow: 720,
     entryHigh: 750,
-    currentPrice: 785,
+    closes: [820, 900, 785],
     target1: 820,
     target2: 900,
     stopLoss: 680,
-    status: SignalStatusKind.TP2_HIT,
-    riskLevel: SignalRiskKind.MEDIUM,
-    positionSize: SignalPositionSizeKind.NORMAL,
+    riskReward: "1:1",
     timeHorizon: "2 – 5 weeks",
     thesis:
       "Tanker rates stayed elevated for longer than the market expected, and BULL's fleet utilisation followed. Both targets were reached on the rate spike; the position has since been closed out with the remainder trailing back toward the entry zone.",
@@ -184,13 +176,11 @@ const activeSignals: SeedSignal[] = [
     type: SignalTypeKind.POSITION,
     entryLow: 6200,
     entryHigh: 6400,
-    currentPrice: 6150,
+    closes: [6150],
     target1: 7500,
     target2: 8000,
     stopLoss: 5800,
-    status: SignalStatusKind.ACTIVE,
-    riskLevel: SignalRiskKind.HIGH,
-    positionSize: SignalPositionSizeKind.SMALL,
+    riskReward: "1:1.8",
     timeHorizon: "3 – 9 months",
     thesis:
       "A longer-horizon position on data centre and connectivity build-out. The thesis plays out over quarters rather than weeks, so the small drawdown since entry is well inside the expected range and the stop sits far enough below to let it work.",
@@ -209,13 +199,11 @@ const activeSignals: SeedSignal[] = [
     type: SignalTypeKind.SWING,
     entryLow: 9800,
     entryHigh: 10000,
-    currentPrice: 10450,
+    closes: [10400, 10450],
     target1: 11000,
     target2: 12000,
     stopLoss: 9200,
-    status: SignalStatusKind.ACTIVE,
-    riskLevel: SignalRiskKind.MEDIUM,
-    positionSize: SignalPositionSizeKind.NORMAL,
+    riskReward: "1:1.3",
     timeHorizon: "3 – 8 weeks",
     thesis:
       "Copper prices firming into a tight supply backdrop, with the smelter ramp adding volume just as the price cycle turns. The stock has been building a base above the entry zone and is now pressing the upper end of that range.",
@@ -237,13 +225,11 @@ const activeSignals: SeedSignal[] = [
     type: SignalTypeKind.POSITION,
     entryLow: 2850,
     entryHigh: 2950,
-    currentPrice: 2920,
+    closes: [2920],
     target1: 3200,
     target2: 3600,
     stopLoss: 2650,
-    status: SignalStatusKind.ACTIVE,
-    riskLevel: SignalRiskKind.LOW,
-    positionSize: SignalPositionSizeKind.LARGE,
+    riskReward: "1:0.8",
     timeHorizon: "6 – 12 months",
     thesis:
       "A core defensive holding bought near the bottom of its multi-year valuation range. The dividend covers the wait, data monetisation is slowly improving margins, and the downside case is well protected at these levels.",
@@ -268,8 +254,7 @@ interface SeedClosedSignal {
   target1: number;
   target2: number;
   stopLoss: number;
-  riskLevel: SignalRiskKind;
-  positionSize: SignalPositionSizeKind;
+  riskReward: string;
   timeHorizon: string;
   thesis: string;
   issuedDaysAgo: number;
@@ -278,18 +263,18 @@ interface SeedClosedSignal {
 
 /** Nine winners and three losers, so the performance tab is computed from real rows. */
 const closedSignals: SeedClosedSignal[] = [
-  { ticker: "ANTM", companyName: "Aneka Tambang Tbk", type: SignalTypeKind.SWING, entryLow: 1400, entryHigh: 1450, exitPrice: 1610, target1: 1600, target2: 1750, stopLoss: 1300, riskLevel: SignalRiskKind.MEDIUM, positionSize: SignalPositionSizeKind.NORMAL, timeHorizon: "2 – 5 weeks", thesis: "Gold strength and domestic downstream policy support lifted ANTM through the 1,600 target.", issuedDaysAgo: 28, closedDaysAgo: 22 },
-  { ticker: "MDKA", companyName: "Merdeka Copper Gold Tbk", type: SignalTypeKind.SWING, entryLow: 2300, entryHigh: 2400, exitPrice: 2610, target1: 2600, target2: 2900, stopLoss: 2150, riskLevel: SignalRiskKind.HIGH, positionSize: SignalPositionSizeKind.SMALL, timeHorizon: "3 – 6 weeks", thesis: "Copper and gold exposure with the AIM ramp progressing ahead of schedule.", issuedDaysAgo: 32, closedDaysAgo: 25 },
-  { ticker: "BBRI", companyName: "Bank Rakyat Indonesia (Persero) Tbk", type: SignalTypeKind.POSITION, entryLow: 4500, entryHigh: 4650, exitPrice: 5010, target1: 5000, target2: 5400, stopLoss: 4200, riskLevel: SignalRiskKind.LOW, positionSize: SignalPositionSizeKind.LARGE, timeHorizon: "3 – 6 months", thesis: "Micro lending growth recovered and credit costs normalised faster than guided.", issuedDaysAgo: 36, closedDaysAgo: 27 },
-  { ticker: "INCO", companyName: "Vale Indonesia Tbk", type: SignalTypeKind.TRADING, entryLow: 3900, entryHigh: 4000, exitPrice: 3660, target1: 4300, target2: 4600, stopLoss: 3650, riskLevel: SignalRiskKind.HIGH, positionSize: SignalPositionSizeKind.SMALL, timeHorizon: "1 – 3 weeks", thesis: "Nickel bounce trade that failed when LME inventories kept building. Stop respected.", issuedDaysAgo: 40, closedDaysAgo: 34 },
-  { ticker: "ADRO", companyName: "Alamtri Resources Indonesia Tbk", type: SignalTypeKind.SWING, entryLow: 2600, entryHigh: 2700, exitPrice: 2990, target1: 2950, target2: 3200, stopLoss: 2450, riskLevel: SignalRiskKind.MEDIUM, positionSize: SignalPositionSizeKind.NORMAL, timeHorizon: "2 – 6 weeks", thesis: "Coal price stabilised above expectations and the dividend announcement drew buyers back.", issuedDaysAgo: 44, closedDaysAgo: 36 },
-  { ticker: "ASII", companyName: "Astra International Tbk", type: SignalTypeKind.POSITION, entryLow: 4900, entryHigh: 5050, exitPrice: 5340, target1: 5300, target2: 5700, stopLoss: 4600, riskLevel: SignalRiskKind.LOW, positionSize: SignalPositionSizeKind.LARGE, timeHorizon: "3 – 6 months", thesis: "Four-wheel volumes bottomed and the heavy equipment arm carried earnings through the cycle.", issuedDaysAgo: 48, closedDaysAgo: 39 },
-  { ticker: "BRPT", companyName: "Barito Pacific Tbk", type: SignalTypeKind.TRADING, entryLow: 1050, entryHigh: 1100, exitPrice: 980, target1: 1200, target2: 1320, stopLoss: 975, riskLevel: SignalRiskKind.HIGH, positionSize: SignalPositionSizeKind.SMALL, timeHorizon: "1 – 3 weeks", thesis: "Petrochemical spread trade that never got going; the 1,050 shelf broke and the stop did its job.", issuedDaysAgo: 52, closedDaysAgo: 47 },
-  { ticker: "BMRI", companyName: "Bank Mandiri (Persero) Tbk", type: SignalTypeKind.POSITION, entryLow: 6000, entryHigh: 6200, exitPrice: 6620, target1: 6600, target2: 7100, stopLoss: 5600, riskLevel: SignalRiskKind.LOW, positionSize: SignalPositionSizeKind.LARGE, timeHorizon: "3 – 6 months", thesis: "Corporate loan growth and a stable margin outlook carried the stock to the first target.", issuedDaysAgo: 56, closedDaysAgo: 45 },
-  { ticker: "PGAS", companyName: "Perusahaan Gas Negara Tbk", type: SignalTypeKind.SWING, entryLow: 1500, entryHigh: 1560, exitPrice: 1680, target1: 1670, target2: 1800, stopLoss: 1400, riskLevel: SignalRiskKind.MEDIUM, positionSize: SignalPositionSizeKind.NORMAL, timeHorizon: "2 – 5 weeks", thesis: "Distribution volumes recovered and the regulated margin held, closing the valuation gap.", issuedDaysAgo: 60, closedDaysAgo: 52 },
-  { ticker: "ITMG", companyName: "Indo Tambangraya Megah Tbk", type: SignalTypeKind.SWING, entryLow: 25000, entryHigh: 25800, exitPrice: 27500, target1: 27400, target2: 29000, stopLoss: 23500, riskLevel: SignalRiskKind.MEDIUM, positionSize: SignalPositionSizeKind.NORMAL, timeHorizon: "3 – 8 weeks", thesis: "Seasonal coal demand plus a strong cash position ahead of the dividend cycle.", issuedDaysAgo: 64, closedDaysAgo: 55 },
-  { ticker: "SMGR", companyName: "Semen Indonesia (Persero) Tbk", type: SignalTypeKind.TRADING, entryLow: 3700, entryHigh: 3800, exitPrice: 3480, target1: 4100, target2: 4400, stopLoss: 3470, riskLevel: SignalRiskKind.HIGH, positionSize: SignalPositionSizeKind.SMALL, timeHorizon: "1 – 4 weeks", thesis: "Bet on a construction volume recovery that did not arrive; exited at the stop.", issuedDaysAgo: 68, closedDaysAgo: 61 },
-  { ticker: "UNTR", companyName: "United Tractors Tbk", type: SignalTypeKind.POSITION, entryLow: 24000, entryHigh: 24800, exitPrice: 26900, target1: 26800, target2: 28500, stopLoss: 22500, riskLevel: SignalRiskKind.LOW, positionSize: SignalPositionSizeKind.LARGE, timeHorizon: "3 – 6 months", thesis: "Heavy equipment sales held up and the gold segment added a second earnings engine.", issuedDaysAgo: 72, closedDaysAgo: 63 },
+  { ticker: "ANTM", companyName: "Aneka Tambang Tbk", type: SignalTypeKind.SWING, entryLow: 1400, entryHigh: 1450, exitPrice: 1610, target1: 1600, target2: 1750, stopLoss: 1300, riskReward: "1:1.3", timeHorizon: "2 – 5 weeks", thesis: "Gold strength and domestic downstream policy support lifted ANTM through the 1,600 target.", issuedDaysAgo: 28, closedDaysAgo: 22 },
+  { ticker: "MDKA", companyName: "Merdeka Copper Gold Tbk", type: SignalTypeKind.SWING, entryLow: 2300, entryHigh: 2400, exitPrice: 2610, target1: 2600, target2: 2900, stopLoss: 2150, riskReward: "1:0.8", timeHorizon: "3 – 6 weeks", thesis: "Copper and gold exposure with the AIM ramp progressing ahead of schedule.", issuedDaysAgo: 32, closedDaysAgo: 25 },
+  { ticker: "BBRI", companyName: "Bank Rakyat Indonesia (Persero) Tbk", type: SignalTypeKind.POSITION, entryLow: 4500, entryHigh: 4650, exitPrice: 5010, target1: 5000, target2: 5400, stopLoss: 4200, riskReward: "1:1.2", timeHorizon: "3 – 6 months", thesis: "Micro lending growth recovered and credit costs normalised faster than guided.", issuedDaysAgo: 36, closedDaysAgo: 27 },
+  { ticker: "INCO", companyName: "Vale Indonesia Tbk", type: SignalTypeKind.TRADING, entryLow: 3900, entryHigh: 4000, exitPrice: 3660, target1: 4300, target2: 4600, stopLoss: 3650, riskReward: "1:0.9", timeHorizon: "1 – 3 weeks", thesis: "Nickel bounce trade that failed when LME inventories kept building. Stop respected.", issuedDaysAgo: 40, closedDaysAgo: 34 },
+  { ticker: "ADRO", companyName: "Alamtri Resources Indonesia Tbk", type: SignalTypeKind.SWING, entryLow: 2600, entryHigh: 2700, exitPrice: 2990, target1: 2950, target2: 3200, stopLoss: 2450, riskReward: "1:1", timeHorizon: "2 – 6 weeks", thesis: "Coal price stabilised above expectations and the dividend announcement drew buyers back.", issuedDaysAgo: 44, closedDaysAgo: 36 },
+  { ticker: "ASII", companyName: "Astra International Tbk", type: SignalTypeKind.POSITION, entryLow: 4900, entryHigh: 5050, exitPrice: 5340, target1: 5300, target2: 5700, stopLoss: 4600, riskReward: "1:0.6", timeHorizon: "3 – 6 months", thesis: "Four-wheel volumes bottomed and the heavy equipment arm carried earnings through the cycle.", issuedDaysAgo: 48, closedDaysAgo: 39 },
+  { ticker: "BRPT", companyName: "Barito Pacific Tbk", type: SignalTypeKind.TRADING, entryLow: 1050, entryHigh: 1100, exitPrice: 980, target1: 1200, target2: 1320, stopLoss: 975, riskReward: "1:0.8", timeHorizon: "1 – 3 weeks", thesis: "Petrochemical spread trade that never got going; the 1,050 shelf broke and the stop did its job.", issuedDaysAgo: 52, closedDaysAgo: 47 },
+  { ticker: "BMRI", companyName: "Bank Mandiri (Persero) Tbk", type: SignalTypeKind.POSITION, entryLow: 6000, entryHigh: 6200, exitPrice: 6620, target1: 6600, target2: 7100, stopLoss: 5600, riskReward: "1:0.7", timeHorizon: "3 – 6 months", thesis: "Corporate loan growth and a stable margin outlook carried the stock to the first target.", issuedDaysAgo: 56, closedDaysAgo: 45 },
+  { ticker: "PGAS", companyName: "Perusahaan Gas Negara Tbk", type: SignalTypeKind.SWING, entryLow: 1500, entryHigh: 1560, exitPrice: 1680, target1: 1670, target2: 1800, stopLoss: 1400, riskReward: "1:0.7", timeHorizon: "2 – 5 weeks", thesis: "Distribution volumes recovered and the regulated margin held, closing the valuation gap.", issuedDaysAgo: 60, closedDaysAgo: 52 },
+  { ticker: "ITMG", companyName: "Indo Tambangraya Megah Tbk", type: SignalTypeKind.SWING, entryLow: 25000, entryHigh: 25800, exitPrice: 27500, target1: 27400, target2: 29000, stopLoss: 23500, riskReward: "1:0.7", timeHorizon: "3 – 8 weeks", thesis: "Seasonal coal demand plus a strong cash position ahead of the dividend cycle.", issuedDaysAgo: 64, closedDaysAgo: 55 },
+  { ticker: "SMGR", companyName: "Semen Indonesia (Persero) Tbk", type: SignalTypeKind.TRADING, entryLow: 3700, entryHigh: 3800, exitPrice: 3480, target1: 4100, target2: 4400, stopLoss: 3470, riskReward: "1:0.9", timeHorizon: "1 – 4 weeks", thesis: "Bet on a construction volume recovery that did not arrive; exited at the stop.", issuedDaysAgo: 68, closedDaysAgo: 61 },
+  { ticker: "UNTR", companyName: "United Tractors Tbk", type: SignalTypeKind.POSITION, entryLow: 24000, entryHigh: 24800, exitPrice: 26900, target1: 26800, target2: 28500, stopLoss: 22500, riskReward: "1:0.9", timeHorizon: "3 – 6 months", thesis: "Heavy equipment sales held up and the gold segment added a second earnings engine.", issuedDaysAgo: 72, closedDaysAgo: 63 },
 ];
 
 function signalId(ticker: string): string {
@@ -300,11 +285,32 @@ function formatPrice(value: number): string {
   return new Intl.NumberFormat("en-US").format(value);
 }
 
+/**
+ * Runs the seeded close history through the same rule the app uses, so the
+ * seeded statuses are produced by the production logic rather than asserted.
+ */
+function derivedStatus(signal: SeedSignal): SignalStatus {
+  const levels = {
+    target1: signal.target1,
+    target2: signal.target2,
+    stopLoss: signal.stopLoss,
+  };
+  return signal.closes.reduce<SignalStatus>(
+    (status, close) => advanceStatus(status, close, levels),
+    SignalStatusKind.ACTIVE,
+  );
+}
+
+function currentPriceOf(signal: SeedSignal): number {
+  return signal.closes[signal.closes.length - 1];
+}
+
 /** Timeline rows: entry, any updates, then the two targets and the stop. */
 function buildEvents(signal: SeedSignal) {
-  const reachedTp1 = signal.status === SignalStatusKind.TP1_HIT || signal.status === SignalStatusKind.TP2_HIT;
-  const reachedTp2 = signal.status === SignalStatusKind.TP2_HIT;
-  const stopped = signal.status === SignalStatusKind.STOP_LOSS;
+  const status = derivedStatus(signal);
+  const reachedTp1 = status === SignalStatusKind.TP1_HIT || status === SignalStatusKind.TP2_HIT;
+  const reachedTp2 = status === SignalStatusKind.TP2_HIT;
+  const stopped = status === SignalStatusKind.STOP_LOSS;
 
   const events = [
     {
@@ -357,15 +363,15 @@ export async function seedSignals(): Promise<void> {
       type: signal.type,
       entryLow: signal.entryLow,
       entryHigh: signal.entryHigh,
-      currentPrice: signal.currentPrice,
+      currentPrice: currentPriceOf(signal),
       target1: signal.target1,
       target2: signal.target2,
       stopLoss: signal.stopLoss,
-      status: signal.status,
-      riskLevel: signal.riskLevel,
-      positionSize: signal.positionSize,
+      status: derivedStatus(signal),
+      riskReward: signal.riskReward,
       timeHorizon: signal.timeHorizon,
       thesis: signal.thesis,
+      chartImages: [],
       keyCatalysts: signal.keyCatalysts,
       issuedAt,
       closedAt: null,
@@ -396,10 +402,10 @@ export async function seedSignals(): Promise<void> {
       target2: signal.target2,
       stopLoss: signal.stopLoss,
       status: SignalStatusKind.CLOSED,
-      riskLevel: signal.riskLevel,
-      positionSize: signal.positionSize,
+      riskReward: signal.riskReward,
       timeHorizon: signal.timeHorizon,
       thesis: signal.thesis,
+      chartImages: [],
       keyCatalysts: [],
       issuedAt,
       closedAt,

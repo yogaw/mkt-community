@@ -74,24 +74,6 @@ export const SignalStatusKind = {
 export type SignalStatusKind = (typeof SignalStatusKind)[keyof typeof SignalStatusKind]
 
 
-export const SignalRiskKind = {
-  LOW: 'LOW',
-  MEDIUM: 'MEDIUM',
-  HIGH: 'HIGH'
-} as const
-
-export type SignalRiskKind = (typeof SignalRiskKind)[keyof typeof SignalRiskKind]
-
-
-export const SignalPositionSizeKind = {
-  SMALL: 'SMALL',
-  NORMAL: 'NORMAL',
-  LARGE: 'LARGE'
-} as const
-
-export type SignalPositionSizeKind = (typeof SignalPositionSizeKind)[keyof typeof SignalPositionSizeKind]
-
-
 export const SignalEventKind = {
   ENTRY: 'ENTRY',
   UPDATE: 'UPDATE',

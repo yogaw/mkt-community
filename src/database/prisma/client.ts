@@ -86,3 +86,8 @@ export type SignalEvent = Prisma.SignalEventModel
  * 
  */
 export type SignalWatchlistItem = Prisma.SignalWatchlistItemModel
+/**
+ * Model Stock
+ * The IDX listings an admin can publish a signal against.
+ */
+export type Stock = Prisma.StockModel

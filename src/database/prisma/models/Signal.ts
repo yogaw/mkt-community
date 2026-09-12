@@ -56,8 +56,7 @@ export type SignalMinAggregateOutputType = {
   target2: number | null
   stopLoss: number | null
   status: $Enums.SignalStatusKind | null
-  riskLevel: $Enums.SignalRiskKind | null
-  positionSize: $Enums.SignalPositionSizeKind | null
+  riskReward: string | null
   timeHorizon: string | null
   thesis: string | null
   issuedAt: Date | null
@@ -79,8 +78,7 @@ export type SignalMaxAggregateOutputType = {
   target2: number | null
   stopLoss: number | null
   status: $Enums.SignalStatusKind | null
-  riskLevel: $Enums.SignalRiskKind | null
-  positionSize: $Enums.SignalPositionSizeKind | null
+  riskReward: string | null
   timeHorizon: string | null
   thesis: string | null
   issuedAt: Date | null
@@ -102,10 +100,10 @@ export type SignalCountAggregateOutputType = {
   target2: number
   stopLoss: number
   status: number
-  riskLevel: number
-  positionSize: number
+  riskReward: number
   timeHorizon: number
   thesis: number
+  chartImages: number
   keyCatalysts: number
   issuedAt: number
   closedAt: number
@@ -146,8 +144,7 @@ export type SignalMinAggregateInputType = {
   target2?: true
   stopLoss?: true
   status?: true
-  riskLevel?: true
-  positionSize?: true
+  riskReward?: true
   timeHorizon?: true
   thesis?: true
   issuedAt?: true
@@ -169,8 +166,7 @@ export type SignalMaxAggregateInputType = {
   target2?: true
   stopLoss?: true
   status?: true
-  riskLevel?: true
-  positionSize?: true
+  riskReward?: true
   timeHorizon?: true
   thesis?: true
   issuedAt?: true
@@ -192,10 +188,10 @@ export type SignalCountAggregateInputType = {
   target2?: true
   stopLoss?: true
   status?: true
-  riskLevel?: true
-  positionSize?: true
+  riskReward?: true
   timeHorizon?: true
   thesis?: true
+  chartImages?: true
   keyCatalysts?: true
   issuedAt?: true
   closedAt?: true
@@ -303,10 +299,10 @@ export type SignalGroupByOutputType = {
   target2: number | null
   stopLoss: number
   status: $Enums.SignalStatusKind
-  riskLevel: $Enums.SignalRiskKind
-  positionSize: $Enums.SignalPositionSizeKind
+  riskReward: string
   timeHorizon: string
   thesis: string
+  chartImages: string[]
   keyCatalysts: string[]
   issuedAt: Date
   closedAt: Date | null
@@ -350,10 +346,10 @@ export type SignalWhereInput = {
   target2?: Prisma.IntNullableFilter<"Signal"> | number | null
   stopLoss?: Prisma.IntFilter<"Signal"> | number
   status?: Prisma.EnumSignalStatusKindFilter<"Signal"> | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindFilter<"Signal"> | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindFilter<"Signal"> | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringFilter<"Signal"> | string
   timeHorizon?: Prisma.StringFilter<"Signal"> | string
   thesis?: Prisma.StringFilter<"Signal"> | string
+  chartImages?: Prisma.StringNullableListFilter<"Signal">
   keyCatalysts?: Prisma.StringNullableListFilter<"Signal">
   issuedAt?: Prisma.DateTimeFilter<"Signal"> | Date | string
   closedAt?: Prisma.DateTimeNullableFilter<"Signal"> | Date | string | null
@@ -376,10 +372,10 @@ export type SignalOrderByWithRelationInput = {
   target2?: Prisma.SortOrderInput | Prisma.SortOrder
   stopLoss?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  riskLevel?: Prisma.SortOrder
-  positionSize?: Prisma.SortOrder
+  riskReward?: Prisma.SortOrder
   timeHorizon?: Prisma.SortOrder
   thesis?: Prisma.SortOrder
+  chartImages?: Prisma.SortOrder
   keyCatalysts?: Prisma.SortOrder
   issuedAt?: Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -405,10 +401,10 @@ export type SignalWhereUniqueInput = Prisma.AtLeast<{
   target2?: Prisma.IntNullableFilter<"Signal"> | number | null
   stopLoss?: Prisma.IntFilter<"Signal"> | number
   status?: Prisma.EnumSignalStatusKindFilter<"Signal"> | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindFilter<"Signal"> | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindFilter<"Signal"> | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringFilter<"Signal"> | string
   timeHorizon?: Prisma.StringFilter<"Signal"> | string
   thesis?: Prisma.StringFilter<"Signal"> | string
+  chartImages?: Prisma.StringNullableListFilter<"Signal">
   keyCatalysts?: Prisma.StringNullableListFilter<"Signal">
   issuedAt?: Prisma.DateTimeFilter<"Signal"> | Date | string
   closedAt?: Prisma.DateTimeNullableFilter<"Signal"> | Date | string | null
@@ -431,10 +427,10 @@ export type SignalOrderByWithAggregationInput = {
   target2?: Prisma.SortOrderInput | Prisma.SortOrder
   stopLoss?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  riskLevel?: Prisma.SortOrder
-  positionSize?: Prisma.SortOrder
+  riskReward?: Prisma.SortOrder
   timeHorizon?: Prisma.SortOrder
   thesis?: Prisma.SortOrder
+  chartImages?: Prisma.SortOrder
   keyCatalysts?: Prisma.SortOrder
   issuedAt?: Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -463,10 +459,10 @@ export type SignalScalarWhereWithAggregatesInput = {
   target2?: Prisma.IntNullableWithAggregatesFilter<"Signal"> | number | null
   stopLoss?: Prisma.IntWithAggregatesFilter<"Signal"> | number
   status?: Prisma.EnumSignalStatusKindWithAggregatesFilter<"Signal"> | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindWithAggregatesFilter<"Signal"> | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindWithAggregatesFilter<"Signal"> | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringWithAggregatesFilter<"Signal"> | string
   timeHorizon?: Prisma.StringWithAggregatesFilter<"Signal"> | string
   thesis?: Prisma.StringWithAggregatesFilter<"Signal"> | string
+  chartImages?: Prisma.StringNullableListFilter<"Signal">
   keyCatalysts?: Prisma.StringNullableListFilter<"Signal">
   issuedAt?: Prisma.DateTimeWithAggregatesFilter<"Signal"> | Date | string
   closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Signal"> | Date | string | null
@@ -487,10 +483,10 @@ export type SignalCreateInput = {
   target2?: number | null
   stopLoss: number
   status?: $Enums.SignalStatusKind
-  riskLevel: $Enums.SignalRiskKind
-  positionSize: $Enums.SignalPositionSizeKind
+  riskReward: string
   timeHorizon: string
   thesis: string
+  chartImages?: Prisma.SignalCreatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalCreatekeyCatalystsInput | string[]
   issuedAt: Date | string
   closedAt?: Date | string | null
@@ -513,10 +509,10 @@ export type SignalUncheckedCreateInput = {
   target2?: number | null
   stopLoss: number
   status?: $Enums.SignalStatusKind
-  riskLevel: $Enums.SignalRiskKind
-  positionSize: $Enums.SignalPositionSizeKind
+  riskReward: string
   timeHorizon: string
   thesis: string
+  chartImages?: Prisma.SignalCreatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalCreatekeyCatalystsInput | string[]
   issuedAt: Date | string
   closedAt?: Date | string | null
@@ -539,10 +535,10 @@ export type SignalUpdateInput = {
   target2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stopLoss?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumSignalStatusKindFieldUpdateOperationsInput | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindFieldUpdateOperationsInput | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindFieldUpdateOperationsInput | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringFieldUpdateOperationsInput | string
   timeHorizon?: Prisma.StringFieldUpdateOperationsInput | string
   thesis?: Prisma.StringFieldUpdateOperationsInput | string
+  chartImages?: Prisma.SignalUpdatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalUpdatekeyCatalystsInput | string[]
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -565,10 +561,10 @@ export type SignalUncheckedUpdateInput = {
   target2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stopLoss?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumSignalStatusKindFieldUpdateOperationsInput | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindFieldUpdateOperationsInput | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindFieldUpdateOperationsInput | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringFieldUpdateOperationsInput | string
   timeHorizon?: Prisma.StringFieldUpdateOperationsInput | string
   thesis?: Prisma.StringFieldUpdateOperationsInput | string
+  chartImages?: Prisma.SignalUpdatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalUpdatekeyCatalystsInput | string[]
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -591,10 +587,10 @@ export type SignalCreateManyInput = {
   target2?: number | null
   stopLoss: number
   status?: $Enums.SignalStatusKind
-  riskLevel: $Enums.SignalRiskKind
-  positionSize: $Enums.SignalPositionSizeKind
+  riskReward: string
   timeHorizon: string
   thesis: string
+  chartImages?: Prisma.SignalCreatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalCreatekeyCatalystsInput | string[]
   issuedAt: Date | string
   closedAt?: Date | string | null
@@ -615,10 +611,10 @@ export type SignalUpdateManyMutationInput = {
   target2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stopLoss?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumSignalStatusKindFieldUpdateOperationsInput | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindFieldUpdateOperationsInput | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindFieldUpdateOperationsInput | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringFieldUpdateOperationsInput | string
   timeHorizon?: Prisma.StringFieldUpdateOperationsInput | string
   thesis?: Prisma.StringFieldUpdateOperationsInput | string
+  chartImages?: Prisma.SignalUpdatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalUpdatekeyCatalystsInput | string[]
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -639,10 +635,10 @@ export type SignalUncheckedUpdateManyInput = {
   target2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stopLoss?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumSignalStatusKindFieldUpdateOperationsInput | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindFieldUpdateOperationsInput | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindFieldUpdateOperationsInput | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringFieldUpdateOperationsInput | string
   timeHorizon?: Prisma.StringFieldUpdateOperationsInput | string
   thesis?: Prisma.StringFieldUpdateOperationsInput | string
+  chartImages?: Prisma.SignalUpdatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalUpdatekeyCatalystsInput | string[]
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -671,10 +667,10 @@ export type SignalCountOrderByAggregateInput = {
   target2?: Prisma.SortOrder
   stopLoss?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  riskLevel?: Prisma.SortOrder
-  positionSize?: Prisma.SortOrder
+  riskReward?: Prisma.SortOrder
   timeHorizon?: Prisma.SortOrder
   thesis?: Prisma.SortOrder
+  chartImages?: Prisma.SortOrder
   keyCatalysts?: Prisma.SortOrder
   issuedAt?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
@@ -704,8 +700,7 @@ export type SignalMaxOrderByAggregateInput = {
   target2?: Prisma.SortOrder
   stopLoss?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  riskLevel?: Prisma.SortOrder
-  positionSize?: Prisma.SortOrder
+  riskReward?: Prisma.SortOrder
   timeHorizon?: Prisma.SortOrder
   thesis?: Prisma.SortOrder
   issuedAt?: Prisma.SortOrder
@@ -727,8 +722,7 @@ export type SignalMinOrderByAggregateInput = {
   target2?: Prisma.SortOrder
   stopLoss?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  riskLevel?: Prisma.SortOrder
-  positionSize?: Prisma.SortOrder
+  riskReward?: Prisma.SortOrder
   timeHorizon?: Prisma.SortOrder
   thesis?: Prisma.SortOrder
   issuedAt?: Prisma.SortOrder
@@ -752,6 +746,10 @@ export type SignalScalarRelationFilter = {
   isNot?: Prisma.SignalWhereInput
 }
 
+export type SignalCreatechartImagesInput = {
+  set: string[]
+}
+
 export type SignalCreatekeyCatalystsInput = {
   set: string[]
 }
@@ -772,12 +770,9 @@ export type EnumSignalStatusKindFieldUpdateOperationsInput = {
   set?: $Enums.SignalStatusKind
 }
 
-export type EnumSignalRiskKindFieldUpdateOperationsInput = {
-  set?: $Enums.SignalRiskKind
-}
-
-export type EnumSignalPositionSizeKindFieldUpdateOperationsInput = {
-  set?: $Enums.SignalPositionSizeKind
+export type SignalUpdatechartImagesInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type SignalUpdatekeyCatalystsInput = {
@@ -825,10 +820,10 @@ export type SignalCreateWithoutEventInput = {
   target2?: number | null
   stopLoss: number
   status?: $Enums.SignalStatusKind
-  riskLevel: $Enums.SignalRiskKind
-  positionSize: $Enums.SignalPositionSizeKind
+  riskReward: string
   timeHorizon: string
   thesis: string
+  chartImages?: Prisma.SignalCreatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalCreatekeyCatalystsInput | string[]
   issuedAt: Date | string
   closedAt?: Date | string | null
@@ -850,10 +845,10 @@ export type SignalUncheckedCreateWithoutEventInput = {
   target2?: number | null
   stopLoss: number
   status?: $Enums.SignalStatusKind
-  riskLevel: $Enums.SignalRiskKind
-  positionSize: $Enums.SignalPositionSizeKind
+  riskReward: string
   timeHorizon: string
   thesis: string
+  chartImages?: Prisma.SignalCreatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalCreatekeyCatalystsInput | string[]
   issuedAt: Date | string
   closedAt?: Date | string | null
@@ -891,10 +886,10 @@ export type SignalUpdateWithoutEventInput = {
   target2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stopLoss?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumSignalStatusKindFieldUpdateOperationsInput | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindFieldUpdateOperationsInput | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindFieldUpdateOperationsInput | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringFieldUpdateOperationsInput | string
   timeHorizon?: Prisma.StringFieldUpdateOperationsInput | string
   thesis?: Prisma.StringFieldUpdateOperationsInput | string
+  chartImages?: Prisma.SignalUpdatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalUpdatekeyCatalystsInput | string[]
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -916,10 +911,10 @@ export type SignalUncheckedUpdateWithoutEventInput = {
   target2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stopLoss?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumSignalStatusKindFieldUpdateOperationsInput | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindFieldUpdateOperationsInput | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindFieldUpdateOperationsInput | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringFieldUpdateOperationsInput | string
   timeHorizon?: Prisma.StringFieldUpdateOperationsInput | string
   thesis?: Prisma.StringFieldUpdateOperationsInput | string
+  chartImages?: Prisma.SignalUpdatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalUpdatekeyCatalystsInput | string[]
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -941,10 +936,10 @@ export type SignalCreateWithoutWatchlistItemInput = {
   target2?: number | null
   stopLoss: number
   status?: $Enums.SignalStatusKind
-  riskLevel: $Enums.SignalRiskKind
-  positionSize: $Enums.SignalPositionSizeKind
+  riskReward: string
   timeHorizon: string
   thesis: string
+  chartImages?: Prisma.SignalCreatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalCreatekeyCatalystsInput | string[]
   issuedAt: Date | string
   closedAt?: Date | string | null
@@ -966,10 +961,10 @@ export type SignalUncheckedCreateWithoutWatchlistItemInput = {
   target2?: number | null
   stopLoss: number
   status?: $Enums.SignalStatusKind
-  riskLevel: $Enums.SignalRiskKind
-  positionSize: $Enums.SignalPositionSizeKind
+  riskReward: string
   timeHorizon: string
   thesis: string
+  chartImages?: Prisma.SignalCreatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalCreatekeyCatalystsInput | string[]
   issuedAt: Date | string
   closedAt?: Date | string | null
@@ -1007,10 +1002,10 @@ export type SignalUpdateWithoutWatchlistItemInput = {
   target2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stopLoss?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumSignalStatusKindFieldUpdateOperationsInput | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindFieldUpdateOperationsInput | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindFieldUpdateOperationsInput | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringFieldUpdateOperationsInput | string
   timeHorizon?: Prisma.StringFieldUpdateOperationsInput | string
   thesis?: Prisma.StringFieldUpdateOperationsInput | string
+  chartImages?: Prisma.SignalUpdatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalUpdatekeyCatalystsInput | string[]
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1032,10 +1027,10 @@ export type SignalUncheckedUpdateWithoutWatchlistItemInput = {
   target2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   stopLoss?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumSignalStatusKindFieldUpdateOperationsInput | $Enums.SignalStatusKind
-  riskLevel?: Prisma.EnumSignalRiskKindFieldUpdateOperationsInput | $Enums.SignalRiskKind
-  positionSize?: Prisma.EnumSignalPositionSizeKindFieldUpdateOperationsInput | $Enums.SignalPositionSizeKind
+  riskReward?: Prisma.StringFieldUpdateOperationsInput | string
   timeHorizon?: Prisma.StringFieldUpdateOperationsInput | string
   thesis?: Prisma.StringFieldUpdateOperationsInput | string
+  chartImages?: Prisma.SignalUpdatechartImagesInput | string[]
   keyCatalysts?: Prisma.SignalUpdatekeyCatalystsInput | string[]
   issuedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1097,10 +1092,10 @@ export type SignalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   target2?: boolean
   stopLoss?: boolean
   status?: boolean
-  riskLevel?: boolean
-  positionSize?: boolean
+  riskReward?: boolean
   timeHorizon?: boolean
   thesis?: boolean
+  chartImages?: boolean
   keyCatalysts?: boolean
   issuedAt?: boolean
   closedAt?: boolean
@@ -1124,10 +1119,10 @@ export type SignalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   target2?: boolean
   stopLoss?: boolean
   status?: boolean
-  riskLevel?: boolean
-  positionSize?: boolean
+  riskReward?: boolean
   timeHorizon?: boolean
   thesis?: boolean
+  chartImages?: boolean
   keyCatalysts?: boolean
   issuedAt?: boolean
   closedAt?: boolean
@@ -1148,10 +1143,10 @@ export type SignalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   target2?: boolean
   stopLoss?: boolean
   status?: boolean
-  riskLevel?: boolean
-  positionSize?: boolean
+  riskReward?: boolean
   timeHorizon?: boolean
   thesis?: boolean
+  chartImages?: boolean
   keyCatalysts?: boolean
   issuedAt?: boolean
   closedAt?: boolean
@@ -1172,10 +1167,10 @@ export type SignalSelectScalar = {
   target2?: boolean
   stopLoss?: boolean
   status?: boolean
-  riskLevel?: boolean
-  positionSize?: boolean
+  riskReward?: boolean
   timeHorizon?: boolean
   thesis?: boolean
+  chartImages?: boolean
   keyCatalysts?: boolean
   issuedAt?: boolean
   closedAt?: boolean
@@ -1184,7 +1179,7 @@ export type SignalSelectScalar = {
   deletedAt?: boolean
 }
 
-export type SignalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ticker" | "companyName" | "type" | "entryLow" | "entryHigh" | "currentPrice" | "target1" | "target2" | "stopLoss" | "status" | "riskLevel" | "positionSize" | "timeHorizon" | "thesis" | "keyCatalysts" | "issuedAt" | "closedAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["signal"]>
+export type SignalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ticker" | "companyName" | "type" | "entryLow" | "entryHigh" | "currentPrice" | "target1" | "target2" | "stopLoss" | "status" | "riskReward" | "timeHorizon" | "thesis" | "chartImages" | "keyCatalysts" | "issuedAt" | "closedAt" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["signal"]>
 export type SignalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.Signal$eventArgs<ExtArgs>
   watchlistItem?: boolean | Prisma.Signal$watchlistItemArgs<ExtArgs>
@@ -1201,6 +1196,10 @@ export type $SignalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    /**
+     * Denormalised from Stock on purpose: a published signal keeps the ticker and
+     * name it was issued under even if the listing is later renamed.
+     */
     ticker: string
     companyName: string
     type: $Enums.SignalTypeKind
@@ -1210,11 +1209,21 @@ export type $SignalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     target1: number
     target2: number | null
     stopLoss: number
+    /**
+     * Derived from the latest close against the levels above, never hand-picked.
+     * Only ever advances: a milestone once reached stays reached.
+     */
     status: $Enums.SignalStatusKind
-    riskLevel: $Enums.SignalRiskKind
-    positionSize: $Enums.SignalPositionSizeKind
+    /**
+     * Reward per unit of risk, written as "1:3".
+     */
+    riskReward: string
     timeHorizon: string
     thesis: string
+    /**
+     * Chart images attached to the thesis, in the order they were added.
+     */
+    chartImages: string[]
     /**
      * Ordered bullet points; display-only text, so kept inline rather than in its own table.
      */
@@ -1660,10 +1669,10 @@ export interface SignalFieldRefs {
   readonly target2: Prisma.FieldRef<"Signal", 'Int'>
   readonly stopLoss: Prisma.FieldRef<"Signal", 'Int'>
   readonly status: Prisma.FieldRef<"Signal", 'SignalStatusKind'>
-  readonly riskLevel: Prisma.FieldRef<"Signal", 'SignalRiskKind'>
-  readonly positionSize: Prisma.FieldRef<"Signal", 'SignalPositionSizeKind'>
+  readonly riskReward: Prisma.FieldRef<"Signal", 'String'>
   readonly timeHorizon: Prisma.FieldRef<"Signal", 'String'>
   readonly thesis: Prisma.FieldRef<"Signal", 'String'>
+  readonly chartImages: Prisma.FieldRef<"Signal", 'String[]'>
   readonly keyCatalysts: Prisma.FieldRef<"Signal", 'String[]'>
   readonly issuedAt: Prisma.FieldRef<"Signal", 'DateTime'>
   readonly closedAt: Prisma.FieldRef<"Signal", 'DateTime'>
