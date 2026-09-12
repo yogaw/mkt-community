@@ -307,6 +307,14 @@ model CalendarEvent {
   @@map("t_calendar_event")
 }
 
+enum DiscussionCategoryKind {
+  MARKET_OUTLOOK
+  STOCK_DISCUSSION
+  MACRO_ECONOMY
+  SECTOR_ANALYSIS
+  STRATEGY_PSYCHOLOGY
+}
+
 /// A member-started conversation. Locking stops new replies; pinning floats it.
 model DiscussionThread {
   id        String    @id @default(cuid()) @db.VarChar(30)
@@ -314,8 +322,12 @@ model DiscussionThread {
   author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   title     String    @db.VarChar(200)
   body      String    @db.Text
+  category  DiscussionCategoryKind @default(MARKET_OUTLOOK)
   /// Optional ticker tag, so a thread can hang off a listing.
   ticker    String?   @db.VarChar(10)
+  /// Incremented when a thread is opened. Approximate by design: it counts
+  /// opens, not unique readers, and nothing depends on it being exact.
+  viewCount Int       @default(0) @map("view_count")
   isPinned  Boolean   @default(false) @map("is_pinned")
   isLocked  Boolean   @default(false) @map("is_locked")
   createdAt DateTime  @default(now()) @map("created_at")
@@ -326,6 +338,7 @@ model DiscussionThread {
 
   @@index([isPinned, createdAt])
   @@index([ticker])
+  @@index([category])
   @@map("t_discussion_thread")
 }
 

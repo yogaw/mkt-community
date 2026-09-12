@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { Client } from "pg";
-import { INDICATORS } from "../src/features/market-data/indicator-catalogue";
+import { INDICATOR_SOURCES, type IndicatorSource } from "./indicator-sources";
 
 /**
  * Pulls the daily close for every catalogued indicator.
@@ -144,7 +144,7 @@ async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
 
   if (options.probe) {
-    const definition = INDICATORS.find((item) => item.code === options.probe);
+    const definition = INDICATOR_SOURCES.find((item: IndicatorSource) => item.code === options.probe);
     if (!definition?.vendorSymbol) {
       throw new Error(`${options.probe} is not a vendor-sourced indicator`);
     }
@@ -161,7 +161,7 @@ async function main(): Promise<void> {
     let written = 0;
     const failures: string[] = [];
 
-    for (const definition of INDICATORS.filter((item) => item.source === "yahoo")) {
+    for (const definition of INDICATOR_SOURCES.filter((item: IndicatorSource) => item.source === "yahoo")) {
       await sleep(DELAY_MS);
       try {
         const bars = await fetchBars(definition.vendorSymbol!, options.range);

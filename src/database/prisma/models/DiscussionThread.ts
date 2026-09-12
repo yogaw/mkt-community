@@ -20,8 +20,18 @@ export type DiscussionThreadModel = runtime.Types.Result.DefaultSelection<Prisma
 
 export type AggregateDiscussionThread = {
   _count: DiscussionThreadCountAggregateOutputType | null
+  _avg: DiscussionThreadAvgAggregateOutputType | null
+  _sum: DiscussionThreadSumAggregateOutputType | null
   _min: DiscussionThreadMinAggregateOutputType | null
   _max: DiscussionThreadMaxAggregateOutputType | null
+}
+
+export type DiscussionThreadAvgAggregateOutputType = {
+  viewCount: number | null
+}
+
+export type DiscussionThreadSumAggregateOutputType = {
+  viewCount: number | null
 }
 
 export type DiscussionThreadMinAggregateOutputType = {
@@ -29,7 +39,9 @@ export type DiscussionThreadMinAggregateOutputType = {
   authorId: string | null
   title: string | null
   body: string | null
+  category: $Enums.DiscussionCategoryKind | null
   ticker: string | null
+  viewCount: number | null
   isPinned: boolean | null
   isLocked: boolean | null
   createdAt: Date | null
@@ -42,7 +54,9 @@ export type DiscussionThreadMaxAggregateOutputType = {
   authorId: string | null
   title: string | null
   body: string | null
+  category: $Enums.DiscussionCategoryKind | null
   ticker: string | null
+  viewCount: number | null
   isPinned: boolean | null
   isLocked: boolean | null
   createdAt: Date | null
@@ -55,7 +69,9 @@ export type DiscussionThreadCountAggregateOutputType = {
   authorId: number
   title: number
   body: number
+  category: number
   ticker: number
+  viewCount: number
   isPinned: number
   isLocked: number
   createdAt: number
@@ -65,12 +81,22 @@ export type DiscussionThreadCountAggregateOutputType = {
 }
 
 
+export type DiscussionThreadAvgAggregateInputType = {
+  viewCount?: true
+}
+
+export type DiscussionThreadSumAggregateInputType = {
+  viewCount?: true
+}
+
 export type DiscussionThreadMinAggregateInputType = {
   id?: true
   authorId?: true
   title?: true
   body?: true
+  category?: true
   ticker?: true
+  viewCount?: true
   isPinned?: true
   isLocked?: true
   createdAt?: true
@@ -83,7 +109,9 @@ export type DiscussionThreadMaxAggregateInputType = {
   authorId?: true
   title?: true
   body?: true
+  category?: true
   ticker?: true
+  viewCount?: true
   isPinned?: true
   isLocked?: true
   createdAt?: true
@@ -96,7 +124,9 @@ export type DiscussionThreadCountAggregateInputType = {
   authorId?: true
   title?: true
   body?: true
+  category?: true
   ticker?: true
+  viewCount?: true
   isPinned?: true
   isLocked?: true
   createdAt?: true
@@ -143,6 +173,18 @@ export type DiscussionThreadAggregateArgs<ExtArgs extends runtime.Types.Extensio
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: DiscussionThreadAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: DiscussionThreadSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: DiscussionThreadMinAggregateInputType
@@ -173,6 +215,8 @@ export type DiscussionThreadGroupByArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   _count?: DiscussionThreadCountAggregateInputType | true
+  _avg?: DiscussionThreadAvgAggregateInputType
+  _sum?: DiscussionThreadSumAggregateInputType
   _min?: DiscussionThreadMinAggregateInputType
   _max?: DiscussionThreadMaxAggregateInputType
 }
@@ -182,13 +226,17 @@ export type DiscussionThreadGroupByOutputType = {
   authorId: string
   title: string
   body: string
+  category: $Enums.DiscussionCategoryKind
   ticker: string | null
+  viewCount: number
   isPinned: boolean
   isLocked: boolean
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
   _count: DiscussionThreadCountAggregateOutputType | null
+  _avg: DiscussionThreadAvgAggregateOutputType | null
+  _sum: DiscussionThreadSumAggregateOutputType | null
   _min: DiscussionThreadMinAggregateOutputType | null
   _max: DiscussionThreadMaxAggregateOutputType | null
 }
@@ -216,7 +264,9 @@ export type DiscussionThreadWhereInput = {
   authorId?: Prisma.StringFilter<"DiscussionThread"> | string
   title?: Prisma.StringFilter<"DiscussionThread"> | string
   body?: Prisma.StringFilter<"DiscussionThread"> | string
+  category?: Prisma.EnumDiscussionCategoryKindFilter<"DiscussionThread"> | $Enums.DiscussionCategoryKind
   ticker?: Prisma.StringNullableFilter<"DiscussionThread"> | string | null
+  viewCount?: Prisma.IntFilter<"DiscussionThread"> | number
   isPinned?: Prisma.BoolFilter<"DiscussionThread"> | boolean
   isLocked?: Prisma.BoolFilter<"DiscussionThread"> | boolean
   createdAt?: Prisma.DateTimeFilter<"DiscussionThread"> | Date | string
@@ -231,7 +281,9 @@ export type DiscussionThreadOrderByWithRelationInput = {
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   ticker?: Prisma.SortOrderInput | Prisma.SortOrder
+  viewCount?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   isLocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -249,7 +301,9 @@ export type DiscussionThreadWhereUniqueInput = Prisma.AtLeast<{
   authorId?: Prisma.StringFilter<"DiscussionThread"> | string
   title?: Prisma.StringFilter<"DiscussionThread"> | string
   body?: Prisma.StringFilter<"DiscussionThread"> | string
+  category?: Prisma.EnumDiscussionCategoryKindFilter<"DiscussionThread"> | $Enums.DiscussionCategoryKind
   ticker?: Prisma.StringNullableFilter<"DiscussionThread"> | string | null
+  viewCount?: Prisma.IntFilter<"DiscussionThread"> | number
   isPinned?: Prisma.BoolFilter<"DiscussionThread"> | boolean
   isLocked?: Prisma.BoolFilter<"DiscussionThread"> | boolean
   createdAt?: Prisma.DateTimeFilter<"DiscussionThread"> | Date | string
@@ -264,15 +318,19 @@ export type DiscussionThreadOrderByWithAggregationInput = {
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   ticker?: Prisma.SortOrderInput | Prisma.SortOrder
+  viewCount?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   isLocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.DiscussionThreadCountOrderByAggregateInput
+  _avg?: Prisma.DiscussionThreadAvgOrderByAggregateInput
   _max?: Prisma.DiscussionThreadMaxOrderByAggregateInput
   _min?: Prisma.DiscussionThreadMinOrderByAggregateInput
+  _sum?: Prisma.DiscussionThreadSumOrderByAggregateInput
 }
 
 export type DiscussionThreadScalarWhereWithAggregatesInput = {
@@ -283,7 +341,9 @@ export type DiscussionThreadScalarWhereWithAggregatesInput = {
   authorId?: Prisma.StringWithAggregatesFilter<"DiscussionThread"> | string
   title?: Prisma.StringWithAggregatesFilter<"DiscussionThread"> | string
   body?: Prisma.StringWithAggregatesFilter<"DiscussionThread"> | string
+  category?: Prisma.EnumDiscussionCategoryKindWithAggregatesFilter<"DiscussionThread"> | $Enums.DiscussionCategoryKind
   ticker?: Prisma.StringNullableWithAggregatesFilter<"DiscussionThread"> | string | null
+  viewCount?: Prisma.IntWithAggregatesFilter<"DiscussionThread"> | number
   isPinned?: Prisma.BoolWithAggregatesFilter<"DiscussionThread"> | boolean
   isLocked?: Prisma.BoolWithAggregatesFilter<"DiscussionThread"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DiscussionThread"> | Date | string
@@ -295,7 +355,9 @@ export type DiscussionThreadCreateInput = {
   id?: string
   title: string
   body: string
+  category?: $Enums.DiscussionCategoryKind
   ticker?: string | null
+  viewCount?: number
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: Date | string
@@ -310,7 +372,9 @@ export type DiscussionThreadUncheckedCreateInput = {
   authorId: string
   title: string
   body: string
+  category?: $Enums.DiscussionCategoryKind
   ticker?: string | null
+  viewCount?: number
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: Date | string
@@ -323,7 +387,9 @@ export type DiscussionThreadUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
   ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -338,7 +404,9 @@ export type DiscussionThreadUncheckedUpdateInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
   ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -352,7 +420,9 @@ export type DiscussionThreadCreateManyInput = {
   authorId: string
   title: string
   body: string
+  category?: $Enums.DiscussionCategoryKind
   ticker?: string | null
+  viewCount?: number
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: Date | string
@@ -364,7 +434,9 @@ export type DiscussionThreadUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
   ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -377,7 +449,9 @@ export type DiscussionThreadUncheckedUpdateManyInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
   ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -400,7 +474,9 @@ export type DiscussionThreadCountOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   ticker?: Prisma.SortOrder
+  viewCount?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   isLocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -408,12 +484,18 @@ export type DiscussionThreadCountOrderByAggregateInput = {
   deletedAt?: Prisma.SortOrder
 }
 
+export type DiscussionThreadAvgOrderByAggregateInput = {
+  viewCount?: Prisma.SortOrder
+}
+
 export type DiscussionThreadMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   ticker?: Prisma.SortOrder
+  viewCount?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   isLocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -426,12 +508,18 @@ export type DiscussionThreadMinOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   body?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   ticker?: Prisma.SortOrder
+  viewCount?: Prisma.SortOrder
   isPinned?: Prisma.SortOrder
   isLocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
+}
+
+export type DiscussionThreadSumOrderByAggregateInput = {
+  viewCount?: Prisma.SortOrder
 }
 
 export type DiscussionThreadScalarRelationFilter = {
@@ -481,6 +569,10 @@ export type DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput = {
   deleteMany?: Prisma.DiscussionThreadScalarWhereInput | Prisma.DiscussionThreadScalarWhereInput[]
 }
 
+export type EnumDiscussionCategoryKindFieldUpdateOperationsInput = {
+  set?: $Enums.DiscussionCategoryKind
+}
+
 export type DiscussionThreadCreateNestedOneWithoutReplyInput = {
   create?: Prisma.XOR<Prisma.DiscussionThreadCreateWithoutReplyInput, Prisma.DiscussionThreadUncheckedCreateWithoutReplyInput>
   connectOrCreate?: Prisma.DiscussionThreadCreateOrConnectWithoutReplyInput
@@ -499,7 +591,9 @@ export type DiscussionThreadCreateWithoutAuthorInput = {
   id?: string
   title: string
   body: string
+  category?: $Enums.DiscussionCategoryKind
   ticker?: string | null
+  viewCount?: number
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: Date | string
@@ -512,7 +606,9 @@ export type DiscussionThreadUncheckedCreateWithoutAuthorInput = {
   id?: string
   title: string
   body: string
+  category?: $Enums.DiscussionCategoryKind
   ticker?: string | null
+  viewCount?: number
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: Date | string
@@ -555,7 +651,9 @@ export type DiscussionThreadScalarWhereInput = {
   authorId?: Prisma.StringFilter<"DiscussionThread"> | string
   title?: Prisma.StringFilter<"DiscussionThread"> | string
   body?: Prisma.StringFilter<"DiscussionThread"> | string
+  category?: Prisma.EnumDiscussionCategoryKindFilter<"DiscussionThread"> | $Enums.DiscussionCategoryKind
   ticker?: Prisma.StringNullableFilter<"DiscussionThread"> | string | null
+  viewCount?: Prisma.IntFilter<"DiscussionThread"> | number
   isPinned?: Prisma.BoolFilter<"DiscussionThread"> | boolean
   isLocked?: Prisma.BoolFilter<"DiscussionThread"> | boolean
   createdAt?: Prisma.DateTimeFilter<"DiscussionThread"> | Date | string
@@ -567,7 +665,9 @@ export type DiscussionThreadCreateWithoutReplyInput = {
   id?: string
   title: string
   body: string
+  category?: $Enums.DiscussionCategoryKind
   ticker?: string | null
+  viewCount?: number
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: Date | string
@@ -581,7 +681,9 @@ export type DiscussionThreadUncheckedCreateWithoutReplyInput = {
   authorId: string
   title: string
   body: string
+  category?: $Enums.DiscussionCategoryKind
   ticker?: string | null
+  viewCount?: number
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: Date | string
@@ -609,7 +711,9 @@ export type DiscussionThreadUpdateWithoutReplyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
   ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -623,7 +727,9 @@ export type DiscussionThreadUncheckedUpdateWithoutReplyInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
   ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -635,7 +741,9 @@ export type DiscussionThreadCreateManyAuthorInput = {
   id?: string
   title: string
   body: string
+  category?: $Enums.DiscussionCategoryKind
   ticker?: string | null
+  viewCount?: number
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: Date | string
@@ -647,7 +755,9 @@ export type DiscussionThreadUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
   ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -660,7 +770,9 @@ export type DiscussionThreadUncheckedUpdateWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
   ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -673,7 +785,9 @@ export type DiscussionThreadUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumDiscussionCategoryKindFieldUpdateOperationsInput | $Enums.DiscussionCategoryKind
   ticker?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isLocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -717,7 +831,9 @@ export type DiscussionThreadSelect<ExtArgs extends runtime.Types.Extensions.Inte
   authorId?: boolean
   title?: boolean
   body?: boolean
+  category?: boolean
   ticker?: boolean
+  viewCount?: boolean
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: boolean
@@ -733,7 +849,9 @@ export type DiscussionThreadSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   authorId?: boolean
   title?: boolean
   body?: boolean
+  category?: boolean
   ticker?: boolean
+  viewCount?: boolean
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: boolean
@@ -747,7 +865,9 @@ export type DiscussionThreadSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   authorId?: boolean
   title?: boolean
   body?: boolean
+  category?: boolean
   ticker?: boolean
+  viewCount?: boolean
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: boolean
@@ -761,7 +881,9 @@ export type DiscussionThreadSelectScalar = {
   authorId?: boolean
   title?: boolean
   body?: boolean
+  category?: boolean
   ticker?: boolean
+  viewCount?: boolean
   isPinned?: boolean
   isLocked?: boolean
   createdAt?: boolean
@@ -769,7 +891,7 @@ export type DiscussionThreadSelectScalar = {
   deletedAt?: boolean
 }
 
-export type DiscussionThreadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "title" | "body" | "ticker" | "isPinned" | "isLocked" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["discussionThread"]>
+export type DiscussionThreadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "title" | "body" | "category" | "ticker" | "viewCount" | "isPinned" | "isLocked" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["discussionThread"]>
 export type DiscussionThreadInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reply?: boolean | Prisma.DiscussionThread$replyArgs<ExtArgs>
@@ -793,10 +915,16 @@ export type $DiscussionThreadPayload<ExtArgs extends runtime.Types.Extensions.In
     authorId: string
     title: string
     body: string
+    category: $Enums.DiscussionCategoryKind
     /**
      * Optional ticker tag, so a thread can hang off a listing.
      */
     ticker: string | null
+    /**
+     * Incremented when a thread is opened. Approximate by design: it counts
+     * opens, not unique readers, and nothing depends on it being exact.
+     */
+    viewCount: number
     isPinned: boolean
     isLocked: boolean
     createdAt: Date
@@ -1231,7 +1359,9 @@ export interface DiscussionThreadFieldRefs {
   readonly authorId: Prisma.FieldRef<"DiscussionThread", 'String'>
   readonly title: Prisma.FieldRef<"DiscussionThread", 'String'>
   readonly body: Prisma.FieldRef<"DiscussionThread", 'String'>
+  readonly category: Prisma.FieldRef<"DiscussionThread", 'DiscussionCategoryKind'>
   readonly ticker: Prisma.FieldRef<"DiscussionThread", 'String'>
+  readonly viewCount: Prisma.FieldRef<"DiscussionThread", 'Int'>
   readonly isPinned: Prisma.FieldRef<"DiscussionThread", 'Boolean'>
   readonly isLocked: Prisma.FieldRef<"DiscussionThread", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"DiscussionThread", 'DateTime'>

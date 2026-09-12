@@ -1,11 +1,6 @@
-import type { Metadata } from "next";
-import { MarketDataView } from "@/features/market-data/components/market-data-view";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Market Data — Piranha",
-  description: "Global macro, Indonesian market and commodity indicators in one place.",
-};
-
+/** /market-data is the nav target; the sections own the real URLs. */
 export default function MarketDataPage() {
-  return <MarketDataView />;
+  redirect("/market-data/global");
 }

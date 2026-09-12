@@ -2076,7 +2076,9 @@ export const DiscussionThreadScalarFieldEnum = {
   authorId: 'authorId',
   title: 'title',
   body: 'body',
+  category: 'category',
   ticker: 'ticker',
+  viewCount: 'viewCount',
   isPinned: 'isPinned',
   isLocked: 'isLocked',
   createdAt: 'createdAt',
@@ -2427,6 +2429,20 @@ export type EnumCalendarEventKindFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'CalendarEventKind[]'
  */
 export type ListEnumCalendarEventKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CalendarEventKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscussionCategoryKind'
+ */
+export type EnumDiscussionCategoryKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscussionCategoryKind'>
+    
+
+
+/**
+ * Reference to a field of type 'DiscussionCategoryKind[]'
+ */
+export type ListEnumDiscussionCategoryKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscussionCategoryKind[]'>
     
 
 

@@ -118,6 +118,17 @@ export const CalendarEventKind = {
 export type CalendarEventKind = (typeof CalendarEventKind)[keyof typeof CalendarEventKind]
 
 
+export const DiscussionCategoryKind = {
+  MARKET_OUTLOOK: 'MARKET_OUTLOOK',
+  STOCK_DISCUSSION: 'STOCK_DISCUSSION',
+  MACRO_ECONOMY: 'MACRO_ECONOMY',
+  SECTOR_ANALYSIS: 'SECTOR_ANALYSIS',
+  STRATEGY_PSYCHOLOGY: 'STRATEGY_PSYCHOLOGY'
+} as const
+
+export type DiscussionCategoryKind = (typeof DiscussionCategoryKind)[keyof typeof DiscussionCategoryKind]
+
+
 export const EbookTagKind = {
   RESEARCH_REPORT: 'RESEARCH_REPORT',
   ARTICLE: 'ARTICLE'

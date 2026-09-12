@@ -1,5 +1,4 @@
 import { cn } from "@/lib/cn";
-import { sparkPath } from "@/features/market-data/market-data-format";
 
 const WIDTH = 120;
 const HEIGHT = 32;
@@ -44,4 +43,22 @@ export function IndicatorSparkline({
       />
     </svg>
   );
+}
+
+/** Trend shape over a fixed viewBox; a flat series renders as a centre line. */
+function sparkPath(values: number[], width: number, height: number): string {
+  if (values.length < 2) {
+    return "";
+  }
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = max - min;
+
+  return values
+    .map((value, index) => {
+      const x = (index / (values.length - 1)) * width;
+      const y = span === 0 ? height / 2 : height - ((value - min) / span) * height;
+      return `${index === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`;
+    })
+    .join(" ");
 }
