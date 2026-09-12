@@ -166,3 +166,50 @@ first; it silently has nothing to do until then.
 | `GET /api/v1/market/foreign-flow?scope&days` | daily net flow + IHSG close |
 
 All require a bearer token. The browser never calls idx.co.id.
+
+
+## Global macro and commodities
+
+The Market Data page is fed by Yahoo Finance's chart endpoint
+(`query1.finance.yahoo.com/v8/finance/chart/<symbol>`), verified working
+without a key on 2026-09-12. Stooq was tried first and rejected: it answers
+with a JavaScript proof-of-work challenge, not CSV.
+
+It is an **undocumented** endpoint. It can change shape or start refusing
+requests, so `toBars()` asserts on the fields it needs and the run reports any
+symbol it could not read rather than writing a partial day quietly.
+
+Symbols are listed in `src/features/market-data/indicator-catalogue.ts`, each
+with the unit it is measured in — points, percent, USD or IDR — because one
+numeric column stores all of them.
+
+IHSG is **not** fetched from the vendor. `index_summaries` already holds it
+from IDX, and that is the authoritative copy, so it is mirrored across. The two
+agreed exactly on 2026-09-11 (6541.377), which is what made the vendor
+trustworthy enough to use for everything else.
+
+Fed funds, US CPI / Core CPI / PCE, consumer sentiment and the BI policy rate
+are **not carried**. They are statistical releases rather than traded
+instruments, so a price feed does not publish them. FRED has all of them free
+but needs an API key; add a `source: "fred"` branch when one exists. The page
+names them rather than leaving a gap.
+
+## Nightly job
+
+`scripts/daily_update.sh`, in cron at 21:00 on weekdays, with a second
+indicators-only run at 06:30 Tue-Sat.
+
+Ordering is deliberate. `build:market-flows` derives from `broker_summaries`,
+which the caishen pipeline loads between 18:00 and 18:15, and the tingfeng
+chain runs until 19:54 — so 21:00 is the first clear slot. The morning run
+exists because 21:00 WIB is before Wall Street opens (20:30 WIB), so the
+nightly run stores the *previous* US close; 06:30 picks up the one that just
+finished.
+
+It is a direct script rather than a `trigger_job.sh` registry job: that Jobs &
+Workers API belongs to caishen, and this project has none. The same crontab
+already keeps direct scripts "ON PURPOSE" for that reason.
+
+The script resolves npm from nvm itself — cron's PATH does not include it, and
+every step would otherwise fail with `npm: not found`. Runs are flock-guarded,
+every step is idempotent, and output goes to `logs/daily_update.log`.

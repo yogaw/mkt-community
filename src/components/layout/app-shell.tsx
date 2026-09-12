@@ -14,7 +14,7 @@ const navItems = [
   { href: "/discussion", label: "Discussion" },
   { href: "/videos", label: "Videos" },
   { href: "/news", label: "News" },
-  { href: "/watchlist", label: "Watchlist" },
+  { href: "/market-data", label: "Market Data" },
   { href: "/profile", label: "Profile" },
 ];
 
@@ -24,7 +24,7 @@ const pageTitleRules: Array<{ prefix: string; title: string }> = [
   { prefix: "/signals", title: "Signals" },
   { prefix: "/discussion", title: "Discussion" },
   { prefix: "/news", title: "News" },
-  { prefix: "/watchlist", title: "Watchlist" },
+  { prefix: "/market-data", title: "Market Data" },
   { prefix: "/search", title: "Search" },
   { prefix: "/profile", title: "Profile" },
 ];
