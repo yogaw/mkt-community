@@ -5,4 +5,6 @@ export interface ProfileDto {
   name: string;
   email: string;
   membershipStatus: MembershipStatus;
+  /** Account creation date, shown as "Member since". */
+  joinedAt: string;
 }
