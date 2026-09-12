@@ -1,19 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SearchInput } from "@/components/ui/search-input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authedFetch } from "@/lib/api/authed-fetch";
-import { clearSession, getToken } from "@/lib/auth/token-storage";
+import { clearSession, getToken, isStoredUserAdmin } from "@/lib/auth/token-storage";
 import { cn } from "@/lib/cn";
 import type { PaginationMeta } from "@/lib/api/pagination";
 import { SignalStatCards } from "./signal-stat-cards";
 import { SignalTable } from "./signal-table";
 import { SignalDetailPanel, SignalDetailPanelSkeleton } from "./signal-detail-panel";
 import { SignalPerformancePanel } from "./signal-performance-panel";
+import { AddSignalModal } from "./add-signal-modal";
 import type {
   SignalDetailDto,
   SignalPerformanceDto,
@@ -59,6 +60,12 @@ const sortOptions: Array<{ value: SignalSort; label: string }> = [
   { value: "ticker", label: "Ticker A–Z" },
 ];
 
+/** The stored session cannot change role without a fresh sign-in, so there is
+ *  nothing to subscribe to for the life of this page. */
+function subscribeToSession(): () => void {
+  return () => {};
+}
+
 const selectClass =
   "rounded-lg border border-edge bg-panel-raised px-3 py-2 text-sm text-ink focus:border-accent focus:outline-none";
 
@@ -87,7 +94,13 @@ export function SignalsView() {
   const [hasPerformanceError, setHasPerformanceError] = useState(false);
 
   const [pendingWatchlistId, setPendingWatchlistId] = useState<string | null>(null);
+  const [isAddOpen, setIsAddOpen] = useState(false);
   const debouncedRef = useRef("");
+
+  // localStorage has no server snapshot, so the admin control resolves to false
+  // during render and appears once hydrated. Gating the UI is a convenience —
+  // POST /api/v1/signals re-checks the role on the signed token.
+  const isAdmin = useSyncExternalStore(subscribeToSession, isStoredUserAdmin, () => false);
 
   const goToLogin = useCallback(() => {
     clearSession();
@@ -262,6 +275,21 @@ export function SignalsView() {
     }
   }
 
+  function handleCreated(signal: SignalDetailDto) {
+    // Land on the new signal: it is published as active, so switch there,
+    // clear filters that might hide it, and refetch for the new counts.
+    setTab("active");
+    setSearch("");
+    debouncedRef.current = "";
+    setDebouncedSearch("");
+    setTypeFilter("all");
+    setStatusFilter("all");
+    setSort("newest");
+    setDetail(signal);
+    setSelectedId(signal.id);
+    setReloadKey((key) => key + 1);
+  }
+
   function handleTabChange(next: ViewTab) {
     if (next === tab) {
       return;
@@ -314,11 +342,31 @@ export function SignalsView() {
           Actionable trade ideas backed by our analysis, with the entry, targets and stop for
           each one laid out before you commit.
         </p>
-        <p className="rounded-lg border border-edge bg-panel px-4 py-2.5 text-sm text-ink-muted">
-          <span className="text-ink">&ldquo;Discipline turns good trades into great results.&rdquo;</span>{" "}
-          <span className="text-ink-faint">— Piranha</span>
-        </p>
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="rounded-lg border border-edge bg-panel px-4 py-2.5 text-sm text-ink-muted">
+            <span className="text-ink">&ldquo;Discipline turns good trades into great results.&rdquo;</span>{" "}
+            <span className="text-ink-faint">— Piranha</span>
+          </p>
+          {isAdmin ? (
+            <div className="shrink-0">
+              <Button onClick={() => setIsAddOpen(true)} className="px-4">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+                Add Signal
+              </Button>
+            </div>
+          ) : null}
+        </div>
       </div>
+
+      {isAdmin ? (
+        <AddSignalModal
+          open={isAddOpen}
+          onClose={() => setIsAddOpen(false)}
+          onCreated={handleCreated}
+        />
+      ) : null}
 
       <div className="mt-6">
         {stats === null ? (

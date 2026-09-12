@@ -3,6 +3,7 @@ import { ErrorCode } from "@/lib/errors/error-code";
 import type { PaginatedResult } from "@/lib/api/pagination";
 import { toSignalDetailDto, toSignalRowDto } from "@/features/signals/signal-mappers";
 import type {
+  CreateSignalInput,
   SignalDetailDto,
   SignalFilter,
   SignalPerformanceDto,
@@ -13,6 +14,7 @@ import type {
 } from "@/features/signals/signal-types";
 import type {
   ClosedSignalOutcome,
+  NewSignalEvent,
   SignalRepository,
 } from "@/features/signals/repository/signal-repository";
 import { signalRepository } from "@/features/signals/repository/signal-repository";
@@ -26,6 +28,7 @@ export interface SignalListResult extends PaginatedResult<SignalRowDto> {
 export interface SignalService {
   listSignals(filter: SignalFilter): Promise<SignalListResult>;
   getSignalById(id: string, userId: string): Promise<SignalDetailDto>;
+  createSignal(input: CreateSignalInput, userId: string): Promise<SignalDetailDto>;
   getPerformance(): Promise<SignalPerformanceDto>;
   setWatchlisted(userId: string, signalId: string, watchlisted: boolean): Promise<void>;
 }
@@ -65,6 +68,14 @@ export class SignalServiceImpl implements SignalService {
     }
 
     return toSignalDetailDto(signal, watchlistedIds.includes(signal.id));
+  }
+
+  async createSignal(input: CreateSignalInput, userId: string): Promise<SignalDetailDto> {
+    const created = await this.repository.create(input, toOpeningTimeline(input));
+
+    // Re-read so the response carries the timeline the same shape the detail
+    // endpoint returns, rather than a second hand-built version of it.
+    return this.getSignalById(created.id, userId);
   }
 
   async getPerformance(): Promise<SignalPerformanceDto> {
@@ -126,6 +137,57 @@ export class SignalServiceImpl implements SignalService {
       losses: scored.length - wins,
     };
   }
+}
+
+function formatPrice(value: number): string {
+  return new Intl.NumberFormat("en-US").format(value);
+}
+
+/**
+ * The timeline a signal starts life with: the entry that was taken, each
+ * target still to come, and the stop standing guard underneath.
+ */
+function toOpeningTimeline(input: CreateSignalInput): NewSignalEvent[] {
+  const reachedTp1 = input.status === "TP1_HIT" || input.status === "TP2_HIT";
+  const reachedTp2 = input.status === "TP2_HIT";
+  const stopped = input.status === "STOP_LOSS";
+
+  const events: Array<Omit<NewSignalEvent, "sortOrder">> = [
+    {
+      kind: "ENTRY",
+      state: "DONE",
+      title: "Signal issued",
+      detail: `${input.ticker} at ${formatPrice(input.entryLow)} – ${formatPrice(input.entryHigh)}`,
+      occurredAt: input.issuedAt,
+    },
+    {
+      kind: "TARGET",
+      state: reachedTp1 ? "DONE" : "PENDING",
+      title: "Target 1",
+      detail: reachedTp1 ? formatPrice(input.target1) : `${formatPrice(input.target1)} (pending)`,
+      occurredAt: null,
+    },
+  ];
+
+  if (input.target2 !== null) {
+    events.push({
+      kind: "TARGET",
+      state: reachedTp2 ? "DONE" : "PENDING",
+      title: "Target 2",
+      detail: reachedTp2 ? formatPrice(input.target2) : `${formatPrice(input.target2)} (pending)`,
+      occurredAt: null,
+    });
+  }
+
+  events.push({
+    kind: "STOP_LOSS",
+    state: stopped ? "DONE" : "ACTIVE",
+    title: "Stop Loss",
+    detail: formatPrice(input.stopLoss),
+    occurredAt: null,
+  });
+
+  return events.map((event, index) => ({ ...event, sortOrder: index }));
 }
 
 interface ScoredOutcome extends ClosedSignalOutcome {

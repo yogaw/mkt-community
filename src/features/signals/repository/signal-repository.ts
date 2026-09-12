@@ -1,7 +1,7 @@
 import { db } from "@/database";
 import type { SignalModel, SignalEventModel } from "@/database/prisma/models";
 import type { PaginatedResult } from "@/lib/api/pagination";
-import type { SignalFilter } from "@/features/signals/signal-types";
+import type { CreateSignalInput, SignalFilter } from "@/features/signals/signal-types";
 
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -11,6 +11,16 @@ export interface ClosedSignalOutcome {
   type: SignalModel["type"];
   entryLow: number;
   currentPrice: number;
+}
+
+/** A timeline row to create alongside a new signal. */
+export interface NewSignalEvent {
+  kind: SignalEventModel["kind"];
+  state: SignalEventModel["state"];
+  title: string;
+  detail: string | null;
+  occurredAt: Date | null;
+  sortOrder: number;
 }
 
 export interface SignalWeeklyCounts {
@@ -26,6 +36,7 @@ export interface SignalRepository {
   countWatchlist(userId: string): Promise<number>;
   countWeeklyMilestones(): Promise<SignalWeeklyCounts>;
   findClosedOutcomes(): Promise<ClosedSignalOutcome[]>;
+  create(input: CreateSignalInput, events: NewSignalEvent[]): Promise<SignalModel>;
   addToWatchlist(userId: string, signalId: string): Promise<void>;
   removeFromWatchlist(userId: string, signalId: string): Promise<void>;
 }
@@ -124,6 +135,31 @@ export class PrismaSignalRepository implements SignalRepository {
     return db.signal.findMany({
       where: { deletedAt: null, status: "CLOSED" },
       select: { ticker: true, type: true, entryLow: true, currentPrice: true },
+    });
+  }
+
+  async create(input: CreateSignalInput, events: NewSignalEvent[]): Promise<SignalModel> {
+    // One transaction so a signal never lands without its timeline.
+    return db.signal.create({
+      data: {
+        ticker: input.ticker,
+        companyName: input.companyName,
+        type: input.type,
+        entryLow: input.entryLow,
+        entryHigh: input.entryHigh,
+        currentPrice: input.currentPrice,
+        target1: input.target1,
+        target2: input.target2,
+        stopLoss: input.stopLoss,
+        status: input.status,
+        riskLevel: input.riskLevel,
+        positionSize: input.positionSize,
+        timeHorizon: input.timeHorizon,
+        thesis: input.thesis,
+        keyCatalysts: input.keyCatalysts,
+        issuedAt: input.issuedAt,
+        event: { create: events },
+      },
     });
   }
 
