@@ -233,3 +233,27 @@ describe("insight sentence", () => {
     assert.equal(text.includes("largest net seller"), false);
   });
 });
+
+describe("buy/sell ratio", () => {
+  it("says whether the two sides were the same size", async () => {
+    const { buySellRatio } = await import("./broker-flow-math");
+    assert.equal(buySellRatio(100, 100), 1);
+    assert.equal(buySellRatio(150, 100), 1.5);
+    assert.equal(buySellRatio(50, 100), 0.5);
+  });
+
+  it("is null rather than Infinity when nothing sold", async () => {
+    const { buySellRatio } = await import("./broker-flow-math");
+    assert.equal(buySellRatio(100, 0), null);
+    assert.equal(buySellRatio(0, 0), null);
+  });
+
+  it("is a different fact from a small net", async () => {
+    const { buySellRatio, flowStateOf } = await import("./broker-flow-math");
+    // A quiet stock and a heavily traded one that balanced both net near zero,
+    // but only one of them saw real two-way turnover.
+    assert.equal(flowStateOf(0, 200), "BALANCED");
+    assert.equal(flowStateOf(0, 2_000_000), "BALANCED");
+    assert.equal(buySellRatio(100, 100), buySellRatio(1_000_000, 1_000_000));
+  });
+});

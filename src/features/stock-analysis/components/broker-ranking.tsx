@@ -2,13 +2,26 @@
 
 import { cn } from "@/lib/cn";
 import { brokerColor } from "@/features/stock-analysis/broker-colors";
-import { directionMark, formatValueSigned, toneFor } from "@/features/stock-analysis/stock-analysis-format";
+import {
+  directionMark,
+  directionWord,
+  formatValueSigned,
+  toneFor,
+} from "@/features/stock-analysis/stock-analysis-format";
 import type { BrokerFlow } from "@/features/stock-analysis/stock-analysis-types";
 import { EmptyPanel } from "./states";
 
-const SIDE_COUNT = 6;
+const SHOWN = 8;
 
-/** The strongest net buyers and sellers, as horizontal bars against one scale. */
+/**
+ * The brokers that moved the period, buyers and sellers in one list.
+ *
+ * Ranked by how much each moved rather than split into two columns: the story
+ * of a period is usually a specific desk accumulating *against* a specific desk
+ * selling, and two separate lists make that pairing something the reader has to
+ * assemble. One scale across the whole list means a bar's length compares
+ * directly to every other bar.
+ */
 export function BrokerRanking({
   brokers,
   onSelectBroker,
@@ -25,82 +38,33 @@ export function BrokerRanking({
     );
   }
 
-  const buyers = brokers.filter((broker) => broker.netValue > 0).slice(0, SIDE_COUNT);
-  const sellers = brokers
-    .filter((broker) => broker.netValue < 0)
-    .slice(-SIDE_COUNT)
-    .reverse();
-
-  // One scale across both columns, so a bar's length means the same thing on
-  // either side of the card.
-  const widest = Math.max(
-    1,
-    ...[...buyers, ...sellers].map((broker) => Math.abs(broker.netValue)),
-  );
+  const ranked = [...brokers]
+    .sort((a, b) => Math.abs(b.netValue) - Math.abs(a.netValue))
+    .slice(0, SHOWN);
+  const widest = Math.max(1, ...ranked.map((broker) => Math.abs(broker.netValue)));
 
   return (
-    <section className="rounded-xl border border-edge bg-panel">
-      <header className="border-b border-edge px-5 py-4">
-        <h2 className="text-base font-semibold text-ink">Broker Ranking</h2>
-        <p className="mt-0.5 text-sm text-ink-muted">
-          Net value per broker over the selected period.
-        </p>
+    <section className="min-w-0 rounded-xl border border-edge bg-panel">
+      <header className="flex flex-wrap items-baseline justify-between gap-2 border-b border-edge px-5 py-4">
+        <div>
+          <h2 className="text-base font-semibold text-ink">Broker Ranking</h2>
+          <p className="mt-0.5 text-sm text-ink-muted">
+            Largest net buyers and sellers over the selected period.
+          </p>
+        </div>
+        <span className="shrink-0 text-xs text-ink-faint">
+          {Math.min(SHOWN, brokers.length)} of {brokers.length} brokers
+        </span>
       </header>
 
-      <div className="grid gap-x-8 gap-y-5 p-5 lg:grid-cols-2">
-        <Column
-          title="Top Buyers"
-          mark="▲"
-          tone="text-accent"
-          brokers={buyers}
-          widest={widest}
-          onSelectBroker={onSelectBroker}
-        />
-        <Column
-          title="Top Sellers"
-          mark="▼"
-          tone="text-down"
-          brokers={sellers}
-          widest={widest}
-          onSelectBroker={onSelectBroker}
-        />
-      </div>
+      <ul className="space-y-1 p-4">
+        {ranked.map((broker) => (
+          <li key={broker.brokerCode}>
+            <BrokerRankingBar broker={broker} widest={widest} onSelect={onSelectBroker} />
+          </li>
+        ))}
+      </ul>
     </section>
-  );
-}
-
-function Column({
-  title,
-  mark,
-  tone,
-  brokers,
-  widest,
-  onSelectBroker,
-}: {
-  title: string;
-  mark: string;
-  tone: string;
-  brokers: BrokerFlow[];
-  widest: number;
-  onSelectBroker: (brokerCode: string) => void;
-}) {
-  return (
-    <div>
-      <h3 className={cn("text-xs font-semibold uppercase tracking-wide", tone)}>
-        {mark} {title}
-      </h3>
-      {brokers.length === 0 ? (
-        <p className="mt-3 text-sm text-ink-faint">None in this period.</p>
-      ) : (
-        <ul className="mt-3 space-y-2">
-          {brokers.map((broker) => (
-            <li key={broker.brokerCode}>
-              <BrokerRankingBar broker={broker} widest={widest} onSelect={onSelectBroker} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
   );
 }
 
@@ -119,9 +83,10 @@ export function BrokerRankingBar({
     <button
       type="button"
       onClick={() => onSelect(broker.brokerCode)}
-      className="group flex w-full items-center gap-3 rounded-lg px-1.5 py-1 text-left transition-colors hover:bg-panel-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      title={`${broker.brokerCode} · net ${directionWord(broker.netValue).toLowerCase()}`}
+      className="flex w-full items-center gap-3 rounded-lg px-1.5 py-1.5 text-left transition-colors hover:bg-panel-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >
-      <span className="flex w-12 shrink-0 items-center gap-1.5">
+      <span className="flex w-11 shrink-0 items-center gap-1.5">
         <span
           aria-hidden="true"
           className="h-2 w-2 shrink-0 rounded-full"
@@ -130,14 +95,19 @@ export function BrokerRankingBar({
         <span className="font-mono text-sm font-semibold text-ink">{broker.brokerCode}</span>
       </span>
 
-      <span className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-panel-raised">
+      <span className="h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-panel-raised">
         <span
           className={cn("block h-full rounded-full", broker.netValue >= 0 ? "bg-accent" : "bg-down")}
           style={{ width: `${share}%` }}
         />
       </span>
 
-      <span className={cn("w-28 shrink-0 text-right text-sm font-semibold whitespace-nowrap", toneFor(broker.netValue))}>
+      <span
+        className={cn(
+          "w-[6.5rem] shrink-0 text-right text-sm font-semibold whitespace-nowrap",
+          toneFor(broker.netValue),
+        )}
+      >
         {directionMark(broker.netValue)} {formatValueSigned(broker.netValue)}
       </span>
     </button>

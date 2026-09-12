@@ -12,9 +12,14 @@ import {
 import type { MarketDayFlow } from "@/features/stock-analysis/stock-analysis-types";
 import { EmptyPanel } from "./states";
 
-const WIDTH = 960;
-const HEIGHT = 220;
-const PAD = { top: 12, right: 12, bottom: 26, left: 74 };
+/*
+ * A squarer viewBox than the wide charts above, because this one sits in a
+ * half-width column beside the ranking. A 960-wide box scaled into that column
+ * left the bars a third of the card's height and shrank every label with them.
+ */
+const WIDTH = 620;
+const HEIGHT = 300;
+const PAD = { top: 14, right: 12, bottom: 28, left: 66 };
 const PLOT_W = WIDTH - PAD.left - PAD.right;
 const PLOT_H = HEIGHT - PAD.top - PAD.bottom;
 

@@ -70,12 +70,33 @@ executed, not who placed it, and the tooltip on every flow card says so.
 The price/flow quadrant is labelled "Flow interpretation — not a trading
 signal" in the card and the tooltip.
 
+## Layout
+
+The information architecture follows the Stock Stalker reference: control card,
+tabs, a four-card KPI strip, three insight cards, the cumulative chart with its
+legend **above** the plot, then broker ranking and daily flow side by side, then
+the detail table. The visual system stays Piranha's own — the brief was explicit
+that the dark design was not to be copied, and the page renders in whichever
+theme the member has chosen.
+
+Broker Ranking is one list rather than separate buyer and seller columns. The
+story of a period is usually a specific desk accumulating against a specific
+desk selling, and two lists make that pairing something the reader has to
+assemble.
+
 ## Colour is never the only signal
 
 Every positive figure carries ▲ or "Buy", every negative one ▼ or "Sell".
 Broker line colours are **hashed from the broker code**, not assigned by rank,
 so a broker keeps its colour across the chart, legend, ranking, table and
 tooltip — and keeps it when the period changes and the ranking reshuffles.
+
+The palette is checked by measurement, not by eye. `broker-colors.test.ts`
+computes WCAG contrast for every entry against both the light panel (#ffffff)
+and the dark one (#15181a) and fails below 2.0:1 and 2.5:1 respectively. The
+first palette was chosen against white alone and half of it vanished when the
+theme flipped; the test caught two more entries (amber at 1.92:1, lime at
+1.98:1 on white) before they shipped.
 
 ## Performance
 

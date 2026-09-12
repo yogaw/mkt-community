@@ -388,8 +388,12 @@ export function StockDetailPage({ ticker }: { ticker: string }) {
                 )}
                 onSelectBroker={setOpenBroker}
               />
-              <BrokerRanking brokers={summary.brokers} onSelectBroker={setOpenBroker} />
-              <DailyBrokerFlowChart daily={summary.daily} />
+              {/* Side by side: the ranking says who moved the period and the
+                  daily bars say when, and reading them together is the point. */}
+              <div className="grid gap-4 xl:grid-cols-2">
+                <BrokerRanking brokers={summary.brokers} onSelectBroker={setOpenBroker} />
+                <DailyBrokerFlowChart daily={summary.daily} />
+              </div>
               <PriceVsFlow daily={summary.daily} netValue={summary.netValue} />
               <BrokerTable brokers={summary.brokers} onSelectBroker={setOpenBroker} />
             </div>

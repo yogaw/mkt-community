@@ -36,7 +36,7 @@ export function BrokerSummaryCards({ summary }: { summary: StockBrokerSummary })
         label="Flow Interpretation"
         tooltip={TERMS.accumulation}
         value={FLOW_STATE_LABEL[summary.flowState]}
-        secondary={flowBiasLabel(summary.netValue, summary.totalTradedValue)}
+        secondary={`${flowBiasLabel(summary.netValue, summary.totalTradedValue)} · ${summary.tradingDays} sessions`}
         tone={
           summary.flowState === "ACCUMULATION"
             ? "text-accent"

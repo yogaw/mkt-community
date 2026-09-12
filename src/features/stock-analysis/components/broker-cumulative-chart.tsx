@@ -138,6 +138,23 @@ export function BrokerCumulativeChart({
         ) : null}
       </header>
 
+      <BrokerChartLegend
+        brokers={brokers}
+        hidden={hidden}
+        onToggle={(code) =>
+          setHidden((current) => {
+            const next = new Set(current);
+            if (next.has(code)) {
+              next.delete(code);
+            } else {
+              next.add(code);
+            }
+            return next;
+          })
+        }
+        onOpen={onSelectBroker}
+      />
+
       <div className="px-2 py-3 sm:px-4">
         <svg
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -268,26 +285,10 @@ export function BrokerCumulativeChart({
       ) : (
         <p className="border-t border-edge px-5 py-3 text-xs text-ink-faint">
           Point at the chart for a session&rsquo;s cumulative figures. Select a broker in the
-          legend to hide its line.
+          legend above to hide its line.
         </p>
       )}
 
-      <BrokerChartLegend
-        brokers={brokers}
-        hidden={hidden}
-        onToggle={(code) =>
-          setHidden((current) => {
-            const next = new Set(current);
-            if (next.has(code)) {
-              next.delete(code);
-            } else {
-              next.add(code);
-            }
-            return next;
-          })
-        }
-        onOpen={onSelectBroker}
-      />
     </section>
   );
 }
@@ -304,7 +305,7 @@ export function BrokerChartLegend({
   onOpen: (brokerCode: string) => void;
 }) {
   return (
-    <ul className="flex flex-wrap gap-1.5 border-t border-edge px-5 py-3">
+    <ul className="flex flex-wrap gap-1.5 border-b border-edge px-5 py-3">
       {brokers.map((broker) => {
         const isHidden = hidden.has(broker.brokerCode);
         return (

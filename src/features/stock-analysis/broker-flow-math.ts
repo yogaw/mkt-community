@@ -42,6 +42,18 @@ export function withCumulative(
   });
 }
 
+/**
+ * Buy value over sell value. "1.00x" says the two sides were the same size,
+ * which is a different fact from the net being small — a quiet stock and a
+ * heavily traded one that happened to balance both net near zero.
+ */
+export function buySellRatio(totalBuyValue: number, totalSellValue: number): number | null {
+  if (totalSellValue <= 0) {
+    return null;
+  }
+  return Math.round((totalBuyValue / totalSellValue) * 100) / 100;
+}
+
 export function netFlowRatio(netValue: number, totalTradedValue: number): number {
   if (totalTradedValue <= 0) {
     return 0;

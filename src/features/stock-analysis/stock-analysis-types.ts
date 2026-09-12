@@ -131,6 +131,10 @@ export interface StockBrokerSummary {
   daily: MarketDayFlow[];
 
   tradingDays: number;
+  /** Broker-day aggregate rows behind the period, shown as provenance. */
+  recordCount: number;
+  /** totalBuyValue / totalSellValue; null when nothing sold. */
+  buySellRatio: number | null;
   source: string;
   lastUpdated: string | null;
 }

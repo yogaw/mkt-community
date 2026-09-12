@@ -3,6 +3,7 @@ import { ErrorCode } from "@/lib/errors/error-code";
 import {
   averagePrice,
   buildInsight,
+  buySellRatio,
   concentrationOf,
   flowStateOf,
   netFlowRatio,
@@ -209,6 +210,8 @@ export class StockAnalysisServiceImpl implements StockAnalysisService {
       chartBrokers,
       daily,
       tradingDays: dates.length,
+      recordCount: rows.length,
+      buySellRatio: buySellRatio(totalBuyValue, totalSellValue),
       source: SOURCE,
       lastUpdated,
     };

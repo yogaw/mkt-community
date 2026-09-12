@@ -75,6 +75,21 @@ export function FlowInsightCard({ summary }: { summary: StockBrokerSummary }) {
           <InfoTooltip label="Broker flow">{TERMS.brokerProxy}</InfoTooltip>
         </p>
         <p className="mt-2 text-sm leading-relaxed text-ink-muted">{summary.insight}</p>
+
+        <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-faint">
+          <span>
+            Buy/sell ratio{" "}
+            <span className="font-semibold text-ink-muted">
+              {summary.buySellRatio === null ? "—" : `${summary.buySellRatio.toFixed(2)}x`}
+            </span>
+          </span>
+          <span>
+            {summary.recordCount.toLocaleString("en-US")} broker-day records over{" "}
+            {summary.tradingDays} sessions
+          </span>
+          <span>{summary.brokers.length} brokers traded</span>
+        </p>
+
         <p className="mt-2 text-xs text-ink-faint">
           Generated from the period&rsquo;s aggregates. Broker codes describe where trades were
           executed, not who placed them.
