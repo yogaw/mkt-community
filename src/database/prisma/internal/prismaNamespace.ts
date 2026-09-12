@@ -402,7 +402,10 @@ export const ModelName = {
   Video: 'Video',
   News: 'News',
   Announcement: 'Announcement',
-  LiveSession: 'LiveSession'
+  LiveSession: 'LiveSession',
+  Signal: 'Signal',
+  SignalEvent: 'SignalEvent',
+  SignalWatchlistItem: 'SignalWatchlistItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -418,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "category" | "video" | "news" | "announcement" | "liveSession"
+    modelProps: "user" | "category" | "video" | "news" | "announcement" | "liveSession" | "signal" | "signalEvent" | "signalWatchlistItem"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -866,6 +869,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Signal: {
+      payload: Prisma.$SignalPayload<ExtArgs>
+      fields: Prisma.SignalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SignalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SignalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload>
+        }
+        findFirst: {
+          args: Prisma.SignalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SignalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload>
+        }
+        findMany: {
+          args: Prisma.SignalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload>[]
+        }
+        create: {
+          args: Prisma.SignalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload>
+        }
+        createMany: {
+          args: Prisma.SignalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SignalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload>[]
+        }
+        delete: {
+          args: Prisma.SignalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload>
+        }
+        update: {
+          args: Prisma.SignalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload>
+        }
+        deleteMany: {
+          args: Prisma.SignalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SignalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SignalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload>[]
+        }
+        upsert: {
+          args: Prisma.SignalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalPayload>
+        }
+        aggregate: {
+          args: Prisma.SignalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSignal>
+        }
+        groupBy: {
+          args: Prisma.SignalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SignalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SignalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SignalCountAggregateOutputType> | number
+        }
+      }
+    }
+    SignalEvent: {
+      payload: Prisma.$SignalEventPayload<ExtArgs>
+      fields: Prisma.SignalEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SignalEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SignalEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload>
+        }
+        findFirst: {
+          args: Prisma.SignalEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SignalEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload>
+        }
+        findMany: {
+          args: Prisma.SignalEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload>[]
+        }
+        create: {
+          args: Prisma.SignalEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload>
+        }
+        createMany: {
+          args: Prisma.SignalEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SignalEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload>[]
+        }
+        delete: {
+          args: Prisma.SignalEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload>
+        }
+        update: {
+          args: Prisma.SignalEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.SignalEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SignalEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SignalEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.SignalEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalEventPayload>
+        }
+        aggregate: {
+          args: Prisma.SignalEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSignalEvent>
+        }
+        groupBy: {
+          args: Prisma.SignalEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SignalEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SignalEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SignalEventCountAggregateOutputType> | number
+        }
+      }
+    }
+    SignalWatchlistItem: {
+      payload: Prisma.$SignalWatchlistItemPayload<ExtArgs>
+      fields: Prisma.SignalWatchlistItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SignalWatchlistItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SignalWatchlistItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload>
+        }
+        findFirst: {
+          args: Prisma.SignalWatchlistItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SignalWatchlistItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload>
+        }
+        findMany: {
+          args: Prisma.SignalWatchlistItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload>[]
+        }
+        create: {
+          args: Prisma.SignalWatchlistItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload>
+        }
+        createMany: {
+          args: Prisma.SignalWatchlistItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SignalWatchlistItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload>[]
+        }
+        delete: {
+          args: Prisma.SignalWatchlistItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload>
+        }
+        update: {
+          args: Prisma.SignalWatchlistItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.SignalWatchlistItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SignalWatchlistItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SignalWatchlistItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.SignalWatchlistItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SignalWatchlistItemPayload>
+        }
+        aggregate: {
+          args: Prisma.SignalWatchlistItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSignalWatchlistItem>
+        }
+        groupBy: {
+          args: Prisma.SignalWatchlistItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SignalWatchlistItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SignalWatchlistItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SignalWatchlistItemCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -997,6 +1222,59 @@ export const LiveSessionScalarFieldEnum = {
 } as const
 
 export type LiveSessionScalarFieldEnum = (typeof LiveSessionScalarFieldEnum)[keyof typeof LiveSessionScalarFieldEnum]
+
+
+export const SignalScalarFieldEnum = {
+  id: 'id',
+  ticker: 'ticker',
+  companyName: 'companyName',
+  type: 'type',
+  entryLow: 'entryLow',
+  entryHigh: 'entryHigh',
+  currentPrice: 'currentPrice',
+  target1: 'target1',
+  target2: 'target2',
+  stopLoss: 'stopLoss',
+  status: 'status',
+  riskLevel: 'riskLevel',
+  positionSize: 'positionSize',
+  timeHorizon: 'timeHorizon',
+  thesis: 'thesis',
+  keyCatalysts: 'keyCatalysts',
+  issuedAt: 'issuedAt',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type SignalScalarFieldEnum = (typeof SignalScalarFieldEnum)[keyof typeof SignalScalarFieldEnum]
+
+
+export const SignalEventScalarFieldEnum = {
+  id: 'id',
+  signalId: 'signalId',
+  kind: 'kind',
+  state: 'state',
+  title: 'title',
+  detail: 'detail',
+  occurredAt: 'occurredAt',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SignalEventScalarFieldEnum = (typeof SignalEventScalarFieldEnum)[keyof typeof SignalEventScalarFieldEnum]
+
+
+export const SignalWatchlistItemScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  signalId: 'signalId',
+  createdAt: 'createdAt'
+} as const
+
+export type SignalWatchlistItemScalarFieldEnum = (typeof SignalWatchlistItemScalarFieldEnum)[keyof typeof SignalWatchlistItemScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1145,6 +1423,90 @@ export type EnumLiveSessionStatusKindFieldRefInput<$PrismaModel> = FieldRefInput
  * Reference to a field of type 'LiveSessionStatusKind[]'
  */
 export type ListEnumLiveSessionStatusKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LiveSessionStatusKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalTypeKind'
+ */
+export type EnumSignalTypeKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalTypeKind'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalTypeKind[]'
+ */
+export type ListEnumSignalTypeKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalTypeKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalStatusKind'
+ */
+export type EnumSignalStatusKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalStatusKind'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalStatusKind[]'
+ */
+export type ListEnumSignalStatusKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalStatusKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalRiskKind'
+ */
+export type EnumSignalRiskKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalRiskKind'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalRiskKind[]'
+ */
+export type ListEnumSignalRiskKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalRiskKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalPositionSizeKind'
+ */
+export type EnumSignalPositionSizeKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalPositionSizeKind'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalPositionSizeKind[]'
+ */
+export type ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalPositionSizeKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalEventKind'
+ */
+export type EnumSignalEventKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalEventKind'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalEventKind[]'
+ */
+export type ListEnumSignalEventKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalEventKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalEventStateKind'
+ */
+export type EnumSignalEventStateKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalEventStateKind'>
+    
+
+
+/**
+ * Reference to a field of type 'SignalEventStateKind[]'
+ */
+export type ListEnumSignalEventStateKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SignalEventStateKind[]'>
     
 
 
@@ -1318,6 +1680,9 @@ export type GlobalOmitConfig = {
   news?: Prisma.NewsOmit
   announcement?: Prisma.AnnouncementOmit
   liveSession?: Prisma.LiveSessionOmit
+  signal?: Prisma.SignalOmit
+  signalEvent?: Prisma.SignalEventOmit
+  signalWatchlistItem?: Prisma.SignalWatchlistItemOmit
 }
 
 /* Types for Logging */

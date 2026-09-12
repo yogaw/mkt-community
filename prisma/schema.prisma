@@ -48,6 +48,8 @@ model User {
   updatedAt        DateTime             @updatedAt @map("updated_at")
   deletedAt        DateTime?            @map("deleted_at")
 
+  signalWatchlist SignalWatchlistItem[]
+
   @@index([membershipStatus])
   @@index([email, membershipStatus])
   @@map("t_user")
@@ -136,4 +138,108 @@ model LiveSession {
 
   @@index([scheduledAt])
   @@map("t_live_session")
+}
+
+enum SignalTypeKind {
+  SWING
+  TRADING
+  POSITION
+}
+
+enum SignalStatusKind {
+  ACTIVE
+  TP1_HIT
+  TP2_HIT
+  STOP_LOSS
+  CLOSED
+}
+
+enum SignalRiskKind {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum SignalPositionSizeKind {
+  SMALL
+  NORMAL
+  LARGE
+}
+
+enum SignalEventKind {
+  ENTRY
+  UPDATE
+  TARGET
+  STOP_LOSS
+}
+
+enum SignalEventStateKind {
+  DONE
+  PENDING
+  ACTIVE
+}
+
+/// A published trade idea. Prices are whole rupiah, matching how IDX quotes.
+model Signal {
+  id           String                 @id @default(cuid()) @db.VarChar(30)
+  ticker       String                 @db.VarChar(10)
+  companyName  String                 @map("company_name") @db.VarChar(150)
+  type         SignalTypeKind
+  entryLow     Int                    @map("entry_low")
+  entryHigh    Int                    @map("entry_high")
+  currentPrice Int                    @map("current_price")
+  target1      Int                    @map("target_1")
+  target2      Int?                   @map("target_2")
+  stopLoss     Int                    @map("stop_loss")
+  status       SignalStatusKind       @default(ACTIVE)
+  riskLevel    SignalRiskKind         @map("risk_level")
+  positionSize SignalPositionSizeKind @map("position_size")
+  timeHorizon  String                 @map("time_horizon") @db.VarChar(50)
+  thesis       String                 @db.Text
+  /// Ordered bullet points; display-only text, so kept inline rather than in its own table.
+  keyCatalysts String[]               @map("key_catalysts")
+  issuedAt     DateTime               @map("issued_at")
+  closedAt     DateTime?              @map("closed_at")
+  createdAt    DateTime               @default(now()) @map("created_at")
+  updatedAt    DateTime               @updatedAt @map("updated_at")
+  deletedAt    DateTime?              @map("deleted_at")
+
+  event         SignalEvent[]
+  watchlistItem SignalWatchlistItem[]
+
+  @@index([status])
+  @@index([issuedAt])
+  @@index([ticker])
+  @@map("t_signal")
+}
+
+/// One entry on a signal's timeline. Pending milestones have no occurredAt yet.
+model SignalEvent {
+  id         String               @id @default(cuid()) @db.VarChar(30)
+  signalId   String               @map("signal_id") @db.VarChar(30)
+  signal     Signal               @relation(fields: [signalId], references: [id], onDelete: Cascade)
+  kind       SignalEventKind
+  state      SignalEventStateKind @default(DONE)
+  title      String               @db.VarChar(150)
+  detail     String?              @db.Text
+  occurredAt DateTime?            @map("occurred_at")
+  sortOrder  Int                  @map("sort_order")
+  createdAt  DateTime             @default(now()) @map("created_at")
+  updatedAt  DateTime             @updatedAt @map("updated_at")
+
+  @@index([signalId, sortOrder])
+  @@map("t_signal_event")
+}
+
+model SignalWatchlistItem {
+  id        String   @id @default(cuid()) @db.VarChar(30)
+  userId    String   @map("user_id") @db.VarChar(30)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  signalId  String   @map("signal_id") @db.VarChar(30)
+  signal    Signal   @relation(fields: [signalId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, signalId])
+  @@index([userId])
+  @@map("t_signal_watchlist_item")
 }

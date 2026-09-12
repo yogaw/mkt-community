@@ -4,7 +4,7 @@ type StatusTone = "positive" | "warning";
 
 const toneClasses: Record<StatusTone, string> = {
   positive: "bg-accent/10 text-accent",
-  warning: "bg-amber-400/10 text-amber-300",
+  warning: "bg-warn/10 text-warn",
 };
 
 interface StatusBadgeProps {

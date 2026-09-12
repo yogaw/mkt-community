@@ -260,6 +260,135 @@ export type EnumLiveSessionStatusKindWithAggregatesFilter<$PrismaModel = never> 
   _max?: Prisma.NestedEnumLiveSessionStatusKindFilter<$PrismaModel>
 }
 
+export type EnumSignalTypeKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalTypeKind | Prisma.EnumSignalTypeKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalTypeKind[] | Prisma.ListEnumSignalTypeKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalTypeKind[] | Prisma.ListEnumSignalTypeKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalTypeKindFilter<$PrismaModel> | $Enums.SignalTypeKind
+}
+
+export type IntNullableFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
+}
+
+export type EnumSignalStatusKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalStatusKind | Prisma.EnumSignalStatusKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalStatusKind[] | Prisma.ListEnumSignalStatusKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalStatusKind[] | Prisma.ListEnumSignalStatusKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel> | $Enums.SignalStatusKind
+}
+
+export type EnumSignalRiskKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalRiskKind | Prisma.EnumSignalRiskKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel> | $Enums.SignalRiskKind
+}
+
+export type EnumSignalPositionSizeKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalPositionSizeKind | Prisma.EnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel> | $Enums.SignalPositionSizeKind
+}
+
+export type EnumSignalTypeKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalTypeKind | Prisma.EnumSignalTypeKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalTypeKind[] | Prisma.ListEnumSignalTypeKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalTypeKind[] | Prisma.ListEnumSignalTypeKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalTypeKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalTypeKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalTypeKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalTypeKindFilter<$PrismaModel>
+}
+
+export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
+}
+
+export type EnumSignalStatusKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalStatusKind | Prisma.EnumSignalStatusKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalStatusKind[] | Prisma.ListEnumSignalStatusKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalStatusKind[] | Prisma.ListEnumSignalStatusKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalStatusKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalStatusKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel>
+}
+
+export type EnumSignalRiskKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalRiskKind | Prisma.EnumSignalRiskKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalRiskKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalRiskKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel>
+}
+
+export type EnumSignalPositionSizeKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalPositionSizeKind | Prisma.EnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalPositionSizeKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalPositionSizeKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel>
+}
+
+export type EnumSignalEventKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalEventKind | Prisma.EnumSignalEventKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalEventKind[] | Prisma.ListEnumSignalEventKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalEventKind[] | Prisma.ListEnumSignalEventKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalEventKindFilter<$PrismaModel> | $Enums.SignalEventKind
+}
+
+export type EnumSignalEventStateKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalEventStateKind | Prisma.EnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalEventStateKind[] | Prisma.ListEnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalEventStateKind[] | Prisma.ListEnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalEventStateKindFilter<$PrismaModel> | $Enums.SignalEventStateKind
+}
+
+export type EnumSignalEventKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalEventKind | Prisma.EnumSignalEventKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalEventKind[] | Prisma.ListEnumSignalEventKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalEventKind[] | Prisma.ListEnumSignalEventKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalEventKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalEventKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalEventKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalEventKindFilter<$PrismaModel>
+}
+
+export type EnumSignalEventStateKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalEventStateKind | Prisma.EnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalEventStateKind[] | Prisma.ListEnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalEventStateKind[] | Prisma.ListEnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalEventStateKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalEventStateKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalEventStateKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalEventStateKindFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -517,6 +646,135 @@ export type NestedEnumLiveSessionStatusKindWithAggregatesFilter<$PrismaModel = n
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumLiveSessionStatusKindFilter<$PrismaModel>
   _max?: Prisma.NestedEnumLiveSessionStatusKindFilter<$PrismaModel>
+}
+
+export type NestedEnumSignalTypeKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalTypeKind | Prisma.EnumSignalTypeKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalTypeKind[] | Prisma.ListEnumSignalTypeKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalTypeKind[] | Prisma.ListEnumSignalTypeKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalTypeKindFilter<$PrismaModel> | $Enums.SignalTypeKind
+}
+
+export type NestedEnumSignalStatusKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalStatusKind | Prisma.EnumSignalStatusKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalStatusKind[] | Prisma.ListEnumSignalStatusKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalStatusKind[] | Prisma.ListEnumSignalStatusKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel> | $Enums.SignalStatusKind
+}
+
+export type NestedEnumSignalRiskKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalRiskKind | Prisma.EnumSignalRiskKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel> | $Enums.SignalRiskKind
+}
+
+export type NestedEnumSignalPositionSizeKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalPositionSizeKind | Prisma.EnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel> | $Enums.SignalPositionSizeKind
+}
+
+export type NestedEnumSignalTypeKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalTypeKind | Prisma.EnumSignalTypeKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalTypeKind[] | Prisma.ListEnumSignalTypeKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalTypeKind[] | Prisma.ListEnumSignalTypeKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalTypeKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalTypeKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalTypeKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalTypeKindFilter<$PrismaModel>
+}
+
+export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel> | null
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+  _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
+}
+
+export type NestedFloatNullableFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
+}
+
+export type NestedEnumSignalStatusKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalStatusKind | Prisma.EnumSignalStatusKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalStatusKind[] | Prisma.ListEnumSignalStatusKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalStatusKind[] | Prisma.ListEnumSignalStatusKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalStatusKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalStatusKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalStatusKindFilter<$PrismaModel>
+}
+
+export type NestedEnumSignalRiskKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalRiskKind | Prisma.EnumSignalRiskKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalRiskKind[] | Prisma.ListEnumSignalRiskKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalRiskKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalRiskKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalRiskKindFilter<$PrismaModel>
+}
+
+export type NestedEnumSignalPositionSizeKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalPositionSizeKind | Prisma.EnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalPositionSizeKind[] | Prisma.ListEnumSignalPositionSizeKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalPositionSizeKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalPositionSizeKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalPositionSizeKindFilter<$PrismaModel>
+}
+
+export type NestedEnumSignalEventKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalEventKind | Prisma.EnumSignalEventKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalEventKind[] | Prisma.ListEnumSignalEventKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalEventKind[] | Prisma.ListEnumSignalEventKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalEventKindFilter<$PrismaModel> | $Enums.SignalEventKind
+}
+
+export type NestedEnumSignalEventStateKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalEventStateKind | Prisma.EnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalEventStateKind[] | Prisma.ListEnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalEventStateKind[] | Prisma.ListEnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalEventStateKindFilter<$PrismaModel> | $Enums.SignalEventStateKind
+}
+
+export type NestedEnumSignalEventKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalEventKind | Prisma.EnumSignalEventKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalEventKind[] | Prisma.ListEnumSignalEventKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalEventKind[] | Prisma.ListEnumSignalEventKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalEventKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalEventKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalEventKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalEventKindFilter<$PrismaModel>
+}
+
+export type NestedEnumSignalEventStateKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SignalEventStateKind | Prisma.EnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  in?: $Enums.SignalEventStateKind[] | Prisma.ListEnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SignalEventStateKind[] | Prisma.ListEnumSignalEventStateKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSignalEventStateKindWithAggregatesFilter<$PrismaModel> | $Enums.SignalEventStateKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSignalEventStateKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSignalEventStateKindFilter<$PrismaModel>
 }
 
 

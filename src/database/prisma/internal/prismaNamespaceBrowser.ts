@@ -56,7 +56,10 @@ export const ModelName = {
   Video: 'Video',
   News: 'News',
   Announcement: 'Announcement',
-  LiveSession: 'LiveSession'
+  LiveSession: 'LiveSession',
+  Signal: 'Signal',
+  SignalEvent: 'SignalEvent',
+  SignalWatchlistItem: 'SignalWatchlistItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -167,6 +170,59 @@ export const LiveSessionScalarFieldEnum = {
 } as const
 
 export type LiveSessionScalarFieldEnum = (typeof LiveSessionScalarFieldEnum)[keyof typeof LiveSessionScalarFieldEnum]
+
+
+export const SignalScalarFieldEnum = {
+  id: 'id',
+  ticker: 'ticker',
+  companyName: 'companyName',
+  type: 'type',
+  entryLow: 'entryLow',
+  entryHigh: 'entryHigh',
+  currentPrice: 'currentPrice',
+  target1: 'target1',
+  target2: 'target2',
+  stopLoss: 'stopLoss',
+  status: 'status',
+  riskLevel: 'riskLevel',
+  positionSize: 'positionSize',
+  timeHorizon: 'timeHorizon',
+  thesis: 'thesis',
+  keyCatalysts: 'keyCatalysts',
+  issuedAt: 'issuedAt',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type SignalScalarFieldEnum = (typeof SignalScalarFieldEnum)[keyof typeof SignalScalarFieldEnum]
+
+
+export const SignalEventScalarFieldEnum = {
+  id: 'id',
+  signalId: 'signalId',
+  kind: 'kind',
+  state: 'state',
+  title: 'title',
+  detail: 'detail',
+  occurredAt: 'occurredAt',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SignalEventScalarFieldEnum = (typeof SignalEventScalarFieldEnum)[keyof typeof SignalEventScalarFieldEnum]
+
+
+export const SignalWatchlistItemScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  signalId: 'signalId',
+  createdAt: 'createdAt'
+} as const
+
+export type SignalWatchlistItemScalarFieldEnum = (typeof SignalWatchlistItemScalarFieldEnum)[keyof typeof SignalWatchlistItemScalarFieldEnum]
 
 
 export const SortOrder = {

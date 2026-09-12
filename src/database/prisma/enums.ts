@@ -52,3 +52,60 @@ export const MembershipStatusKind = {
 } as const
 
 export type MembershipStatusKind = (typeof MembershipStatusKind)[keyof typeof MembershipStatusKind]
+
+
+export const SignalTypeKind = {
+  SWING: 'SWING',
+  TRADING: 'TRADING',
+  POSITION: 'POSITION'
+} as const
+
+export type SignalTypeKind = (typeof SignalTypeKind)[keyof typeof SignalTypeKind]
+
+
+export const SignalStatusKind = {
+  ACTIVE: 'ACTIVE',
+  TP1_HIT: 'TP1_HIT',
+  TP2_HIT: 'TP2_HIT',
+  STOP_LOSS: 'STOP_LOSS',
+  CLOSED: 'CLOSED'
+} as const
+
+export type SignalStatusKind = (typeof SignalStatusKind)[keyof typeof SignalStatusKind]
+
+
+export const SignalRiskKind = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+} as const
+
+export type SignalRiskKind = (typeof SignalRiskKind)[keyof typeof SignalRiskKind]
+
+
+export const SignalPositionSizeKind = {
+  SMALL: 'SMALL',
+  NORMAL: 'NORMAL',
+  LARGE: 'LARGE'
+} as const
+
+export type SignalPositionSizeKind = (typeof SignalPositionSizeKind)[keyof typeof SignalPositionSizeKind]
+
+
+export const SignalEventKind = {
+  ENTRY: 'ENTRY',
+  UPDATE: 'UPDATE',
+  TARGET: 'TARGET',
+  STOP_LOSS: 'STOP_LOSS'
+} as const
+
+export type SignalEventKind = (typeof SignalEventKind)[keyof typeof SignalEventKind]
+
+
+export const SignalEventStateKind = {
+  DONE: 'DONE',
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE'
+} as const
+
+export type SignalEventStateKind = (typeof SignalEventStateKind)[keyof typeof SignalEventStateKind]

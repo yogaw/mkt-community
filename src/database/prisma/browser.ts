@@ -47,3 +47,18 @@ export type Announcement = Prisma.AnnouncementModel
  * 
  */
 export type LiveSession = Prisma.LiveSessionModel
+/**
+ * Model Signal
+ * A published trade idea. Prices are whole rupiah, matching how IDX quotes.
+ */
+export type Signal = Prisma.SignalModel
+/**
+ * Model SignalEvent
+ * One entry on a signal's timeline. Pending milestones have no occurredAt yet.
+ */
+export type SignalEvent = Prisma.SignalEventModel
+/**
+ * Model SignalWatchlistItem
+ * 
+ */
+export type SignalWatchlistItem = Prisma.SignalWatchlistItemModel
