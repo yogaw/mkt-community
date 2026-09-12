@@ -414,7 +414,8 @@ export const ModelName = {
   BrokerSummary: 'BrokerSummary',
   StockSummary: 'StockSummary',
   IndexSummary: 'IndexSummary',
-  MarketIndexSnapshot: 'MarketIndexSnapshot'
+  MarketIndexSnapshot: 'MarketIndexSnapshot',
+  Ebook: 'Ebook'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -430,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "category" | "video" | "news" | "announcement" | "liveSession" | "signal" | "signalEvent" | "signalWatchlistItem" | "stock" | "idxDisclosure" | "calendarEvent" | "discussionThread" | "discussionReply" | "brokerSummary" | "stockSummary" | "indexSummary" | "marketIndexSnapshot"
+    modelProps: "user" | "category" | "video" | "news" | "announcement" | "liveSession" | "signal" | "signalEvent" | "signalWatchlistItem" | "stock" | "idxDisclosure" | "calendarEvent" | "discussionThread" | "discussionReply" | "brokerSummary" | "stockSummary" | "indexSummary" | "marketIndexSnapshot" | "ebook"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1766,6 +1767,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Ebook: {
+      payload: Prisma.$EbookPayload<ExtArgs>
+      fields: Prisma.EbookFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EbookFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EbookFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload>
+        }
+        findFirst: {
+          args: Prisma.EbookFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EbookFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload>
+        }
+        findMany: {
+          args: Prisma.EbookFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload>[]
+        }
+        create: {
+          args: Prisma.EbookCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload>
+        }
+        createMany: {
+          args: Prisma.EbookCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EbookCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload>[]
+        }
+        delete: {
+          args: Prisma.EbookDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload>
+        }
+        update: {
+          args: Prisma.EbookUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload>
+        }
+        deleteMany: {
+          args: Prisma.EbookDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EbookUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EbookUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload>[]
+        }
+        upsert: {
+          args: Prisma.EbookUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EbookPayload>
+        }
+        aggregate: {
+          args: Prisma.EbookAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEbook>
+        }
+        groupBy: {
+          args: Prisma.EbookGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EbookGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EbookCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EbookCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2103,6 +2178,25 @@ export const MarketIndexSnapshotScalarFieldEnum = {
 export type MarketIndexSnapshotScalarFieldEnum = (typeof MarketIndexSnapshotScalarFieldEnum)[keyof typeof MarketIndexSnapshotScalarFieldEnum]
 
 
+export const EbookScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  tag: 'tag',
+  summary: 'summary',
+  source: 'source',
+  author: 'author',
+  tickers: 'tickers',
+  publishedAt: 'publishedAt',
+  fileName: 'fileName',
+  fileSizeBytes: 'fileSizeBytes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type EbookScalarFieldEnum = (typeof EbookScalarFieldEnum)[keyof typeof EbookScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2365,6 +2459,20 @@ export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMo
 
 
 /**
+ * Reference to a field of type 'EbookTagKind'
+ */
+export type EnumEbookTagKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EbookTagKind'>
+    
+
+
+/**
+ * Reference to a field of type 'EbookTagKind[]'
+ */
+export type ListEnumEbookTagKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EbookTagKind[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2546,6 +2654,7 @@ export type GlobalOmitConfig = {
   stockSummary?: Prisma.StockSummaryOmit
   indexSummary?: Prisma.IndexSummaryOmit
   marketIndexSnapshot?: Prisma.MarketIndexSnapshotOmit
+  ebook?: Prisma.EbookOmit
 }
 
 /* Types for Logging */

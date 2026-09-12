@@ -497,6 +497,23 @@ export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDecimalFilter<$PrismaModel>
 }
 
+export type EnumEbookTagKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.EbookTagKind | Prisma.EnumEbookTagKindFieldRefInput<$PrismaModel>
+  in?: $Enums.EbookTagKind[] | Prisma.ListEnumEbookTagKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EbookTagKind[] | Prisma.ListEnumEbookTagKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEbookTagKindFilter<$PrismaModel> | $Enums.EbookTagKind
+}
+
+export type EnumEbookTagKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EbookTagKind | Prisma.EnumEbookTagKindFieldRefInput<$PrismaModel>
+  in?: $Enums.EbookTagKind[] | Prisma.ListEnumEbookTagKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EbookTagKind[] | Prisma.ListEnumEbookTagKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEbookTagKindWithAggregatesFilter<$PrismaModel> | $Enums.EbookTagKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEbookTagKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEbookTagKindFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -991,6 +1008,23 @@ export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedDecimalFilter<$PrismaModel>
   _min?: Prisma.NestedDecimalFilter<$PrismaModel>
   _max?: Prisma.NestedDecimalFilter<$PrismaModel>
+}
+
+export type NestedEnumEbookTagKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.EbookTagKind | Prisma.EnumEbookTagKindFieldRefInput<$PrismaModel>
+  in?: $Enums.EbookTagKind[] | Prisma.ListEnumEbookTagKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EbookTagKind[] | Prisma.ListEnumEbookTagKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEbookTagKindFilter<$PrismaModel> | $Enums.EbookTagKind
+}
+
+export type NestedEnumEbookTagKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EbookTagKind | Prisma.EnumEbookTagKindFieldRefInput<$PrismaModel>
+  in?: $Enums.EbookTagKind[] | Prisma.ListEnumEbookTagKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.EbookTagKind[] | Prisma.ListEnumEbookTagKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumEbookTagKindWithAggregatesFilter<$PrismaModel> | $Enums.EbookTagKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEbookTagKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEbookTagKindFilter<$PrismaModel>
 }
 
 

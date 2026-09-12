@@ -13,7 +13,10 @@
     "fetch:stock-summaries": "tsx prisma/fetch-stock-summaries.ts",
     "fetch:index-summary": "tsx prisma/fetch-index-summary.ts",
     "build:market-flows": "tsx prisma/build-market-flows.ts",
-    "test": "node --import tsx --test \"src/**/*.test.ts\""
+    "test": "node --import tsx --test \"src/**/*.test.ts\"",
+    "check:migrations": "tsx prisma/check-migrations.ts",
+    "migrate": "npm run check:migrations && prisma migrate deploy",
+    "import:ebooks": "tsx prisma/import-ebooks.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",

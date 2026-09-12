@@ -470,3 +470,35 @@ model MarketIndexSnapshot {
   @@index([capturedAt])
   @@map("t_market_index_snapshot")
 }
+
+enum EbookTagKind {
+  RESEARCH_REPORT
+  ARTICLE
+}
+
+/// A document in the member library: broker research, articles, guides.
+/// The file itself lives in the upload store and is served only through an
+/// authenticated route, so a link alone does not hand out the document.
+model Ebook {
+  id            String       @id @default(cuid()) @db.VarChar(30)
+  title         String       @db.VarChar(300)
+  tag           EbookTagKind
+  summary       String?      @db.Text
+  /// Publisher or research house, shown with every entry so provenance travels
+  /// with the document.
+  source        String       @db.VarChar(150)
+  author        String?      @db.VarChar(200)
+  /// Tickers the document covers, for filtering alongside the tag.
+  tickers       String[]
+  publishedAt   DateTime     @map("published_at")
+  /// Generated name in the upload store, never the uploaded filename.
+  fileName      String       @map("file_name") @db.VarChar(64)
+  fileSizeBytes Int          @map("file_size_bytes")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  deletedAt     DateTime?    @map("deleted_at")
+
+  @@index([publishedAt])
+  @@index([tag])
+  @@map("t_ebook")
+}

@@ -123,3 +123,11 @@ updates that day's row rather than adding one.
 already approximate when it arrives. Storing it as numeric avoids rounding it
 again. Widening this to other indices means adding an `index_code` column and
 making the unique key `(date, index_code)`.
+
+
+## Migrations near this data
+
+`market_flow_daily` and the widened `index_summaries` columns are not in
+`schema.prisma`, so a generated Prisma migration will try to drop them. Apply
+migrations with `npm run migrate` — it refuses destructive changes to any
+non-`t_` table first. Hand-write anything that touches these tables.

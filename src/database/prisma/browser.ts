@@ -127,3 +127,10 @@ export type IndexSummary = Prisma.IndexSummaryModel
  * The home page reads the most recent row; older rows are kept as history.
  */
 export type MarketIndexSnapshot = Prisma.MarketIndexSnapshotModel
+/**
+ * Model Ebook
+ * A document in the member library: broker research, articles, guides.
+ * The file itself lives in the upload store and is served only through an
+ * authenticated route, so a link alone does not hand out the document.
+ */
+export type Ebook = Prisma.EbookModel

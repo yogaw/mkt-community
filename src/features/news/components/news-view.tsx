@@ -20,16 +20,18 @@ import {
   disclosureKindTone,
 } from "@/features/news/news-display";
 import type { CalendarEventDto, IdxDisclosureDto } from "@/features/news/news-types";
+import { EbookLibrary } from "@/features/ebooks/components/ebook-library";
 
 const SEARCH_DEBOUNCE_MS = 300;
 
-type Section = "articles" | "disclosures" | "calendar";
+type Section = "articles" | "disclosures" | "calendar" | "ebooks";
 type Status = "loading" | "ready" | "error";
 
 const sections: Array<{ value: Section; label: string }> = [
   { value: "articles", label: "Media Articles" },
   { value: "disclosures", label: "IDX Disclosures" },
   { value: "calendar", label: "Calendar" },
+  { value: "ebooks", label: "E-books" },
 ];
 
 interface ListBody<T> {
@@ -58,6 +60,10 @@ export function NewsView() {
 
   useEffect(() => {
     let cancelled = false;
+
+    if (section === "ebooks") {
+      return;
+    }
 
     void (async () => {
       const path =
@@ -138,6 +144,17 @@ export function NewsView() {
         </div>
       </div>
 
+      {section === "ebooks" ? (
+        <div className="mt-6">
+          <EbookLibrary
+            onUnauthenticated={() => {
+              clearSession();
+              router.replace("/login");
+            }}
+          />
+        </div>
+      ) : null}
+
       {section === "disclosures" ? (
         <div className="mt-5 max-w-sm">
           <SearchInput
@@ -175,7 +192,7 @@ export function NewsView() {
         </div>
       ) : null}
 
-      <div className="mt-6">
+      <div className={section === "ebooks" ? "hidden" : "mt-6"}>
         {status === "loading" ? (
           <div className="space-y-3">
             {Array.from({ length: 5 }, (_, index) => (

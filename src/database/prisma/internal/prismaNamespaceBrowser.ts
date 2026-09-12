@@ -68,7 +68,8 @@ export const ModelName = {
   BrokerSummary: 'BrokerSummary',
   StockSummary: 'StockSummary',
   IndexSummary: 'IndexSummary',
-  MarketIndexSnapshot: 'MarketIndexSnapshot'
+  MarketIndexSnapshot: 'MarketIndexSnapshot',
+  Ebook: 'Ebook'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -383,6 +384,25 @@ export const MarketIndexSnapshotScalarFieldEnum = {
 } as const
 
 export type MarketIndexSnapshotScalarFieldEnum = (typeof MarketIndexSnapshotScalarFieldEnum)[keyof typeof MarketIndexSnapshotScalarFieldEnum]
+
+
+export const EbookScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  tag: 'tag',
+  summary: 'summary',
+  source: 'source',
+  author: 'author',
+  tickers: 'tickers',
+  publishedAt: 'publishedAt',
+  fileName: 'fileName',
+  fileSizeBytes: 'fileSizeBytes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type EbookScalarFieldEnum = (typeof EbookScalarFieldEnum)[keyof typeof EbookScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -116,3 +116,11 @@ export const CalendarEventKind = {
 } as const
 
 export type CalendarEventKind = (typeof CalendarEventKind)[keyof typeof CalendarEventKind]
+
+
+export const EbookTagKind = {
+  RESEARCH_REPORT: 'RESEARCH_REPORT',
+  ARTICLE: 'ARTICLE'
+} as const
+
+export type EbookTagKind = (typeof EbookTagKind)[keyof typeof EbookTagKind]
