@@ -21,8 +21,17 @@ export interface MarketIndicatorDto {
   /** Null when there is no prior session to compare against. */
   dailyChangePercent: number | null;
   monthChangePercent: number | null;
-  /** Closes over the trend window, oldest first, for the sparkline. */
-  spark: number[];
+  /** Prior session's close, which the chart draws as a reference line. */
+  previousClose: number | null;
+  changeAbsolute: number | null;
+  /** The latest session's own range. Null where the vendor sends no OHLC. */
+  dayHigh: number | null;
+  dayLow: number | null;
+  /** Over whatever history we hold, which is a year once backfilled. */
+  week52High: number | null;
+  week52Low: number | null;
+  /** Full series, oldest first. The client slices it per range button. */
+  series: Array<{ date: string; close: number }>;
 }
 
 export const marketDataQuerySchema = z.object({

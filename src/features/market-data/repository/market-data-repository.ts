@@ -10,6 +10,9 @@ import { db } from "@/database";
 export interface IndicatorPointRow {
   symbol: string;
   date: string;
+  open: number | null;
+  high: number | null;
+  low: number | null;
   close: number;
 }
 
@@ -20,7 +23,9 @@ export interface MarketDataRepository {
 export class SqlMarketDataRepository implements MarketDataRepository {
   async findRecentPoints(days: number): Promise<IndicatorPointRow[]> {
     return db.$queryRaw<IndicatorPointRow[]>`
-      SELECT symbol, date::text AS date, close::float8 AS close
+      SELECT symbol, date::text AS date,
+             open::float8 AS open, high::float8 AS high,
+             low::float8 AS low, close::float8 AS close
       FROM market_indicator_point
       WHERE date >= (SELECT max(date) FROM market_indicator_point) - ${days}::int
       ORDER BY symbol ASC, date ASC`;

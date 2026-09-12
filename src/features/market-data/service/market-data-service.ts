@@ -6,10 +6,20 @@ import type {
 } from "@/features/market-data/repository/market-data-repository";
 import { marketDataRepository } from "@/features/market-data/repository/market-data-repository";
 
-/** The trend window the sparkline and the 1M column are read from. */
-const TREND_DAYS = 95;
+/** A year, so the 52-week range and the longer chart ranges are real. */
+const TREND_DAYS = 400;
 /** Calendar days, so the comparison lands on the nearest session a month back. */
 const MONTH_DAYS = 30;
+
+/**
+ * How far behind the freshest series an indicator may fall before it is hidden.
+ *
+ * A vendor series can quietly stop updating while still answering with data —
+ * the API2 coal contract did exactly that, holding a February price all year.
+ * Showing that beside live prices is worse than showing nothing, so anything
+ * this stale is dropped and the fetcher reports it.
+ */
+const MAX_STALE_DAYS = 10;
 
 export interface MarketDataService {
   listIndicators(query: MarketDataQuery): Promise<MarketIndicatorDto[]>;
@@ -35,12 +45,23 @@ export class MarketDataServiceImpl implements MarketDataService {
       ? INDICATORS.filter((item) => item.group === query.group)
       : INDICATORS;
 
+    // Freshest date across everything we hold is the reference for staleness.
+    const newest = rows.reduce((latest, row) => (row.date > latest ? row.date : latest), "");
+    const cutoff = new Date(`${newest || "1970-01-01"}T00:00:00Z`);
+    cutoff.setUTCDate(cutoff.getUTCDate() - MAX_STALE_DAYS);
+    const cutoffIso = cutoff.toISOString().slice(0, 10);
+
     return wanted
       .map((definition) => toIndicator(definition, bySymbol.get(definition.code) ?? []))
+      .filter((indicator) => indicator === null || indicator.latestDate >= cutoffIso)
       // An indicator with no data yet is omitted rather than rendered as a
       // dash: the page should show what it actually has.
       .filter((indicator): indicator is MarketIndicatorDto => indicator !== null);
   }
+}
+
+function round6(value: number): number {
+  return Math.round(value * 1e6) / 1e6;
 }
 
 function percentChange(from: number, to: number): number | null {
@@ -68,6 +89,8 @@ function toIndicator(
   const cutoffIso = monthCutoff.toISOString().slice(0, 10);
   const monthAgo = [...series].reverse().find((row) => row.date <= cutoffIso);
 
+  const closes = series.map((row) => row.close);
+
   return {
     code: definition.code,
     label: definition.label,
@@ -81,7 +104,15 @@ function toIndicator(
     latestDate: last.date,
     dailyChangePercent: previous ? percentChange(previous.close, last.close) : null,
     monthChangePercent: monthAgo ? percentChange(monthAgo.close, last.close) : null,
-    spark: series.map((row) => row.close),
+    previousClose: previous?.close ?? null,
+    changeAbsolute: previous ? round6(last.close - previous.close) : null,
+    // Day range comes from the session's own OHLC where the vendor sends it;
+    // a close is not a range, so it is not substituted for one.
+    dayHigh: last.high,
+    dayLow: last.low,
+    week52High: closes.length > 0 ? Math.max(...closes) : null,
+    week52Low: closes.length > 0 ? Math.min(...closes) : null,
+    series: series.map((row) => ({ date: row.date, close: row.close })),
   };
 }
 
