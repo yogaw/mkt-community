@@ -61,8 +61,11 @@ export function FlowInsightCard({ summary }: { summary: StockBrokerSummary }) {
 
       <div className="rounded-xl border border-edge bg-panel p-4">
         <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">Flow Bias</p>
-        <p className={cn("mt-2 text-lg font-semibold", toneFor(summary.netValue))}>
-          {directionMark(summary.netValue)} {flowBiasLabel(summary.netValue, summary.totalTradedValue)}
+        {/* The mark follows the interpreted state, not the raw sign: a net of
+            -Rp 1.19M on Rp 2.51T of turnover is balanced, and a red ▼ beside
+            the words "Balanced Flow" contradicts the card's own reading. */}
+        <p className={cn("mt-2 text-lg font-semibold", biasTone(summary))}>
+          {biasMark(summary)} {flowBiasLabel(summary.netValue, summary.totalTradedValue)}
         </p>
         <p className="mt-1 text-xs text-ink-faint">
           Based on cumulative net broker value during the selected period.
@@ -97,6 +100,20 @@ export function FlowInsightCard({ summary }: { summary: StockBrokerSummary }) {
       </div>
     </div>
   );
+}
+
+function biasMark(summary: StockBrokerSummary): string {
+  if (summary.flowState === "BALANCED") {
+    return "—";
+  }
+  return directionMark(summary.netValue);
+}
+
+function biasTone(summary: StockBrokerSummary): string {
+  if (summary.flowState === "BALANCED") {
+    return "text-ink";
+  }
+  return toneFor(summary.netValue);
 }
 
 function Row({ label, value }: { label: string; value: string }) {

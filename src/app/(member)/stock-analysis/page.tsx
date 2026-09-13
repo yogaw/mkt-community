@@ -1,6 +1,5 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
-import { StockAnalysisPage } from "@/features/stock-analysis/components/stock-analysis-page";
+import { StockAnalysisEntry } from "@/features/stock-analysis/components/stock-analysis-entry";
 
 export const metadata: Metadata = {
   title: "Stock Analysis — Piranha",
@@ -8,12 +7,7 @@ export const metadata: Metadata = {
     "Broker flow, ownership activity, company profile and fundamentals for Indonesian stocks.",
 };
 
+/** Resolves a stock and hands over to the workspace at /stock-analysis/[ticker]. */
 export default function StockAnalysisIndexPage() {
-  // The search term lives in the query string, so the subtree opts out of
-  // static prerendering and needs a Suspense boundary.
-  return (
-    <Suspense>
-      <StockAnalysisPage />
-    </Suspense>
-  );
+  return <StockAnalysisEntry />;
 }

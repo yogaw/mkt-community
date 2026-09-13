@@ -257,3 +257,17 @@ describe("buy/sell ratio", () => {
     assert.equal(buySellRatio(100, 100), buySellRatio(1_000_000, 1_000_000));
   });
 });
+
+describe("a balanced period reads as balanced everywhere", () => {
+  it("does not label a tiny negative net as a downward bias", async () => {
+    const { flowStateOf, flowBiasLabel } = await import("./broker-flow-math");
+    // Measured on ADRO: -Rp 1.19M against Rp 2.51T of turnover.
+    const net = -1_190_000;
+    const turnover = 2_510_000_000_000;
+
+    assert.equal(flowStateOf(net, turnover), "BALANCED");
+    assert.equal(flowBiasLabel(net, turnover), "Balanced Flow");
+    // The card's mark is derived from the state, so it must not say "down".
+    assert.equal(flowBiasLabel(net, turnover).includes("Distribution"), false);
+  });
+});

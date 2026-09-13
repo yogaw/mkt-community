@@ -11,6 +11,7 @@ import {
   type MarketBoard,
 } from "@/features/stock-analysis/stock-analysis-types";
 import { formatDayMonth } from "@/features/stock-analysis/stock-analysis-format";
+import { StockPicker } from "./stock-picker";
 
 export interface ControlState {
   startDate: string;
@@ -36,8 +37,10 @@ export function BrokerAnalysisControls({
   onDraftChange,
   onPreset,
   onAnalyze,
+  onTickerChange,
 }: {
   ticker: string;
+  onTickerChange: (ticker: string) => void;
   draft: ControlState;
   applied: ControlState;
   preset: DatePreset;
@@ -55,12 +58,10 @@ export function BrokerAnalysisControls({
     draft.market !== applied.market;
 
   return (
-    <section className="rounded-xl border border-edge bg-panel p-4 sm:p-5">
+    <section className="rounded-xl border border-accent/25 bg-accent/[0.04] p-4 sm:p-5">
       <div className="flex flex-wrap items-end gap-3">
-        <Field label="Stock" className="w-[7rem]">
-          <div className="flex h-[38px] items-center rounded-lg border border-edge bg-panel-raised px-3 font-mono text-sm font-semibold text-ink">
-            {ticker}
-          </div>
+        <Field label="Stock" className="w-[9rem]">
+          <StockPicker ticker={ticker} onSelect={onTickerChange} />
         </Field>
 
         <Field label="From" className="w-[10rem]">

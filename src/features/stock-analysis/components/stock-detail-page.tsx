@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { authedFetch } from "@/lib/api/authed-fetch";
@@ -30,12 +29,14 @@ import { PriceVsFlow } from "./price-vs-flow";
 import { BrokerTable } from "./broker-table";
 import { BrokerDetailDrawer } from "./broker-detail-drawer";
 import { StockProfile } from "./stock-profile";
+import { StockListTab } from "./stock-list-tab";
 import { FundamentalsView } from "./fundamentals-view";
 import { DataSourceBadge } from "./data-source-badge";
 import { ErrorState, KpiSkeleton, LoadingState } from "./states";
 
 const TABS = [
   { key: "broker", label: "Broker Summary" },
+  { key: "list", label: "Stock List" },
   { key: "profile", label: "Stock Profile" },
   { key: "fundamental", label: "Fundamentals" },
 ] as const;
@@ -214,6 +215,21 @@ export function StockDetailPage({ ticker }: { ticker: string }) {
     };
   }, [ticker, tab, period]);
 
+  /*
+   * The ticker is part of the URL, so switching stock is a navigation — but a
+   * client one that keeps the current tab and the current date range. The
+   * reference changes stock without leaving the workspace, and so does this.
+   */
+  function goToTicker(next: string) {
+    if (next === ticker) {
+      return;
+    }
+    const query = new URLSearchParams(params.toString());
+    query.delete("tab");
+    const text = query.toString();
+    router.push(`/stock-analysis/${next}${text ? `?${text}` : ""}`);
+  }
+
   function setTab(next: TabKey) {
     const query = new URLSearchParams(params.toString());
     if (next === "broker") {
@@ -254,7 +270,7 @@ export function StockDetailPage({ ticker }: { ticker: string }) {
   if (overviewFailed) {
     return (
       <main className="mx-auto w-full max-w-[1320px] px-4 py-8 sm:px-6">
-        <BackLink />
+        <WorkspaceHeading />
         <div className="mt-4">
           <ErrorState
             title={
@@ -278,7 +294,7 @@ export function StockDetailPage({ ticker }: { ticker: string }) {
 
   return (
     <main className="mx-auto w-full max-w-[1320px] px-4 py-8 sm:px-6">
-      <BackLink />
+      <WorkspaceHeading />
 
       <div className="mt-4">
         {overview ? (
@@ -341,6 +357,7 @@ export function StockDetailPage({ ticker }: { ticker: string }) {
               }
               coverage={coverage}
               isLoading={isSummaryLoading}
+              onTickerChange={goToTicker}
               onDraftChange={setDraft}
               onPreset={(preset) => {
                 if (!coverage || preset === "CUSTOM") {
@@ -407,6 +424,12 @@ export function StockDetailPage({ ticker }: { ticker: string }) {
         </div>
       ) : null}
 
+      {tab === "list" ? (
+        <div className="mt-5">
+          <StockListTab onSelect={goToTicker} router={router} />
+        </div>
+      ) : null}
+
       {tab === "profile" && overview ? (
         <div className="mt-5">
           <StockProfile profile={overview.profile} />
@@ -439,14 +462,15 @@ export function StockDetailPage({ ticker }: { ticker: string }) {
   );
 }
 
-function BackLink() {
+function WorkspaceHeading() {
   return (
-    <Link
-      href="/stock-analysis"
-      className="inline-block text-sm font-medium text-ink-muted transition-colors hover:text-ink"
-    >
-      &larr; All stocks
-    </Link>
+    <header>
+      <h1 className="text-2xl font-semibold tracking-tight text-ink">Stock Analysis</h1>
+      <p className="mt-1 max-w-2xl text-sm text-ink-muted">
+        Understand broker flow, ownership activity, company profile, and fundamentals for
+        Indonesian stocks.
+      </p>
+    </header>
   );
 }
 

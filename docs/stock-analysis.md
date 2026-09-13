@@ -6,11 +6,22 @@ Broker flow, profile and fundamentals for any IDX listing the ingestion covers.
 
 | Route | What it is |
 | --- | --- |
-| `/stock-analysis` | Discovery: search, Most Active, My Watchlist, Recently Viewed. |
-| `/stock-analysis/[ticker]` | One stock. `?tab=broker\|profile\|fundamental`, default broker. |
+| `/stock-analysis` | Resolves a stock and hands over to the workspace. |
+| `/stock-analysis/[ticker]` | The workspace. `?tab=broker\|list\|profile\|fundamental`. |
 
-Search term and tab both live in the query string, so a filtered view is a link
-someone can send and a refresh lands where you were.
+**It is one workspace, not a list in front of an analysis.** `/stock-analysis`
+opens on the last stock the member read on this device, falling back to the
+most actively traded name, then replaces the URL so the address bar shows the
+stock on screen. A landing page whose only job is to send you to another page
+is a step, not a feature.
+
+The stock is changed inside the control card — a combobox that searches by
+ticker or company name — so comparing two stocks never means leaving the
+analysis. Browsing lives in the **Stock List** tab (search, Most Active, My
+Watchlist, Recently Viewed).
+
+The tab lives in the query string, so `?tab=profile` is a link someone can send
+and a refresh lands where you were.
 
 ## Where the numbers come from
 

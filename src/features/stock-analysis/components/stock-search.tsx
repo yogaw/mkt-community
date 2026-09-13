@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { cn } from "@/lib/cn";
 import { SearchInput } from "@/components/ui/search-input";
 import {
@@ -37,6 +36,7 @@ export function StockResultList({
   description,
   stocks,
   isLoading,
+  onSelect,
   emptyTitle,
   emptyDescription,
 }: {
@@ -44,6 +44,7 @@ export function StockResultList({
   description?: string;
   stocks: StockSearchResult[];
   isLoading: boolean;
+  onSelect: (ticker: string) => void;
   emptyTitle: string;
   emptyDescription: string;
 }) {
@@ -66,9 +67,10 @@ export function StockResultList({
         <ul className="divide-y divide-edge">
           {stocks.map((stock) => (
             <li key={stock.ticker}>
-              <Link
-                href={`/stock-analysis/${stock.ticker}`}
-                className="flex items-center gap-4 px-5 py-3 transition-colors hover:bg-panel-raised/50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+              <button
+                type="button"
+                onClick={() => onSelect(stock.ticker)}
+                className="flex w-full items-center gap-4 px-5 py-3 text-left transition-colors hover:bg-panel-raised/50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
               >
                 <span className="w-20 shrink-0">
                   <span className="block font-mono text-sm font-semibold text-accent">
@@ -105,7 +107,7 @@ export function StockResultList({
                     {formatPercentSigned(stock.changePercent)}
                   </span>
                 </span>
-              </Link>
+              </button>
             </li>
           ))}
         </ul>
