@@ -56,7 +56,23 @@ export const ModelName = {
   Video: 'Video',
   News: 'News',
   Announcement: 'Announcement',
-  LiveSession: 'LiveSession'
+  LiveSession: 'LiveSession',
+  Signal: 'Signal',
+  SignalEvent: 'SignalEvent',
+  SignalWatchlistItem: 'SignalWatchlistItem',
+  Stock: 'Stock',
+  IdxDisclosure: 'IdxDisclosure',
+  CalendarEvent: 'CalendarEvent',
+  DiscussionThread: 'DiscussionThread',
+  DiscussionReply: 'DiscussionReply',
+  DiscussionReaction: 'DiscussionReaction',
+  CommentReaction: 'CommentReaction',
+  DiscussionFollow: 'DiscussionFollow',
+  BrokerSummary: 'BrokerSummary',
+  StockSummary: 'StockSummary',
+  IndexSummary: 'IndexSummary',
+  MarketIndexSnapshot: 'MarketIndexSnapshot',
+  Ebook: 'Ebook'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -167,6 +183,273 @@ export const LiveSessionScalarFieldEnum = {
 } as const
 
 export type LiveSessionScalarFieldEnum = (typeof LiveSessionScalarFieldEnum)[keyof typeof LiveSessionScalarFieldEnum]
+
+
+export const SignalScalarFieldEnum = {
+  id: 'id',
+  ticker: 'ticker',
+  companyName: 'companyName',
+  type: 'type',
+  entryLow: 'entryLow',
+  entryHigh: 'entryHigh',
+  currentPrice: 'currentPrice',
+  target1: 'target1',
+  target2: 'target2',
+  stopLoss: 'stopLoss',
+  status: 'status',
+  riskReward: 'riskReward',
+  timeHorizon: 'timeHorizon',
+  thesis: 'thesis',
+  chartImages: 'chartImages',
+  keyCatalysts: 'keyCatalysts',
+  issuedAt: 'issuedAt',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type SignalScalarFieldEnum = (typeof SignalScalarFieldEnum)[keyof typeof SignalScalarFieldEnum]
+
+
+export const SignalEventScalarFieldEnum = {
+  id: 'id',
+  signalId: 'signalId',
+  kind: 'kind',
+  state: 'state',
+  title: 'title',
+  detail: 'detail',
+  occurredAt: 'occurredAt',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SignalEventScalarFieldEnum = (typeof SignalEventScalarFieldEnum)[keyof typeof SignalEventScalarFieldEnum]
+
+
+export const SignalWatchlistItemScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  signalId: 'signalId',
+  createdAt: 'createdAt'
+} as const
+
+export type SignalWatchlistItemScalarFieldEnum = (typeof SignalWatchlistItemScalarFieldEnum)[keyof typeof SignalWatchlistItemScalarFieldEnum]
+
+
+export const StockScalarFieldEnum = {
+  id: 'id',
+  ticker: 'ticker',
+  name: 'name',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StockScalarFieldEnum = (typeof StockScalarFieldEnum)[keyof typeof StockScalarFieldEnum]
+
+
+export const IdxDisclosureScalarFieldEnum = {
+  id: 'id',
+  ticker: 'ticker',
+  companyName: 'companyName',
+  kind: 'kind',
+  title: 'title',
+  summary: 'summary',
+  documentUrl: 'documentUrl',
+  disclosedAt: 'disclosedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type IdxDisclosureScalarFieldEnum = (typeof IdxDisclosureScalarFieldEnum)[keyof typeof IdxDisclosureScalarFieldEnum]
+
+
+export const CalendarEventScalarFieldEnum = {
+  id: 'id',
+  ticker: 'ticker',
+  title: 'title',
+  kind: 'kind',
+  detail: 'detail',
+  eventDate: 'eventDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CalendarEventScalarFieldEnum = (typeof CalendarEventScalarFieldEnum)[keyof typeof CalendarEventScalarFieldEnum]
+
+
+export const DiscussionThreadScalarFieldEnum = {
+  id: 'id',
+  authorId: 'authorId',
+  title: 'title',
+  slug: 'slug',
+  excerpt: 'excerpt',
+  body: 'body',
+  category: 'category',
+  status: 'status',
+  tags: 'tags',
+  tickers: 'tickers',
+  thumbnailUrl: 'thumbnailUrl',
+  viewCount: 'viewCount',
+  isPinned: 'isPinned',
+  isFeatured: 'isFeatured',
+  isLocked: 'isLocked',
+  commentsEnabled: 'commentsEnabled',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type DiscussionThreadScalarFieldEnum = (typeof DiscussionThreadScalarFieldEnum)[keyof typeof DiscussionThreadScalarFieldEnum]
+
+
+export const DiscussionReplyScalarFieldEnum = {
+  id: 'id',
+  threadId: 'threadId',
+  authorId: 'authorId',
+  parentId: 'parentId',
+  body: 'body',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type DiscussionReplyScalarFieldEnum = (typeof DiscussionReplyScalarFieldEnum)[keyof typeof DiscussionReplyScalarFieldEnum]
+
+
+export const DiscussionReactionScalarFieldEnum = {
+  id: 'id',
+  threadId: 'threadId',
+  userId: 'userId',
+  type: 'type',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscussionReactionScalarFieldEnum = (typeof DiscussionReactionScalarFieldEnum)[keyof typeof DiscussionReactionScalarFieldEnum]
+
+
+export const CommentReactionScalarFieldEnum = {
+  id: 'id',
+  replyId: 'replyId',
+  userId: 'userId',
+  type: 'type',
+  createdAt: 'createdAt'
+} as const
+
+export type CommentReactionScalarFieldEnum = (typeof CommentReactionScalarFieldEnum)[keyof typeof CommentReactionScalarFieldEnum]
+
+
+export const DiscussionFollowScalarFieldEnum = {
+  id: 'id',
+  threadId: 'threadId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscussionFollowScalarFieldEnum = (typeof DiscussionFollowScalarFieldEnum)[keyof typeof DiscussionFollowScalarFieldEnum]
+
+
+export const BrokerSummaryScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  ticker: 'ticker',
+  broker: 'broker',
+  isForeign: 'isForeign',
+  action: 'action',
+  avgPx: 'avgPx',
+  volume: 'volume',
+  value: 'value',
+  isNet: 'isNet',
+  txnType: 'txnType',
+  createdAt: 'createdAt',
+  frequency: 'frequency'
+} as const
+
+export type BrokerSummaryScalarFieldEnum = (typeof BrokerSummaryScalarFieldEnum)[keyof typeof BrokerSummaryScalarFieldEnum]
+
+
+export const StockSummaryScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  ticker: 'ticker',
+  previousClose: 'previousClose',
+  openPrice: 'openPrice',
+  high: 'high',
+  low: 'low',
+  close: 'close',
+  change: 'change',
+  volume: 'volume',
+  value: 'value',
+  frequency: 'frequency',
+  foreignSell: 'foreignSell',
+  foreignBuy: 'foreignBuy',
+  listedShares: 'listedShares',
+  tradeableShares: 'tradeableShares',
+  bid: 'bid',
+  bidVolume: 'bidVolume',
+  offer: 'offer',
+  offerVolume: 'offerVolume',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StockSummaryScalarFieldEnum = (typeof StockSummaryScalarFieldEnum)[keyof typeof StockSummaryScalarFieldEnum]
+
+
+export const IndexSummaryScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  close: 'close',
+  volume: 'volume',
+  value: 'value',
+  marketCapital: 'marketCapital',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type IndexSummaryScalarFieldEnum = (typeof IndexSummaryScalarFieldEnum)[keyof typeof IndexSummaryScalarFieldEnum]
+
+
+export const MarketIndexSnapshotScalarFieldEnum = {
+  id: 'id',
+  indexName: 'indexName',
+  value: 'value',
+  changePercent: 'changePercent',
+  turnoverIdr: 'turnoverIdr',
+  foreignFlowIdr: 'foreignFlowIdr',
+  advancers: 'advancers',
+  decliners: 'decliners',
+  capturedAt: 'capturedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MarketIndexSnapshotScalarFieldEnum = (typeof MarketIndexSnapshotScalarFieldEnum)[keyof typeof MarketIndexSnapshotScalarFieldEnum]
+
+
+export const EbookScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  tag: 'tag',
+  summary: 'summary',
+  source: 'source',
+  author: 'author',
+  tickers: 'tickers',
+  publishedAt: 'publishedAt',
+  fileName: 'fileName',
+  fileSizeBytes: 'fileSizeBytes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type EbookScalarFieldEnum = (typeof EbookScalarFieldEnum)[keyof typeof EbookScalarFieldEnum]
 
 
 export const SortOrder = {

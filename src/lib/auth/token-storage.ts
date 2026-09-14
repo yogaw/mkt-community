@@ -1,10 +1,15 @@
 const TOKEN_KEY = "accessToken";
 const USER_KEY = "user";
 
+export type StoredUserRole = "MEMBER" | "ADMIN";
+
 export interface StoredUser {
   id: string;
   name: string;
   email: string;
+  /** Optional: a session stored before roles were surfaced has no role, and
+   *  falls back to member-level UI. Server routes enforce the real role. */
+  role?: StoredUserRole;
 }
 
 export function getToken(): string | null {
@@ -47,4 +52,12 @@ export function clearSession(): void {
   } catch {
     // nothing to clear
   }
+}
+
+/**
+ * Gates admin-only UI. This is display logic only — it reads localStorage,
+ * which the user can edit; every admin route re-checks the signed token.
+ */
+export function isStoredUserAdmin(): boolean {
+  return getStoredUser()?.role === "ADMIN";
 }

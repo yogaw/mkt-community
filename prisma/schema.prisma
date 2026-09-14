@@ -48,15 +48,22 @@ model User {
   updatedAt        DateTime             @updatedAt @map("updated_at")
   deletedAt        DateTime?            @map("deleted_at")
 
+  signalWatchlist    SignalWatchlistItem[]
+  discussionThread   DiscussionThread[]
+  discussionReply    DiscussionReply[]
+  discussionReaction DiscussionReaction[]
+  commentReaction    CommentReaction[]
+  discussionFollow   DiscussionFollow[]
+
   @@index([membershipStatus])
   @@index([email, membershipStatus])
   @@map("t_user")
 }
 
 model Category {
-  id        String  @id @default(cuid()) @db.VarChar(30)
-  name      String  @unique @db.VarChar(100)
-  slug      String  @unique @db.VarChar(100)
+  id        String   @id @default(cuid()) @db.VarChar(30)
+  name      String   @unique @db.VarChar(100)
+  slug      String   @unique @db.VarChar(100)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -88,17 +95,17 @@ model Video {
 }
 
 model News {
-  id          String   @id @default(cuid()) @db.VarChar(30)
-  title       String   @db.VarChar(200)
-  summary     String   @db.VarChar(500)
-  content     String   @db.Text
-  imageUrl    String?  @map("image_url") @db.Text
-  categoryId  String   @map("category_id") @db.VarChar(30)
-  category    Category @relation(fields: [categoryId], references: [id])
-  isFeatured  Boolean  @default(false) @map("is_featured")
-  publishedAt DateTime @map("published_at")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id          String    @id @default(cuid()) @db.VarChar(30)
+  title       String    @db.VarChar(200)
+  summary     String    @db.VarChar(500)
+  content     String    @db.Text
+  imageUrl    String?   @map("image_url") @db.Text
+  categoryId  String    @map("category_id") @db.VarChar(30)
+  category    Category  @relation(fields: [categoryId], references: [id])
+  isFeatured  Boolean   @default(false) @map("is_featured")
+  publishedAt DateTime  @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
 
   @@index([categoryId])
@@ -136,4 +143,480 @@ model LiveSession {
 
   @@index([scheduledAt])
   @@map("t_live_session")
+}
+
+enum SignalTypeKind {
+  SWING
+  TRADING
+  POSITION
+}
+
+enum SignalStatusKind {
+  ACTIVE
+  TP1_HIT
+  TP2_HIT
+  STOP_LOSS
+  CLOSED
+}
+
+enum SignalEventKind {
+  ENTRY
+  UPDATE
+  TARGET
+  STOP_LOSS
+}
+
+enum SignalEventStateKind {
+  DONE
+  PENDING
+  ACTIVE
+}
+
+/// A published trade idea. Prices are whole rupiah, matching how IDX quotes.
+model Signal {
+  id           String           @id @default(cuid()) @db.VarChar(30)
+  /// Denormalised from Stock on purpose: a published signal keeps the ticker and
+  /// name it was issued under even if the listing is later renamed.
+  ticker       String           @db.VarChar(10)
+  companyName  String           @map("company_name") @db.VarChar(150)
+  type         SignalTypeKind
+  entryLow     Int              @map("entry_low")
+  entryHigh    Int              @map("entry_high")
+  currentPrice Int              @map("current_price")
+  target1      Int              @map("target_1")
+  target2      Int?             @map("target_2")
+  stopLoss     Int              @map("stop_loss")
+  /// Derived from the latest close against the levels above, never hand-picked.
+  /// Only ever advances: a milestone once reached stays reached.
+  status       SignalStatusKind @default(ACTIVE)
+  /// Reward per unit of risk, written as "1:3".
+  riskReward   String           @map("risk_reward") @db.VarChar(20)
+  timeHorizon  String           @map("time_horizon") @db.VarChar(50)
+  thesis       String           @db.Text
+  /// Chart images attached to the thesis, in the order they were added.
+  chartImages  String[]         @map("chart_images")
+  /// Ordered bullet points; display-only text, so kept inline rather than in its own table.
+  keyCatalysts String[]         @map("key_catalysts")
+  issuedAt     DateTime         @map("issued_at")
+  closedAt     DateTime?        @map("closed_at")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+  deletedAt    DateTime?        @map("deleted_at")
+
+  event         SignalEvent[]
+  watchlistItem SignalWatchlistItem[]
+
+  @@index([status])
+  @@index([issuedAt])
+  @@index([ticker])
+  @@map("t_signal")
+}
+
+/// One entry on a signal's timeline. Pending milestones have no occurredAt yet.
+model SignalEvent {
+  id         String               @id @default(cuid()) @db.VarChar(30)
+  signalId   String               @map("signal_id") @db.VarChar(30)
+  signal     Signal               @relation(fields: [signalId], references: [id], onDelete: Cascade)
+  kind       SignalEventKind
+  state      SignalEventStateKind @default(DONE)
+  title      String               @db.VarChar(150)
+  detail     String?              @db.Text
+  occurredAt DateTime?            @map("occurred_at")
+  sortOrder  Int                  @map("sort_order")
+  createdAt  DateTime             @default(now()) @map("created_at")
+  updatedAt  DateTime             @updatedAt @map("updated_at")
+
+  @@index([signalId, sortOrder])
+  @@map("t_signal_event")
+}
+
+model SignalWatchlistItem {
+  id        String   @id @default(cuid()) @db.VarChar(30)
+  userId    String   @map("user_id") @db.VarChar(30)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  signalId  String   @map("signal_id") @db.VarChar(30)
+  signal    Signal   @relation(fields: [signalId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, signalId])
+  @@index([userId])
+  @@map("t_signal_watchlist_item")
+}
+
+/// The IDX listings an admin can publish a signal against.
+model Stock {
+  id        String   @id @default(cuid()) @db.VarChar(30)
+  ticker    String   @unique @db.VarChar(10)
+  name      String   @db.VarChar(200)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([isActive])
+  @@map("t_stock")
+}
+
+enum IdxDisclosureKind {
+  RUPS
+  DIVIDEND
+  MATERIAL_TRANSACTION
+  FINANCIAL_REPORT
+  SHARE_BUYBACK
+  OTHER
+}
+
+/// Keterbukaan informasi: a filing a listed company made to the exchange.
+model IdxDisclosure {
+  id          String            @id @default(cuid()) @db.VarChar(30)
+  ticker      String            @db.VarChar(10)
+  companyName String            @map("company_name") @db.VarChar(200)
+  kind        IdxDisclosureKind
+  title       String            @db.VarChar(300)
+  summary     String?           @db.Text
+  documentUrl String?           @map("document_url") @db.Text
+  disclosedAt DateTime          @map("disclosed_at")
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+  deletedAt   DateTime?         @map("deleted_at")
+
+  @@index([disclosedAt])
+  @@index([ticker])
+  @@map("t_idx_disclosure")
+}
+
+enum CalendarEventKind {
+  EARNINGS
+  DIVIDEND_EX_DATE
+  DIVIDEND_PAYMENT
+  RUPS
+  IPO_LISTING
+  MACRO
+  OTHER
+}
+
+/// A dated market event. Ticker is null for market-wide entries such as a rate decision.
+model CalendarEvent {
+  id        String            @id @default(cuid()) @db.VarChar(30)
+  ticker    String?           @db.VarChar(10)
+  title     String            @db.VarChar(200)
+  kind      CalendarEventKind
+  detail    String?           @db.Text
+  eventDate DateTime          @map("event_date")
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+  deletedAt DateTime?         @map("deleted_at")
+
+  @@index([eventDate])
+  @@map("t_calendar_event")
+}
+
+enum DiscussionCategoryKind {
+  MARKET_OUTLOOK
+  STOCK_DISCUSSION
+  MACRO_ECONOMY
+  SECTOR_ANALYSIS
+  STRATEGY_PSYCHOLOGY
+}
+
+/// A draft is admin-only. An archived thread stays readable but takes no new
+/// comments, which is why archiving is not the same as deleting.
+enum DiscussionStatusKind {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+/// Moderation state for a comment. Hidden comments keep their row so a reply
+/// chain does not lose its middle, but the text is withheld from readers.
+enum CommentStatusKind {
+  VISIBLE
+  HIDDEN
+}
+
+/// Only one reaction exists today. It is an enum rather than a boolean column
+/// so adding a second does not need a table migration.
+enum ReactionKind {
+  LIKE
+}
+
+/// An admin-published conversation. Members comment; only admins start one, so
+/// this is a curated research board rather than an open forum.
+///
+/// Locking stops new comments on an otherwise live thread; archiving retires
+/// the thread but keeps it readable. Both exist because they mean different
+/// things to a reader.
+model DiscussionThread {
+  id              String                 @id @default(cuid()) @db.VarChar(30)
+  authorId        String                 @map("author_id") @db.VarChar(30)
+  author          User                   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title           String                 @db.VarChar(200)
+  /// Readable URL key. The detail route resolves either this or the id, so the
+  /// links can move to slugs later without a data migration.
+  slug            String                 @unique @db.VarChar(220)
+  /// One or two sentences for the feed row. Stored rather than derived so an
+  /// admin controls what the list says, not the first 180 characters of prose.
+  excerpt         String                 @db.VarChar(400)
+  body            String                 @db.Text
+  category        DiscussionCategoryKind @default(MARKET_OUTLOOK)
+  status          DiscussionStatusKind   @default(PUBLISHED)
+  /// Free-text topics. Attribute-free, like Signal.keyCatalysts, so they stay
+  /// inline rather than becoming a table that only ever holds one column.
+  tags            String[]
+  /// IDX tickers the thread covers.
+  tickers         String[]
+  thumbnailUrl    String?                @map("thumbnail_url") @db.Text
+  /// Incremented when a thread is opened. Approximate by design: it counts
+  /// opens, not unique readers, and nothing depends on it being exact.
+  viewCount       Int                    @default(0) @map("view_count")
+  isPinned        Boolean                @default(false) @map("is_pinned")
+  isFeatured      Boolean                @default(false) @map("is_featured")
+  /// Locked by an admin, or implied by archiving. Stored separately so
+  /// unarchiving does not silently reopen a thread that was locked on purpose.
+  isLocked        Boolean                @default(false) @map("is_locked")
+  commentsEnabled Boolean                @default(true) @map("comments_enabled")
+  /// Null until first published; kept across an archive so the original date
+  /// survives.
+  publishedAt     DateTime?              @map("published_at")
+  createdAt       DateTime               @default(now()) @map("created_at")
+  updatedAt       DateTime               @updatedAt @map("updated_at")
+  deletedAt       DateTime?              @map("deleted_at")
+
+  reply    DiscussionReply[]
+  reaction DiscussionReaction[]
+  follow   DiscussionFollow[]
+
+  @@index([isPinned, createdAt])
+  @@index([status, publishedAt])
+  @@index([category])
+  @@map("t_discussion_thread")
+}
+
+/// A comment, or a reply to one. parentId is at most one level deep — the
+/// service flattens anything deeper onto its grandparent, because a finance
+/// thread indented five times stops being readable.
+model DiscussionReply {
+  id        String            @id @default(cuid()) @db.VarChar(30)
+  threadId  String            @map("thread_id") @db.VarChar(30)
+  thread    DiscussionThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  authorId  String            @map("author_id") @db.VarChar(30)
+  author    User              @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parentId  String?           @map("parent_id") @db.VarChar(30)
+  parent    DiscussionReply?  @relation("ReplyChain", fields: [parentId], references: [id], onDelete: Cascade)
+  child     DiscussionReply[] @relation("ReplyChain")
+  body      String            @db.Text
+  status    CommentStatusKind @default(VISIBLE)
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+  deletedAt DateTime?         @map("deleted_at")
+
+  reaction CommentReaction[]
+
+  @@index([threadId, createdAt])
+  @@index([parentId])
+  @@map("t_discussion_reply")
+}
+
+/// One row per member per thread per reaction. The unique key is what makes a
+/// like idempotent rather than a counter anyone can run up.
+model DiscussionReaction {
+  id        String           @id @default(cuid()) @db.VarChar(30)
+  threadId  String           @map("thread_id") @db.VarChar(30)
+  thread    DiscussionThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  userId    String           @map("user_id") @db.VarChar(30)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      ReactionKind     @default(LIKE)
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  @@unique([userId, threadId, type])
+  @@index([threadId])
+  @@map("t_discussion_reaction")
+}
+
+model CommentReaction {
+  id        String          @id @default(cuid()) @db.VarChar(30)
+  replyId   String          @map("reply_id") @db.VarChar(30)
+  reply     DiscussionReply @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  userId    String          @map("user_id") @db.VarChar(30)
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      ReactionKind    @default(LIKE)
+  createdAt DateTime        @default(now()) @map("created_at")
+
+  @@unique([userId, replyId, type])
+  @@index([replyId])
+  @@map("t_comment_reaction")
+}
+
+/// Following is stored and surfaced; delivering anything is not. The app has no
+/// notification infrastructure, and building a parallel one for this feature
+/// would be the wrong place to start. This table is the integration boundary.
+model DiscussionFollow {
+  id        String           @id @default(cuid()) @db.VarChar(30)
+  threadId  String           @map("thread_id") @db.VarChar(30)
+  thread    DiscussionThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  userId    String           @map("user_id") @db.VarChar(30)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  @@unique([userId, threadId])
+  @@index([userId])
+  @@map("t_discussion_follow")
+}
+
+/// Daily broker-level trade totals from IDX, one row per broker / ticker / day
+/// / action / txn_type. Mirrored verbatim from the upstream market-data project,
+/// so the table and column names stay unprefixed rather than following the `t_`
+/// convention used by this app's own tables.
+///
+/// Partitioned by RANGE (date) into monthly partitions — see the migration.
+/// Because the partition key must be part of every unique constraint, the
+/// primary key is (id, date) rather than id alone.
+///
+/// VOLUME IS IN LOTS (1 lot = 100 shares), unlike StockSummary which is in shares.
+model BrokerSummary {
+  id        BigInt   @default(autoincrement())
+  date      DateTime @db.Date
+  ticker    String   @db.VarChar(12)
+  /// Exchange member code, e.g. "YP", "CC".
+  broker    String   @db.VarChar(4)
+  isForeign Boolean  @map("is_foreign")
+  /// BUY or SELL.
+  action    String   @db.VarChar(4)
+  avgPx     Decimal? @map("avg_px") @db.Decimal(15, 2)
+  /// LOTS, not shares.
+  volume    BigInt?
+  /// IDR. Already signed when isNet, so do not negate it again.
+  value     BigInt?
+  isNet     Boolean  @map("is_net")
+  /// Board code, e.g. "RG" (regular), "TN" (negotiated), "TS" (cash).
+  txnType   String   @map("txn_type") @db.VarChar(2)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  frequency Int?     @default(0)
+
+  @@id([id, date])
+  @@unique([date, ticker, broker, isForeign, action, isNet, txnType], map: "broker_summaries_uniq")
+  @@index([broker], map: "idx_broker_summaries_broker")
+  @@index([date(sort: Desc)], map: "idx_broker_summaries_date")
+  @@index([date(sort: Desc), broker], map: "idx_broker_summaries_date_broker")
+  @@index([date(sort: Desc), ticker], map: "idx_broker_summaries_date_ticker")
+  @@index([isNet], map: "idx_broker_summaries_is_net")
+  @@index([ticker], map: "idx_broker_summaries_ticker")
+  @@index([txnType], map: "idx_broker_summaries_txn_type")
+  @@map("broker_summaries")
+}
+
+/// Daily OHLCV per ticker from IDX TradingSummary/GetStockSummary. One row per
+/// ticker per day. Not partitioned: a single row per listing per day stays small
+/// next to BrokerSummary.
+///
+/// VOLUME IS IN SHARES, unlike BrokerSummary which is in lots.
+model StockSummary {
+  id              BigInt    @id @default(autoincrement())
+  date            DateTime  @db.Date
+  ticker          String    @db.VarChar(10)
+  previousClose   Decimal?  @map("previous_close") @db.Decimal(15, 2)
+  openPrice       Decimal?  @map("open_price") @db.Decimal(15, 2)
+  high            Decimal?  @db.Decimal(15, 2)
+  low             Decimal?  @db.Decimal(15, 2)
+  close           Decimal   @db.Decimal(15, 2)
+  change          Decimal?  @db.Decimal(15, 2)
+  /// SHARES, not lots.
+  volume          BigInt?   @default(0)
+  /// IDR.
+  value           BigInt?   @default(0)
+  frequency       Int?      @default(0)
+  foreignSell     BigInt?   @default(0) @map("foreign_sell")
+  foreignBuy      BigInt?   @default(0) @map("foreign_buy")
+  listedShares    BigInt?   @map("listed_shares")
+  tradeableShares BigInt?   @map("tradeable_shares")
+  bid             Decimal?  @db.Decimal(15, 2)
+  bidVolume       BigInt?   @map("bid_volume")
+  offer           Decimal?  @db.Decimal(15, 2)
+  offerVolume     BigInt?   @map("offer_volume")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  /// Nullable and without a time zone, matching the upstream table.
+  updatedAt       DateTime? @map("updated_at") @db.Timestamp(6)
+
+  @@unique([date, ticker], map: "uq_stock_summary_date_ticker")
+  @@index([date], map: "idx_stock_summary_date")
+  @@index([ticker], map: "idx_stock_summary_ticker")
+  @@index([ticker, date], map: "idx_stock_summary_ticker_date")
+  @@map("stock_summaries")
+}
+
+/// Daily COMPOSITE (IHSG) figures from IDX TradingSummary/GetIndexSummary.
+/// One row per trading day.
+///
+/// Only the handful of fields we use are stored; the endpoint also returns
+/// Previous/Highest/Lowest/Change/Frequency/NumberOfStock, and 44 other indices
+/// besides COMPOSITE. Adding those later means an `index_code` column and a
+/// widened unique key.
+model IndexSummary {
+  id            BigInt    @id @default(autoincrement())
+  date          DateTime  @unique(map: "uq_index_summary_date") @db.Date
+  close         Decimal   @db.Decimal(15, 3)
+  /// Shares.
+  volume        BigInt?
+  /// IDR.
+  value         BigInt?
+  /// IDR. Decimal rather than BigInt — see the migration.
+  marketCapital Decimal?  @map("market_capital") @db.Decimal(30, 2)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime? @map("updated_at") @db.Timestamp(6)
+
+  @@map("index_summaries")
+}
+
+/// A dated snapshot of the exchange's headline numbers, posted by an admin.
+/// The home page reads the most recent row; older rows are kept as history.
+model MarketIndexSnapshot {
+  id             String   @id @default(cuid()) @db.VarChar(30)
+  indexName      String   @default("IHSG") @map("index_name") @db.VarChar(20)
+  /// Index level, e.g. 7845.21.
+  value          Decimal  @db.Decimal(12, 2)
+  changePercent  Decimal  @map("change_percent") @db.Decimal(6, 2)
+  /// Stored as whole rupiah, not a pre-formatted string, so the UI decides how
+  /// to abbreviate it. Foreign flow is negative on a net outflow.
+  turnoverIdr    Decimal  @map("turnover_idr") @db.Decimal(24, 0)
+  foreignFlowIdr Decimal  @map("foreign_flow_idr") @db.Decimal(24, 0)
+  advancers      Int
+  decliners      Int
+  /// When the numbers were taken, which is what the page shows as "as of".
+  capturedAt     DateTime @map("captured_at")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@index([capturedAt])
+  @@map("t_market_index_snapshot")
+}
+
+enum EbookTagKind {
+  RESEARCH_REPORT
+  ARTICLE
+}
+
+/// A document in the member library: broker research, articles, guides.
+/// The file itself lives in the upload store and is served only through an
+/// authenticated route, so a link alone does not hand out the document.
+model Ebook {
+  id            String       @id @default(cuid()) @db.VarChar(30)
+  title         String       @db.VarChar(300)
+  tag           EbookTagKind
+  summary       String?      @db.Text
+  /// Publisher or research house, shown with every entry so provenance travels
+  /// with the document.
+  source        String       @db.VarChar(150)
+  author        String?      @db.VarChar(200)
+  /// Tickers the document covers, for filtering alongside the tag.
+  tickers       String[]
+  publishedAt   DateTime     @map("published_at")
+  /// Generated name in the upload store, never the uploaded filename.
+  fileName      String       @map("file_name") @db.VarChar(64)
+  fileSizeBytes Int          @map("file_size_bytes")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  deletedAt     DateTime?    @map("deleted_at")
+
+  @@index([publishedAt])
+  @@index([tag])
+  @@map("t_ebook")
 }

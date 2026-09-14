@@ -47,3 +47,115 @@ export type Announcement = Prisma.AnnouncementModel
  * 
  */
 export type LiveSession = Prisma.LiveSessionModel
+/**
+ * Model Signal
+ * A published trade idea. Prices are whole rupiah, matching how IDX quotes.
+ */
+export type Signal = Prisma.SignalModel
+/**
+ * Model SignalEvent
+ * One entry on a signal's timeline. Pending milestones have no occurredAt yet.
+ */
+export type SignalEvent = Prisma.SignalEventModel
+/**
+ * Model SignalWatchlistItem
+ * 
+ */
+export type SignalWatchlistItem = Prisma.SignalWatchlistItemModel
+/**
+ * Model Stock
+ * The IDX listings an admin can publish a signal against.
+ */
+export type Stock = Prisma.StockModel
+/**
+ * Model IdxDisclosure
+ * Keterbukaan informasi: a filing a listed company made to the exchange.
+ */
+export type IdxDisclosure = Prisma.IdxDisclosureModel
+/**
+ * Model CalendarEvent
+ * A dated market event. Ticker is null for market-wide entries such as a rate decision.
+ */
+export type CalendarEvent = Prisma.CalendarEventModel
+/**
+ * Model DiscussionThread
+ * An admin-published conversation. Members comment; only admins start one, so
+ * this is a curated research board rather than an open forum.
+ * 
+ * Locking stops new comments on an otherwise live thread; archiving retires
+ * the thread but keeps it readable. Both exist because they mean different
+ * things to a reader.
+ */
+export type DiscussionThread = Prisma.DiscussionThreadModel
+/**
+ * Model DiscussionReply
+ * A comment, or a reply to one. parentId is at most one level deep — the
+ * service flattens anything deeper onto its grandparent, because a finance
+ * thread indented five times stops being readable.
+ */
+export type DiscussionReply = Prisma.DiscussionReplyModel
+/**
+ * Model DiscussionReaction
+ * One row per member per thread per reaction. The unique key is what makes a
+ * like idempotent rather than a counter anyone can run up.
+ */
+export type DiscussionReaction = Prisma.DiscussionReactionModel
+/**
+ * Model CommentReaction
+ * 
+ */
+export type CommentReaction = Prisma.CommentReactionModel
+/**
+ * Model DiscussionFollow
+ * Following is stored and surfaced; delivering anything is not. The app has no
+ * notification infrastructure, and building a parallel one for this feature
+ * would be the wrong place to start. This table is the integration boundary.
+ */
+export type DiscussionFollow = Prisma.DiscussionFollowModel
+/**
+ * Model BrokerSummary
+ * Daily broker-level trade totals from IDX, one row per broker / ticker / day
+ * / action / txn_type. Mirrored verbatim from the upstream market-data project,
+ * so the table and column names stay unprefixed rather than following the `t_`
+ * convention used by this app's own tables.
+ * 
+ * Partitioned by RANGE (date) into monthly partitions — see the migration.
+ * Because the partition key must be part of every unique constraint, the
+ * primary key is (id, date) rather than id alone.
+ * 
+ * VOLUME IS IN LOTS (1 lot = 100 shares), unlike StockSummary which is in shares.
+ */
+export type BrokerSummary = Prisma.BrokerSummaryModel
+/**
+ * Model StockSummary
+ * Daily OHLCV per ticker from IDX TradingSummary/GetStockSummary. One row per
+ * ticker per day. Not partitioned: a single row per listing per day stays small
+ * next to BrokerSummary.
+ * 
+ * VOLUME IS IN SHARES, unlike BrokerSummary which is in lots.
+ */
+export type StockSummary = Prisma.StockSummaryModel
+/**
+ * Model IndexSummary
+ * Daily COMPOSITE (IHSG) figures from IDX TradingSummary/GetIndexSummary.
+ * One row per trading day.
+ * 
+ * Only the handful of fields we use are stored; the endpoint also returns
+ * Previous/Highest/Lowest/Change/Frequency/NumberOfStock, and 44 other indices
+ * besides COMPOSITE. Adding those later means an `index_code` column and a
+ * widened unique key.
+ */
+export type IndexSummary = Prisma.IndexSummaryModel
+/**
+ * Model MarketIndexSnapshot
+ * A dated snapshot of the exchange's headline numbers, posted by an admin.
+ * The home page reads the most recent row; older rows are kept as history.
+ */
+export type MarketIndexSnapshot = Prisma.MarketIndexSnapshotModel
+/**
+ * Model Ebook
+ * A document in the member library: broker research, articles, guides.
+ * The file itself lives in the upload store and is served only through an
+ * authenticated route, so a link alone does not hand out the document.
+ */
+export type Ebook = Prisma.EbookModel

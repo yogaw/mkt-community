@@ -5,25 +5,28 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { SearchInput } from "@/components/ui/search-input";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/cn";
 
 const navItems = [
   { href: "/", label: "Home" },
-  { href: "/insights", label: "Insights" },
-  { href: "/stocks", label: "Stocks" },
+  { href: "/signals", label: "Signals" },
+  { href: "/stock-analysis", label: "Stock Analysis" },
+  { href: "/market-data", label: "Market Data" },
+  { href: "/discussion", label: "Discussion" },
   { href: "/videos", label: "Videos" },
-  { href: "/live", label: "Live" },
-  { href: "/watchlist", label: "Watchlist" },
+  { href: "/news", label: "News" },
   { href: "/profile", label: "Profile" },
 ];
 
 const pageTitleRules: Array<{ prefix: string; title: string }> = [
   { prefix: "/videos", title: "Videos" },
   { prefix: "/updates", title: "Updates" },
-  { prefix: "/insights", title: "Insights" },
-  { prefix: "/stocks", title: "Stocks" },
-  { prefix: "/live", title: "Live" },
-  { prefix: "/watchlist", title: "Watchlist" },
+  { prefix: "/signals", title: "Signals" },
+  { prefix: "/stock-analysis", title: "Stock Analysis" },
+  { prefix: "/discussion", title: "Discussion" },
+  { prefix: "/news", title: "News" },
+  { prefix: "/market-data", title: "Market Data" },
   { prefix: "/search", title: "Search" },
   { prefix: "/profile", title: "Profile" },
 ];
@@ -118,11 +121,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             <SearchInput
               value={term}
               onChange={(event) => setTerm(event.target.value)}
-              placeholder="Search stocks, insights, videos..."
+              placeholder="Search stocks, signals, videos..."
               aria-label="Search"
               className="py-2 text-sm"
             />
           </form>
+
+          <ThemeToggle className="ml-auto sm:ml-0" />
 
           <Link href="/profile" aria-label="Open profile" className="shrink-0">
             <Image

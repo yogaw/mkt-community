@@ -52,3 +52,110 @@ export const MembershipStatusKind = {
 } as const
 
 export type MembershipStatusKind = (typeof MembershipStatusKind)[keyof typeof MembershipStatusKind]
+
+
+export const SignalTypeKind = {
+  SWING: 'SWING',
+  TRADING: 'TRADING',
+  POSITION: 'POSITION'
+} as const
+
+export type SignalTypeKind = (typeof SignalTypeKind)[keyof typeof SignalTypeKind]
+
+
+export const SignalStatusKind = {
+  ACTIVE: 'ACTIVE',
+  TP1_HIT: 'TP1_HIT',
+  TP2_HIT: 'TP2_HIT',
+  STOP_LOSS: 'STOP_LOSS',
+  CLOSED: 'CLOSED'
+} as const
+
+export type SignalStatusKind = (typeof SignalStatusKind)[keyof typeof SignalStatusKind]
+
+
+export const SignalEventKind = {
+  ENTRY: 'ENTRY',
+  UPDATE: 'UPDATE',
+  TARGET: 'TARGET',
+  STOP_LOSS: 'STOP_LOSS'
+} as const
+
+export type SignalEventKind = (typeof SignalEventKind)[keyof typeof SignalEventKind]
+
+
+export const SignalEventStateKind = {
+  DONE: 'DONE',
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE'
+} as const
+
+export type SignalEventStateKind = (typeof SignalEventStateKind)[keyof typeof SignalEventStateKind]
+
+
+export const IdxDisclosureKind = {
+  RUPS: 'RUPS',
+  DIVIDEND: 'DIVIDEND',
+  MATERIAL_TRANSACTION: 'MATERIAL_TRANSACTION',
+  FINANCIAL_REPORT: 'FINANCIAL_REPORT',
+  SHARE_BUYBACK: 'SHARE_BUYBACK',
+  OTHER: 'OTHER'
+} as const
+
+export type IdxDisclosureKind = (typeof IdxDisclosureKind)[keyof typeof IdxDisclosureKind]
+
+
+export const CalendarEventKind = {
+  EARNINGS: 'EARNINGS',
+  DIVIDEND_EX_DATE: 'DIVIDEND_EX_DATE',
+  DIVIDEND_PAYMENT: 'DIVIDEND_PAYMENT',
+  RUPS: 'RUPS',
+  IPO_LISTING: 'IPO_LISTING',
+  MACRO: 'MACRO',
+  OTHER: 'OTHER'
+} as const
+
+export type CalendarEventKind = (typeof CalendarEventKind)[keyof typeof CalendarEventKind]
+
+
+export const DiscussionCategoryKind = {
+  MARKET_OUTLOOK: 'MARKET_OUTLOOK',
+  STOCK_DISCUSSION: 'STOCK_DISCUSSION',
+  MACRO_ECONOMY: 'MACRO_ECONOMY',
+  SECTOR_ANALYSIS: 'SECTOR_ANALYSIS',
+  STRATEGY_PSYCHOLOGY: 'STRATEGY_PSYCHOLOGY'
+} as const
+
+export type DiscussionCategoryKind = (typeof DiscussionCategoryKind)[keyof typeof DiscussionCategoryKind]
+
+
+export const DiscussionStatusKind = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type DiscussionStatusKind = (typeof DiscussionStatusKind)[keyof typeof DiscussionStatusKind]
+
+
+export const CommentStatusKind = {
+  VISIBLE: 'VISIBLE',
+  HIDDEN: 'HIDDEN'
+} as const
+
+export type CommentStatusKind = (typeof CommentStatusKind)[keyof typeof CommentStatusKind]
+
+
+export const ReactionKind = {
+  LIKE: 'LIKE'
+} as const
+
+export type ReactionKind = (typeof ReactionKind)[keyof typeof ReactionKind]
+
+
+export const EbookTagKind = {
+  RESEARCH_REPORT: 'RESEARCH_REPORT',
+  ARTICLE: 'ARTICLE'
+} as const
+
+export type EbookTagKind = (typeof EbookTagKind)[keyof typeof EbookTagKind]

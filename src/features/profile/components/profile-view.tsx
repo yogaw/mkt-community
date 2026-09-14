@@ -6,6 +6,9 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { formatDate } from "@/lib/datetime/format";
+import { PREMIUM_PLAN, formatIdr, periodLabel } from "@/features/membership/membership-plan";
+import { UpgradeMembershipDrawer } from "@/features/membership/components/upgrade-membership-drawer";
 import { authedFetch } from "@/lib/api/authed-fetch";
 import { clearSession, getToken } from "@/lib/auth/token-storage";
 import type { ProfileDto } from "../profile-types";
@@ -23,6 +26,7 @@ export function ProfileView() {
   const [profile, setProfile] = useState<ProfileDto | null>(null);
   const [status, setStatus] = useState<Status>("loading");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
@@ -105,17 +109,75 @@ export function ProfileView() {
             <p className="mt-1 text-sm text-ink-faint">{profile.email}</p>
           </div>
 
-          <div className="flex items-center justify-between rounded-xl border border-edge bg-panel p-5">
-            <span className="text-sm font-medium text-ink-muted">Membership</span>
-            <StatusBadge
-              label={statusBadgeConfig[profile.membershipStatus].label}
-              tone={statusBadgeConfig[profile.membershipStatus].tone}
-            />
-          </div>
+          <section
+            aria-label="Membership"
+            className="rounded-xl border border-edge bg-panel p-5"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs text-ink-faint">Current Membership</p>
+                <p className="mt-0.5 text-lg font-semibold text-ink">{PREMIUM_PLAN.name}</p>
+              </div>
+              <StatusBadge
+                label={statusBadgeConfig[profile.membershipStatus].label}
+                tone={statusBadgeConfig[profile.membershipStatus].tone}
+              />
+            </div>
 
-          <Button onClick={handleLogout} disabled={isLoggingOut}>
+            {/* Member since is the account's own creation date. There is no
+                renewal date in the system yet, so none is shown — inventing one
+                on a billing screen would be worse than leaving it out. */}
+            <dl className="mt-4 border-t border-edge pt-4 text-sm">
+              <div className="flex items-center justify-between">
+                <dt className="text-ink-muted">Member since</dt>
+                <dd className="font-medium text-ink">{formatDate(profile.joinedAt)}</dd>
+              </div>
+              <div className="mt-2 flex items-center justify-between">
+                <dt className="text-ink-muted">Price</dt>
+                <dd className="font-medium text-ink">
+                  {formatIdr(PREMIUM_PLAN.priceIdr)}{" "}
+                  <span className="text-xs font-normal text-ink-faint">
+                    {periodLabel(PREMIUM_PLAN)}
+                  </span>
+                </dd>
+              </div>
+            </dl>
+
+            <ul className="mt-4 space-y-2 border-t border-edge pt-4">
+              {PREMIUM_PLAN.features.map((feature) => (
+                <li key={feature} className="flex items-center gap-2.5 text-sm text-ink-muted">
+                  <span
+                    aria-hidden="true"
+                    className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent"
+                  >
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                      <path
+                        d="M2.5 6.2l2.2 2.2 4.8-4.8"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+
+            <Button onClick={() => setIsUpgradeOpen(true)} className="mt-5">
+              Upgrade Membership
+            </Button>
+          </section>
+
+          <Button onClick={handleLogout} disabled={isLoggingOut} variant="secondary">
             {isLoggingOut ? "Logging out" : "Logout"}
           </Button>
+
+          <UpgradeMembershipDrawer
+            open={isUpgradeOpen}
+            onClose={() => setIsUpgradeOpen(false)}
+          />
         </div>
       ) : null}
     </main>

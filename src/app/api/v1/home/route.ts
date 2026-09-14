@@ -5,9 +5,9 @@ import { toErrorResponse } from "@/lib/api/response";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
-    await requireAuth(request);
+    const claims = await requireAuth(request);
 
-    const feed = await dashboardService.getHomeFeed();
+    const feed = await dashboardService.getHomeFeed(claims.sub);
 
     return NextResponse.json(feed, { status: 200 });
   } catch (error) {

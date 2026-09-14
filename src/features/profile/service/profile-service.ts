@@ -29,6 +29,7 @@ function toProfileDto(user: UserModel): ProfileDto {
     name: user.name,
     email: user.email,
     membershipStatus: user.membershipStatus as MembershipStatus,
+    joinedAt: user.createdAt.toISOString(),
   };
 }
 

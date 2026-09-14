@@ -8,6 +8,11 @@ import {
   VideoProviderKind,
 } from "../src/database/prisma/enums";
 import { hashPassword } from "../src/lib/auth/password";
+import { seedStocks } from "./seed-stocks";
+import { seedSignals, seedSignalWatchlist } from "./seed-signals";
+import { seedMarketIndex } from "./seed-market-index";
+import { seedNewsSections } from "./seed-news-sections";
+import { seedDiscussion } from "./seed-discussion";
 
 const HOUR_IN_MS = 60 * 60 * 1000;
 
@@ -32,6 +37,36 @@ const seedUsers = [
     password: "member123",
     role: UserRoleKind.MEMBER,
     membershipStatus: MembershipStatusKind.INACTIVE,
+  },
+  // Enough voices for the board to look like a board. Without them every
+  // thread is a conversation between the same two accounts.
+  {
+    email: "rika@email.com",
+    name: "Rika Anindita",
+    password: "member123",
+    role: UserRoleKind.MEMBER,
+    membershipStatus: MembershipStatusKind.ACTIVE,
+  },
+  {
+    email: "david@email.com",
+    name: "David Kurniawan",
+    password: "member123",
+    role: UserRoleKind.MEMBER,
+    membershipStatus: MembershipStatusKind.ACTIVE,
+  },
+  {
+    email: "michael@email.com",
+    name: "Michael Tanuwijaya",
+    password: "member123",
+    role: UserRoleKind.MEMBER,
+    membershipStatus: MembershipStatusKind.ACTIVE,
+  },
+  {
+    email: "jessica@email.com",
+    name: "Jessica Halim",
+    password: "member123",
+    role: UserRoleKind.MEMBER,
+    membershipStatus: MembershipStatusKind.ACTIVE,
   },
 ];
 
@@ -295,6 +330,13 @@ async function main(): Promise<void> {
     },
   });
   console.log(`Seeded live session on ${scheduledAt.toISOString()}`);
+
+  await seedStocks();
+  await seedSignals();
+  await seedSignalWatchlist();
+  await seedMarketIndex();
+  await seedNewsSections();
+  await seedDiscussion();
 
   await db.$disconnect();
 }

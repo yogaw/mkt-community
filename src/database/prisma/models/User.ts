@@ -214,6 +214,12 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemListRelationFilter
+  discussionThread?: Prisma.DiscussionThreadListRelationFilter
+  discussionReply?: Prisma.DiscussionReplyListRelationFilter
+  discussionReaction?: Prisma.DiscussionReactionListRelationFilter
+  commentReaction?: Prisma.CommentReactionListRelationFilter
+  discussionFollow?: Prisma.DiscussionFollowListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -226,6 +232,12 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  signalWatchlist?: Prisma.SignalWatchlistItemOrderByRelationAggregateInput
+  discussionThread?: Prisma.DiscussionThreadOrderByRelationAggregateInput
+  discussionReply?: Prisma.DiscussionReplyOrderByRelationAggregateInput
+  discussionReaction?: Prisma.DiscussionReactionOrderByRelationAggregateInput
+  commentReaction?: Prisma.CommentReactionOrderByRelationAggregateInput
+  discussionFollow?: Prisma.DiscussionFollowOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -241,6 +253,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemListRelationFilter
+  discussionThread?: Prisma.DiscussionThreadListRelationFilter
+  discussionReply?: Prisma.DiscussionReplyListRelationFilter
+  discussionReaction?: Prisma.DiscussionReactionListRelationFilter
+  commentReaction?: Prisma.CommentReactionListRelationFilter
+  discussionFollow?: Prisma.DiscussionFollowListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -283,6 +301,12 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -295,6 +319,12 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -307,6 +337,12 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -319,6 +355,12 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -393,6 +435,11 @@ export type UserMinOrderByAggregateInput = {
   deletedAt?: Prisma.SortOrder
 }
 
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -413,6 +460,668 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
+export type UserCreateNestedOneWithoutSignalWatchlistInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSignalWatchlistInput, Prisma.UserUncheckedCreateWithoutSignalWatchlistInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSignalWatchlistInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSignalWatchlistNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSignalWatchlistInput, Prisma.UserUncheckedCreateWithoutSignalWatchlistInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSignalWatchlistInput
+  upsert?: Prisma.UserUpsertWithoutSignalWatchlistInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSignalWatchlistInput, Prisma.UserUpdateWithoutSignalWatchlistInput>, Prisma.UserUncheckedUpdateWithoutSignalWatchlistInput>
+}
+
+export type UserCreateNestedOneWithoutDiscussionThreadInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionThreadInput, Prisma.UserUncheckedCreateWithoutDiscussionThreadInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionThreadInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDiscussionThreadNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionThreadInput, Prisma.UserUncheckedCreateWithoutDiscussionThreadInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionThreadInput
+  upsert?: Prisma.UserUpsertWithoutDiscussionThreadInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscussionThreadInput, Prisma.UserUpdateWithoutDiscussionThreadInput>, Prisma.UserUncheckedUpdateWithoutDiscussionThreadInput>
+}
+
+export type UserCreateNestedOneWithoutDiscussionReplyInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReplyInput, Prisma.UserUncheckedCreateWithoutDiscussionReplyInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionReplyInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDiscussionReplyNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReplyInput, Prisma.UserUncheckedCreateWithoutDiscussionReplyInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionReplyInput
+  upsert?: Prisma.UserUpsertWithoutDiscussionReplyInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscussionReplyInput, Prisma.UserUpdateWithoutDiscussionReplyInput>, Prisma.UserUncheckedUpdateWithoutDiscussionReplyInput>
+}
+
+export type UserCreateNestedOneWithoutDiscussionReactionInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReactionInput, Prisma.UserUncheckedCreateWithoutDiscussionReactionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionReactionInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDiscussionReactionNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReactionInput, Prisma.UserUncheckedCreateWithoutDiscussionReactionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionReactionInput
+  upsert?: Prisma.UserUpsertWithoutDiscussionReactionInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscussionReactionInput, Prisma.UserUpdateWithoutDiscussionReactionInput>, Prisma.UserUncheckedUpdateWithoutDiscussionReactionInput>
+}
+
+export type UserCreateNestedOneWithoutCommentReactionInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentReactionInput, Prisma.UserUncheckedCreateWithoutCommentReactionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentReactionInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCommentReactionNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentReactionInput, Prisma.UserUncheckedCreateWithoutCommentReactionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentReactionInput
+  upsert?: Prisma.UserUpsertWithoutCommentReactionInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentReactionInput, Prisma.UserUpdateWithoutCommentReactionInput>, Prisma.UserUncheckedUpdateWithoutCommentReactionInput>
+}
+
+export type UserCreateNestedOneWithoutDiscussionFollowInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionFollowInput, Prisma.UserUncheckedCreateWithoutDiscussionFollowInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionFollowInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDiscussionFollowNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDiscussionFollowInput, Prisma.UserUncheckedCreateWithoutDiscussionFollowInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDiscussionFollowInput
+  upsert?: Prisma.UserUpsertWithoutDiscussionFollowInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDiscussionFollowInput, Prisma.UserUpdateWithoutDiscussionFollowInput>, Prisma.UserUncheckedUpdateWithoutDiscussionFollowInput>
+}
+
+export type UserCreateWithoutSignalWatchlistInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSignalWatchlistInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSignalWatchlistInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSignalWatchlistInput, Prisma.UserUncheckedCreateWithoutSignalWatchlistInput>
+}
+
+export type UserUpsertWithoutSignalWatchlistInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSignalWatchlistInput, Prisma.UserUncheckedUpdateWithoutSignalWatchlistInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSignalWatchlistInput, Prisma.UserUncheckedCreateWithoutSignalWatchlistInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSignalWatchlistInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSignalWatchlistInput, Prisma.UserUncheckedUpdateWithoutSignalWatchlistInput>
+}
+
+export type UserUpdateWithoutSignalWatchlistInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSignalWatchlistInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDiscussionThreadInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
+  discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDiscussionThreadInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDiscussionThreadInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionThreadInput, Prisma.UserUncheckedCreateWithoutDiscussionThreadInput>
+}
+
+export type UserUpsertWithoutDiscussionThreadInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionThreadInput, Prisma.UserUncheckedUpdateWithoutDiscussionThreadInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionThreadInput, Prisma.UserUncheckedCreateWithoutDiscussionThreadInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDiscussionThreadInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionThreadInput, Prisma.UserUncheckedUpdateWithoutDiscussionThreadInput>
+}
+
+export type UserUpdateWithoutDiscussionThreadInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
+  discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDiscussionThreadInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDiscussionReplyInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDiscussionReplyInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDiscussionReplyInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReplyInput, Prisma.UserUncheckedCreateWithoutDiscussionReplyInput>
+}
+
+export type UserUpsertWithoutDiscussionReplyInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionReplyInput, Prisma.UserUncheckedUpdateWithoutDiscussionReplyInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReplyInput, Prisma.UserUncheckedCreateWithoutDiscussionReplyInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDiscussionReplyInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionReplyInput, Prisma.UserUncheckedUpdateWithoutDiscussionReplyInput>
+}
+
+export type UserUpdateWithoutDiscussionReplyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDiscussionReplyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDiscussionReactionInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDiscussionReactionInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDiscussionReactionInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReactionInput, Prisma.UserUncheckedCreateWithoutDiscussionReactionInput>
+}
+
+export type UserUpsertWithoutDiscussionReactionInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionReactionInput, Prisma.UserUncheckedUpdateWithoutDiscussionReactionInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionReactionInput, Prisma.UserUncheckedCreateWithoutDiscussionReactionInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDiscussionReactionInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionReactionInput, Prisma.UserUncheckedUpdateWithoutDiscussionReactionInput>
+}
+
+export type UserUpdateWithoutDiscussionReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDiscussionReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCommentReactionInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCommentReactionInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCommentReactionInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentReactionInput, Prisma.UserUncheckedCreateWithoutCommentReactionInput>
+}
+
+export type UserUpsertWithoutCommentReactionInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCommentReactionInput, Prisma.UserUncheckedUpdateWithoutCommentReactionInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentReactionInput, Prisma.UserUncheckedCreateWithoutCommentReactionInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCommentReactionInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCommentReactionInput, Prisma.UserUncheckedUpdateWithoutCommentReactionInput>
+}
+
+export type UserUpdateWithoutCommentReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCommentReactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  discussionFollow?: Prisma.DiscussionFollowUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutDiscussionFollowInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutDiscussionFollowInput = {
+  id?: string
+  email: string
+  name: string
+  password: string
+  role?: $Enums.UserRoleKind
+  membershipStatus?: $Enums.MembershipStatusKind
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedCreateNestedManyWithoutUserInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedCreateNestedManyWithoutAuthorInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedCreateNestedManyWithoutUserInput
+  commentReaction?: Prisma.CommentReactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutDiscussionFollowInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionFollowInput, Prisma.UserUncheckedCreateWithoutDiscussionFollowInput>
+}
+
+export type UserUpsertWithoutDiscussionFollowInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionFollowInput, Prisma.UserUncheckedUpdateWithoutDiscussionFollowInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDiscussionFollowInput, Prisma.UserUncheckedCreateWithoutDiscussionFollowInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDiscussionFollowInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDiscussionFollowInput, Prisma.UserUncheckedUpdateWithoutDiscussionFollowInput>
+}
+
+export type UserUpdateWithoutDiscussionFollowInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDiscussionFollowInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleKindFieldUpdateOperationsInput | $Enums.UserRoleKind
+  membershipStatus?: Prisma.EnumMembershipStatusKindFieldUpdateOperationsInput | $Enums.MembershipStatusKind
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  signalWatchlist?: Prisma.SignalWatchlistItemUncheckedUpdateManyWithoutUserNestedInput
+  discussionThread?: Prisma.DiscussionThreadUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReply?: Prisma.DiscussionReplyUncheckedUpdateManyWithoutAuthorNestedInput
+  discussionReaction?: Prisma.DiscussionReactionUncheckedUpdateManyWithoutUserNestedInput
+  commentReaction?: Prisma.CommentReactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+
+/**
+ * Count Type UserCountOutputType
+ */
+
+export type UserCountOutputType = {
+  signalWatchlist: number
+  discussionThread: number
+  discussionReply: number
+  discussionReaction: number
+  commentReaction: number
+  discussionFollow: number
+}
+
+export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  signalWatchlist?: boolean | UserCountOutputTypeCountSignalWatchlistArgs
+  discussionThread?: boolean | UserCountOutputTypeCountDiscussionThreadArgs
+  discussionReply?: boolean | UserCountOutputTypeCountDiscussionReplyArgs
+  discussionReaction?: boolean | UserCountOutputTypeCountDiscussionReactionArgs
+  commentReaction?: boolean | UserCountOutputTypeCountCommentReactionArgs
+  discussionFollow?: boolean | UserCountOutputTypeCountDiscussionFollowArgs
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserCountOutputType
+   */
+  select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSignalWatchlistArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SignalWatchlistItemWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDiscussionThreadArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionThreadWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDiscussionReplyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionReplyWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDiscussionReactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionReactionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCommentReactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentReactionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDiscussionFollowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscussionFollowWhereInput
+}
 
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -425,6 +1134,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
+  signalWatchlist?: boolean | Prisma.User$signalWatchlistArgs<ExtArgs>
+  discussionThread?: boolean | Prisma.User$discussionThreadArgs<ExtArgs>
+  discussionReply?: boolean | Prisma.User$discussionReplyArgs<ExtArgs>
+  discussionReaction?: boolean | Prisma.User$discussionReactionArgs<ExtArgs>
+  commentReaction?: boolean | Prisma.User$commentReactionArgs<ExtArgs>
+  discussionFollow?: boolean | Prisma.User$discussionFollowArgs<ExtArgs>
+  _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -464,10 +1180,28 @@ export type UserSelectScalar = {
 }
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "password" | "role" | "membershipStatus" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["user"]>
+export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  signalWatchlist?: boolean | Prisma.User$signalWatchlistArgs<ExtArgs>
+  discussionThread?: boolean | Prisma.User$discussionThreadArgs<ExtArgs>
+  discussionReply?: boolean | Prisma.User$discussionReplyArgs<ExtArgs>
+  discussionReaction?: boolean | Prisma.User$discussionReactionArgs<ExtArgs>
+  commentReaction?: boolean | Prisma.User$commentReactionArgs<ExtArgs>
+  discussionFollow?: boolean | Prisma.User$discussionFollowArgs<ExtArgs>
+  _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
-  objects: {}
+  objects: {
+    signalWatchlist: Prisma.$SignalWatchlistItemPayload<ExtArgs>[]
+    discussionThread: Prisma.$DiscussionThreadPayload<ExtArgs>[]
+    discussionReply: Prisma.$DiscussionReplyPayload<ExtArgs>[]
+    discussionReaction: Prisma.$DiscussionReactionPayload<ExtArgs>[]
+    commentReaction: Prisma.$CommentReactionPayload<ExtArgs>[]
+    discussionFollow: Prisma.$DiscussionFollowPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     email: string
@@ -872,6 +1606,12 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  signalWatchlist<T extends Prisma.User$signalWatchlistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$signalWatchlistArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SignalWatchlistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discussionThread<T extends Prisma.User$discussionThreadArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discussionThreadArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionThreadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discussionReply<T extends Prisma.User$discussionReplyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discussionReplyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discussionReaction<T extends Prisma.User$discussionReactionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discussionReactionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  commentReaction<T extends Prisma.User$commentReactionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentReactionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discussionFollow<T extends Prisma.User$discussionFollowArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$discussionFollowArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscussionFollowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -927,6 +1667,10 @@ export type UserFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter, which User to fetch.
    */
   where: Prisma.UserWhereUniqueInput
@@ -945,6 +1689,10 @@ export type UserFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter, which User to fetch.
    */
   where: Prisma.UserWhereUniqueInput
@@ -962,6 +1710,10 @@ export type UserFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * Filter, which User to fetch.
    */
@@ -1011,6 +1763,10 @@ export type UserFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.In
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter, which User to fetch.
    */
   where?: Prisma.UserWhereInput
@@ -1058,6 +1814,10 @@ export type UserFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * Filter, which Users to fetch.
    */
@@ -1107,6 +1867,10 @@ export type UserCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * The data needed to create a User.
    */
   data: Prisma.XOR<Prisma.UserCreateInput, Prisma.UserUncheckedCreateInput>
@@ -1154,6 +1918,10 @@ export type UserUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
   /**
    * The data needed to update a User.
    */
@@ -1221,6 +1989,10 @@ export type UserUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * The filter to search for the User to update in case it exists.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1247,6 +2019,10 @@ export type UserDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  /**
    * Filter which User to delete.
    */
   where: Prisma.UserWhereUniqueInput
@@ -1267,6 +2043,150 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
+ * User.signalWatchlist
+ */
+export type User$signalWatchlistArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SignalWatchlistItem
+   */
+  select?: Prisma.SignalWatchlistItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SignalWatchlistItem
+   */
+  omit?: Prisma.SignalWatchlistItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SignalWatchlistItemInclude<ExtArgs> | null
+  where?: Prisma.SignalWatchlistItemWhereInput
+  orderBy?: Prisma.SignalWatchlistItemOrderByWithRelationInput | Prisma.SignalWatchlistItemOrderByWithRelationInput[]
+  cursor?: Prisma.SignalWatchlistItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SignalWatchlistItemScalarFieldEnum | Prisma.SignalWatchlistItemScalarFieldEnum[]
+}
+
+/**
+ * User.discussionThread
+ */
+export type User$discussionThreadArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionThread
+   */
+  select?: Prisma.DiscussionThreadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionThread
+   */
+  omit?: Prisma.DiscussionThreadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionThreadInclude<ExtArgs> | null
+  where?: Prisma.DiscussionThreadWhereInput
+  orderBy?: Prisma.DiscussionThreadOrderByWithRelationInput | Prisma.DiscussionThreadOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionThreadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionThreadScalarFieldEnum | Prisma.DiscussionThreadScalarFieldEnum[]
+}
+
+/**
+ * User.discussionReply
+ */
+export type User$discussionReplyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionReply
+   */
+  select?: Prisma.DiscussionReplySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionReply
+   */
+  omit?: Prisma.DiscussionReplyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionReplyInclude<ExtArgs> | null
+  where?: Prisma.DiscussionReplyWhereInput
+  orderBy?: Prisma.DiscussionReplyOrderByWithRelationInput | Prisma.DiscussionReplyOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionReplyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionReplyScalarFieldEnum | Prisma.DiscussionReplyScalarFieldEnum[]
+}
+
+/**
+ * User.discussionReaction
+ */
+export type User$discussionReactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionReaction
+   */
+  select?: Prisma.DiscussionReactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionReaction
+   */
+  omit?: Prisma.DiscussionReactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionReactionInclude<ExtArgs> | null
+  where?: Prisma.DiscussionReactionWhereInput
+  orderBy?: Prisma.DiscussionReactionOrderByWithRelationInput | Prisma.DiscussionReactionOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionReactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionReactionScalarFieldEnum | Prisma.DiscussionReactionScalarFieldEnum[]
+}
+
+/**
+ * User.commentReaction
+ */
+export type User$commentReactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommentReaction
+   */
+  select?: Prisma.CommentReactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CommentReaction
+   */
+  omit?: Prisma.CommentReactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentReactionInclude<ExtArgs> | null
+  where?: Prisma.CommentReactionWhereInput
+  orderBy?: Prisma.CommentReactionOrderByWithRelationInput | Prisma.CommentReactionOrderByWithRelationInput[]
+  cursor?: Prisma.CommentReactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentReactionScalarFieldEnum | Prisma.CommentReactionScalarFieldEnum[]
+}
+
+/**
+ * User.discussionFollow
+ */
+export type User$discussionFollowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscussionFollow
+   */
+  select?: Prisma.DiscussionFollowSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscussionFollow
+   */
+  omit?: Prisma.DiscussionFollowOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscussionFollowInclude<ExtArgs> | null
+  where?: Prisma.DiscussionFollowWhereInput
+  orderBy?: Prisma.DiscussionFollowOrderByWithRelationInput | Prisma.DiscussionFollowOrderByWithRelationInput[]
+  cursor?: Prisma.DiscussionFollowWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscussionFollowScalarFieldEnum | Prisma.DiscussionFollowScalarFieldEnum[]
+}
+
+/**
  * User without action
  */
 export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1278,4 +2198,8 @@ export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Omit specific fields from the User
    */
   omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
 }

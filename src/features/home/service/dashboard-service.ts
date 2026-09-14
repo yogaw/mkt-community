@@ -14,32 +14,56 @@ import type {
 import { dashboardRepository } from "@/features/home/repository/dashboard-repository";
 import type { LiveSessionService } from "@/features/live-sessions/service/live-session-service";
 import { liveSessionService } from "@/features/live-sessions/service/live-session-service";
+import type { MarketIndexService } from "@/features/market-index/service/market-index-service";
+import { marketIndexService } from "@/features/market-index/service/market-index-service";
+import type { SignalService } from "@/features/signals/service/signal-service";
+import { signalService } from "@/features/signals/service/signal-service";
 import { toVideoCardDto } from "@/features/videos/video-mappers";
 import { truncate } from "@/lib/text/truncate";
 
 const LATEST_VIDEOS_LIMIT = 6;
+/** Four fills the focus grid at every breakpoint. */
+const FOCUS_SIGNALS_LIMIT = 4;
 const LATEST_UPDATES_LIMIT = 5;
 const SNIPPET_MAX_LENGTH = 160;
 
 export interface DashboardService {
-  getHomeFeed(): Promise<HomeFeed>;
+  getHomeFeed(userId: string): Promise<HomeFeed>;
 }
 
 export class DashboardServiceImpl implements DashboardService {
   constructor(
     private readonly repository: DashboardRepository,
     private readonly liveSessions: LiveSessionService,
+    private readonly marketIndex: MarketIndexService,
+    private readonly signals: SignalService,
   ) {}
 
-  async getHomeFeed(): Promise<HomeFeed> {
-    const [featuredContent, upcomingSession, latestVideoRows, latestUpdateRows] = await Promise.all([
-      this.repository.findFeaturedContent(),
-      this.liveSessions.getNextUpcomingSession(),
-      this.repository.findLatestVideos(LATEST_VIDEOS_LIMIT),
-      this.repository.findLatestUpdates(LATEST_UPDATES_LIMIT),
-    ]);
+  async getHomeFeed(userId: string): Promise<HomeFeed> {
+    const [marketIndex, focusSignals, featuredContent, upcomingSession, latestVideoRows, latestUpdateRows] =
+      await Promise.all([
+        this.marketIndex.getLatest(),
+        // Newest open ideas. The watchlist stars are the caller's own, which is
+        // why the feed needs a user rather than being shared.
+        this.signals.listSignals({
+          tab: "active",
+          search: undefined,
+          type: undefined,
+          status: undefined,
+          sort: "newest",
+          page: 1,
+          pageSize: FOCUS_SIGNALS_LIMIT,
+          userId,
+        }),
+        this.repository.findFeaturedContent(),
+        this.liveSessions.getNextUpcomingSession(),
+        this.repository.findLatestVideos(LATEST_VIDEOS_LIMIT),
+        this.repository.findLatestUpdates(LATEST_UPDATES_LIMIT),
+      ]);
 
     return {
+      marketIndex,
+      focusSignals: focusSignals.items,
       featuredContent: featuredContent ? toFeaturedContent(featuredContent) : null,
       upcomingSession,
       latestVideos: latestVideoRows.map(toVideoCardDto),
@@ -95,4 +119,9 @@ function toSnippet(content: string): string {
   return truncate(content, SNIPPET_MAX_LENGTH);
 }
 
-export const dashboardService: DashboardService = new DashboardServiceImpl(dashboardRepository, liveSessionService);
+export const dashboardService: DashboardService = new DashboardServiceImpl(
+  dashboardRepository,
+  liveSessionService,
+  marketIndexService,
+  signalService,
+);

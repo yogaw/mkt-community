@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn";
 const viewTone: Record<SectorView, string> = {
   Positive: "border-accent/30 bg-accent/10 text-accent",
   Neutral: "border-edge bg-panel-raised text-ink-muted",
-  Watch: "bg-amber-400/10 text-amber-300 border-amber-400/30",
+  Watch: "border-warn/30 bg-warn/10 text-warn",
 };
 
 export function SectorPulse() {

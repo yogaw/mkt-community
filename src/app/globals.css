@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
-/* Dark dashboard theme (single deliberate look; see the reference dashboard style). */
+/*
+ * Two themes over one set of semantic tokens. Every component styles itself with
+ * these names (bg-panel, text-ink, border-edge...), never a raw color, so the
+ * theme switch is purely a matter of redefining the variables below.
+ *
+ * Dark is the default and lives in @theme; light overrides it under
+ * :root[data-theme="light"]. The attribute is set before first paint by the
+ * inline script in app/layout.tsx, so there is no flash on load.
+ */
 @theme {
   --color-canvas: #0b0d0e; /* page background */
   --color-panel: #15181a; /* cards, sidebar */
@@ -13,6 +21,37 @@
   --color-accent-strong: #3fc97a;
   --color-accent-ink: #072b1b; /* text on accent */
   --color-down: #ef6f6f; /* negative red */
+  --color-warn: #fbbf24; /* caution amber */
+  --color-info: #60a5fa; /* categorical blue */
+  --color-alt: #a78bfa; /* categorical violet */
+}
+
+/* Light theme: same roles, re-tuned for a white ground. Unlayered and more
+   specific than the :root that @theme emits, so these always win. */
+:root[data-theme="light"] {
+  --color-canvas: #f4f6f8;
+  --color-panel: #ffffff;
+  --color-panel-raised: #eef1f4;
+  --color-edge: #dce1e7;
+  --color-ink: #0f1519;
+  --color-ink-muted: #55616a;
+  --color-ink-faint: #6d7880;
+  --color-accent: #087d45;
+  --color-accent-strong: #066834;
+  --color-accent-ink: #ffffff;
+  --color-down: #c62f2f;
+  --color-warn: #b45309;
+  --color-info: #1d4ed8;
+  --color-alt: #6d28d9;
+}
+
+/* Keep native UI (scrollbars, form controls, autofill) in step with the theme. */
+:root {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
 }
 
 @theme inline {

@@ -12,7 +12,7 @@ export function Alert({ variant = "error", className, ...props }: AlertProps) {
       className={cn(
         "rounded-lg border px-3 py-2.5 text-sm",
         variant === "error" && "border-down/40 bg-down/10 text-down",
-        variant === "info" && "border-sky-400/40 bg-sky-400/10 text-sky-300",
+        variant === "info" && "border-info/40 bg-info/10 text-info",
         className,
       )}
       {...props}
